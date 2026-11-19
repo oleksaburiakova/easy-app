@@ -27,10 +27,12 @@ export const LESSONS: Lesson[] = [
   { id: '3.4', block: 'Не лише їжа', title: 'Режим харчування', about: 'Сніданок, обід і вечеря у своєму стабільному графіку.', vimeo: '1248517585/938720823f', sec: 403 },
 ];
 
-export const GUIDES = [
-  'Як обрати свою калорійність',
-  'Список здорових продуктів',
-  'Продукти, які варто виключити',
-  'Налагодження сну',
-  'Базові добавки',
+/** PDF-гайди Олени: public/guides/*.pdf. */
+export interface Guide { title: string; file: string; pages: number }
+export const GUIDES: Guide[] = [
+  { title: 'Як обрати свою калорійність', file: '/guides/kaloriinist.pdf', pages: 6 },
+  { title: 'Список здорових продуктів', file: '/guides/zdorovi-produkty.pdf', pages: 10 },
+  { title: 'Продукти, які варто виключити', file: '/guides/vykliuchyty.pdf', pages: 9 },
+  { title: 'Налагодження сну', file: '/guides/son.pdf', pages: 4 },
+  { title: 'Базові добавки', file: '/guides/dobavky.pdf', pages: 11 },
 ];

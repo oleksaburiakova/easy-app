@@ -47,10 +47,10 @@ export default function Learn() {
         <h2 className="ez-headline" style={{ padding: '12px 12px 0' }}>Гайди</h2>
         <div className="ez-stack">
           {GUIDES.map((g) => (
-            <div key={g} className="lesson-row">
+            <a key={g.file} href={g.file} target="_blank" rel="noopener" className="lesson-row">
               <span className="lesson-row__num"><Icon name="file" size={18} /></span>
-              <span className="lesson-row__body"><span className="ez-headline" style={{ fontSize: 15 }}>{g}</span><span className="ez-caption">PDF · незабаром</span></span>
-            </div>
+              <span className="lesson-row__body"><span className="ez-headline" style={{ fontSize: 15 }}>{g.title}</span><span className="ez-caption">PDF · {g.pages} стор.</span></span>
+            </a>
           ))}
         </div>
       </main>
