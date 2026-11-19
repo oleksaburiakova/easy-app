@@ -3,7 +3,7 @@ import { Photo } from '@/components/Photo';
 import { platePhoto } from '@/lib/photos';
 import Link from 'next/link';
 import { TabBar } from '@/components/TabBar';
-import { Icon, CheckCircle } from '@/components/Icon';
+import { Icon } from '@/components/Icon';
 import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO } from '@/lib/store';
@@ -26,7 +26,8 @@ export default function Home() {
   const now = new Date();
   const today = todayISO(now);
   const todays = plates.filter((p) => p.date === today);
-  const eaten = todays.filter((p) => p.status === 'eaten').length;
+  // Прогрес: скільки прийомів їжі сьогодні зібрано (зібрала — значить готово).
+  const eaten = new Set(todays.map((p) => p.meal)).size;
   const favs = plates.filter((p) => p.favorite).slice(-6).reverse();
   const C = 2 * Math.PI * 48;
 
@@ -69,11 +70,6 @@ export default function Home() {
                   <span className="ez-meal__body">
                     <span className="ez-meal__tag"><span className="ez-meal__tagicon"><Icon name={m.icon} size={16} /></span>{m.title}</span>
                     <span className="ez-headline" style={{ marginTop: 6 }}>{plateTitle(p.meal, p.selections)}</span>
-                    {p.status === 'eaten' ? (
-                      <span className="ez-chip ez-chip--done" style={{ alignSelf: 'flex-start', marginTop: 6 }}><span style={{ color: 'var(--olive)', display: 'flex' }}><CheckCircle size={18} /></span> З&apos;їдено</span>
-                    ) : (
-                      <span className="ez-chip ez-chip--planned" style={{ alignSelf: 'flex-start', marginTop: 6 }}><Icon name="clock" size={14} /> Заплановано</span>
-                    )}
                   </span>
                   <span className="ez-meal__chev"><Icon name="chev" size={18} /></span>
                 </Link>

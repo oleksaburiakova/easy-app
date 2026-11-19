@@ -31,6 +31,7 @@ export interface Plate {
   meal: MealKey;
   level: Level;
   selections: Selection[];
+  /** Застаріле: з 20.11 зібрана тарілка = виконаний прийом їжі, нові тарілки завжди 'eaten'. */
   status: 'planned' | 'eaten';
   favorite: boolean;
   createdAt: string;
@@ -83,8 +84,8 @@ export function usePlates() {
   const [plates, save, ready] = useStored<Plate[]>(KEYS.plates, []);
   const addPlate = (p: Omit<Plate, 'id' | 'createdAt'>) => {
     const plate: Plate = { ...p, id: Math.random().toString(36).slice(2, 10), createdAt: new Date().toISOString() };
-    // Один план на прийом їжі на день: нова тарілка замінює попередню заплановану.
-    const rest = read<Plate[]>(KEYS.plates, []).filter((x) => !(x.date === p.date && x.meal === p.meal && x.status === 'planned'));
+    // Одна тарілка на прийом їжі на день: нова замінює попередню (улюблені лишаються).
+    const rest = read<Plate[]>(KEYS.plates, []).filter((x) => !(x.date === p.date && x.meal === p.meal && !x.favorite));
     save([...rest, plate]);
     return plate;
   };

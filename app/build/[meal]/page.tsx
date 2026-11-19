@@ -65,7 +65,7 @@ export default function Build() {
       if (s.key === 'veg') sel.portion = `${s.amount_g} г`;
       return sel;
     });
-    const plate = addPlate({ date: todayISO(), meal, level: profile.level, selections, status: 'planned', favorite: false });
+    const plate = addPlate({ date: todayISO(), meal, level: profile.level, selections, status: 'eaten', favorite: false });
     router.push(`/plate/${plate.id}`);
   };
 

@@ -4,7 +4,7 @@ import { platePhoto, selectionPhoto } from '@/lib/photos';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { Icon, CheckCircle } from '@/components/Icon';
+import { Icon } from '@/components/Icon';
 import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates } from '@/lib/store';
@@ -77,10 +77,10 @@ export default function PlatePage() {
       <div className="bottom-bar">
         <div className="bottom-bar__inner gap-3">
           <div className="ez-pair">
-            <button className="ez-btn ez-btn--soft" onClick={() => { updatePlate(plate.id, { status: plate.status === 'eaten' ? 'planned' : 'eaten' }); flash(plate.status === 'eaten' ? 'Позначку знято' : "Збережено: з'їдено"); }}>
-              <span style={{ color: plate.status === 'eaten' ? 'var(--olive)' : 'var(--burgundy)', display: 'flex' }}><CheckCircle /></span>
-              {plate.status === 'eaten' ? "З'їдено" : "З'їдено?"}
-            </button>
+            <Link href={`/build/${plate.meal}`} className="ez-btn ez-btn--soft">
+              <span style={{ color: 'var(--burgundy)', display: 'flex' }}><Icon name="redo" size={18} /></span>
+              Перезібрати
+            </Link>
             <button className="ez-btn ez-btn--soft" aria-pressed={plate.favorite} onClick={() => { updatePlate(plate.id, { favorite: !plate.favorite }); flash(plate.favorite ? 'Прибрано з улюблених' : 'Додано в улюблені'); }}>
               <span style={{ color: 'var(--burgundy)', display: 'flex' }}><Icon name="heart" size={18} filled={plate.favorite} /></span>
               {plate.favorite ? 'В улюблених' : 'В улюблені'}
