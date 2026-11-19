@@ -1,0 +1,41 @@
+/* Easy — токени дизайн-системи (згенеровано з tokens.json дизайн-системи v3). Не правити вручну: змінювати в дизайн-системі. */
+:root {
+  --cream: #f8f3f0;
+  --card: #faf8f7;
+  --white: #ffffff;
+  --blush-50: #fbedee;
+  --blush-100: #f7ebed;
+  --blush-200: #f1e3e5;
+  --blush-300: #dcc8c8;
+  --mist: #ebe8e6;
+  --burgundy: #611e2d;
+  --olive: #6b7550;
+  --olive-ring: #808e62;
+  --olive-50: #e3e4d5;
+  --olive-ink: #5c6640;
+  --ink: #1c1416;
+  --secondary: #4b4a58;
+  --tertiary: #6b6a76;
+  --line: #efe8e5;
+  --control: #8e8a90;
+  --gold: #c9a77c;
+  --error: #a8433f;
+  --surface: var(--cream);
+  --accent: var(--burgundy);
+  --done: var(--olive);
+  --on-accent: var(--white);
+  --text: var(--ink);
+  --focus: var(--burgundy);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --font-sans: Inter, -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+}
