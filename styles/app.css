@@ -8,7 +8,7 @@ button { font-family: inherit; }
 .app-main--plain { padding-bottom: 24px; }
 .tabbar-wrap { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; pointer-events: none; }
 .tabbar-wrap .ez-tabs { max-width: 456px; margin: 0 auto 12px; pointer-events: auto; box-shadow: 0 0 0 1px var(--line); }
-.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: linear-gradient(to top, var(--cream) 70%, rgba(248,243,240,0)); padding: 24px 12px 16px; }
+.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: linear-gradient(to top, var(--cream) 70%, rgba(255,255,255,0)); padding: 24px 12px 16px; }
 .bottom-bar__inner { max-width: 456px; margin: 0 auto; }
 .screen-pad { padding: 0 var(--space-3); }
 .gap-3 { display: flex; flex-direction: column; gap: var(--space-3); }
