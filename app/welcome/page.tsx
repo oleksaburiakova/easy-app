@@ -12,7 +12,7 @@ export default function Welcome() {
       </div>
       <div className="bottom-bar">
         <div className="bottom-bar__inner gap-3">
-          <Link href="/onboarding" className="ez-btn ez-btn--primary ez-btn--block">Почати</Link>
+          <Link href="/login" className="ez-btn ez-btn--primary ez-btn--block">Почати</Link>
           <p className="ez-caption center" style={{ margin: 0 }}>Нутриціолог Олена Гаврилова · 5+ років у нутриціології</p>
         </div>
       </div>

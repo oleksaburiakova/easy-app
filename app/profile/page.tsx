@@ -4,15 +4,16 @@ import { useRouter } from 'next/navigation';
 import { TabBar } from '@/components/TabBar';
 import { Disclaimer } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
-import { usePlates } from '@/lib/store';
+import { useAuth } from '@/lib/store';
 import { LEVEL_LABEL } from '@/lib/calories';
 
 export default function Profile() {
   const { profile, ready } = useRequireProfile();
-  const { clearAll } = usePlates();
+  const { email, signOut } = useAuth();
   const router = useRouter();
   if (!ready || !profile) return null;
   const rows: [string, string][] = [
+    ['Email', email ?? '—'],
     ['Калорійність', LEVEL_LABEL[profile.level]],
     ['Стать', profile.sex === 'female' ? 'Жінка' : 'Чоловік'],
     ['Вік', `${profile.age}`],
@@ -35,8 +36,8 @@ export default function Profile() {
           <Link href="/onboarding" className="ez-btn ez-btn--soft ez-btn--block">Пройти анкету знову</Link>
           <p className="ez-caption">Змінюйте калорійність, лише якщо активність стабільно зросла 3–4 тижні.</p>
           <Disclaimer />
-          <button className="ez-btn ez-btn--back ez-btn--block" onClick={() => { if (confirmReset()) { clearAll(); router.replace('/welcome'); } }}>Очистити дані на цьому пристрої</button>
-          <p className="ez-caption center">Easy · версія для тестування · дані зберігаються лише в цьому браузері</p>
+          <button className="ez-btn ez-btn--back ez-btn--block" onClick={async () => { await signOut(); router.replace('/welcome'); }}>Вийти</button>
+          <p className="ez-caption center">Easy · версія для тестування · дані збережені в акаунті</p>
         </div>
       </main>
       <TabBar />
@@ -44,6 +45,3 @@ export default function Profile() {
   );
 }
 
-function confirmReset() {
-  return typeof window !== 'undefined' && window.confirm('Видалити анкету й історію з цього пристрою?');
-}

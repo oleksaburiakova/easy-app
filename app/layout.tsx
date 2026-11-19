@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import '@/styles/tokens.css';
 import '@/styles/components.css';
 import '@/styles/app.css';
+import { SyncToast } from '@/components/Guard';
 
 export const metadata: Metadata = {
   title: 'Easy — конструктор здорового харчування',
@@ -27,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
       </head>
       <body>
-        <div className="app">{children}</div>
+        <div className="app">{children}<SyncToast /></div>
       </body>
     </html>
   );

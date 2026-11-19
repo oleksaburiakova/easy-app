@@ -4,10 +4,18 @@ import { useRouter } from 'next/navigation';
 import { useProfile } from '@/lib/store';
 import { calcLevel, MAX_AGE, MIN_AGE, type Activity, type Sex } from '@/lib/calories';
 import { Icon } from '@/components/Icon';
+import { useRequireAuth } from '@/components/Guard';
 
 export default function Onboarding() {
+  const { ready: authed } = useRequireAuth();
+  const { profile, saveProfile, ready } = useProfile();
+  // Форму показуємо, коли дані завантажені, щоб підставити попередні відповіді.
+  if (!authed || !ready) return null;
+  return <OnboardingForm profile={profile} saveProfile={saveProfile} />;
+}
+
+function OnboardingForm({ profile, saveProfile }: Pick<ReturnType<typeof useProfile>, 'profile' | 'saveProfile'>) {
   const router = useRouter();
-  const { profile, saveProfile } = useProfile();
   const [sex, setSex] = useState<Sex>(profile?.sex ?? 'female');
   const [age, setAge] = useState(profile ? String(profile.age) : '');
   const [height, setHeight] = useState(profile ? String(profile.height) : '');

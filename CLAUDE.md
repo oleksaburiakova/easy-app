@@ -5,6 +5,7 @@
 ## Документи (читати перед змінами)
 - `docs/TZ.md` — ТЗ: стек, дані, логіка, екрани, етапи.
 - `docs/METHODOLOGY.md` — методика Олени і всі продуктові рішення.
+- `docs/SETUP-SUPABASE.md` — налаштування Supabase і змінних Vercel.
 - Дизайн-система: https://claude.ai/artifact/8JbhhLwjXXhbpYe1P1mtFU — CSS у `styles/components.css` (класи `ez-*`) і `styles/tokens.css` згенеровані з неї. Нові екрани будувати з цих класів; кольори й розміри — лише через токени.
 
 ## Дані
@@ -19,15 +20,19 @@
 - Акценти: бордовий — дія й поточне, оливковий — виконане.
 
 ## Структура
-- `app/` — екрани: `/welcome`, `/onboarding`, `/result`, `/` (головна), `/build/[meal]` (конструктор), `/plate/[id]`, `/plate`, `/history`, `/learn`, `/profile`.
-- `lib/tree.ts` — доступ до дерева, відображення варіантів, коефіцієнти. `lib/store.ts` — дані користувача (етап 1: localStorage; етап 2: Supabase, ті самі хуки). `lib/hints.ts` — поради Олени з уроків. `lib/lessons.ts` — уроки й гайди.
+- `app/` — екрани: `/welcome`, `/login`, `/onboarding`, `/result`, `/` (головна), `/build/[meal]` (конструктор), `/plate/[id]`, `/plate`, `/history`, `/learn`, `/profile`.
+- `lib/tree.ts` — доступ до дерева, відображення варіантів, коефіцієнти. `lib/store.ts` — дані користувача в Supabase (хуки `useAuth`, `useProfile`, `usePlates`; зміни одразу на екрані, потім запис у базу). При першому вході анкета й тарілки етапу 1 з localStorage переносяться в акаунт.
+- `lib/supabase.ts` — клієнт; ключі з `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Без ключів застосунок збирається, а вхід показує «не налаштовано».
+- `supabase/migrations/` — SQL таблиць і RLS (кожен бачить лише свої рядки). Нові зміни схеми — новим файлом `000N_*.sql`.
+- Вхід: `/welcome` → `/login` (код з email, `signInWithOtp` + `verifyOtp`) → `/onboarding`, якщо анкети немає. `useRequireProfile` веде без входу на `/welcome`, без анкети — на `/onboarding`.
+- `lib/hints.ts` — поради Олени з уроків. `lib/lessons.ts` — уроки й гайди.
 - `components/` — TabBar, Icon, Tip/Disclaimer, Guard.
 
 ## Команди
 `npm run dev` · `npm run build` · `npm run check-tree`
 
 ## Етапи
-1. ✅ MVP-конструктор (цей стан): анкета, калорійність, конструктор за деревом, тарілка, історія, улюблені, PWA.
-2. Акаунти (Supabase), підписки й оплата, промокоди.
+1. ✅ MVP-конструктор: анкета, калорійність, конструктор за деревом, тарілка, історія, улюблені, PWA.
+2. Акаунти (Supabase), підписки й оплата, промокоди. ✅ вхід за кодом з email і дані в Supabase; ⏳ підписки, оплата, промокоди.
 3. Уроки (закрите відеосховище), гайди, ІІ-рецепти (Claude API з кешем).
 4. Нагадування за режимом дня, адмінка, фото продуктів.
