@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { TabBar } from '@/components/TabBar';
 import { Icon } from '@/components/Icon';
 import { useRequireProfile } from '@/components/Guard';
-import { GUIDES, LESSON_BLOCKS, LESSONS } from '@/lib/lessons';
+import { GUIDES, LESSON_BLOCKS, LESSONS, durationLabel, vimeoEmbed } from '@/lib/lessons';
 
 export default function Learn() {
   const { ready } = useRequireProfile();
@@ -21,14 +21,25 @@ export default function Learn() {
             <h2 className="ez-headline" style={{ padding: '12px 12px 0' }}>{b}</h2>
             <div className="ez-stack">
               {LESSONS.filter((l) => l.block === b).map((l) => (
-                <button key={l.id} className="lesson-row" style={{ border: 0, textAlign: 'left', cursor: 'pointer' }} onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>
-                  <span className="lesson-row__num"><Icon name="play" size={16} filled /></span>
-                  <span className="lesson-row__body">
-                    <span className="ez-caption">{l.id === 'intro' ? 'Вступ' : l.id === 'bonus' ? 'Бонус' : `Урок ${l.id}`}</span>
-                    <span className="ez-headline" style={{ fontSize: 15 }}>{l.title}</span>
-                    {open === l.id && <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{l.about} Відео з’явиться після підключення відеосховища.</span>}
-                  </span>
-                </button>
+                <div key={l.id} className="lesson-card">
+                  <button className="lesson-row" style={{ border: 0, textAlign: 'left', cursor: 'pointer', width: '100%' }} onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>
+                    <span className="lesson-row__num"><Icon name="play" size={16} filled /></span>
+                    <span className="lesson-row__body">
+                      <span className="ez-caption">{[l.id === 'intro' ? 'Вступ' : l.id === 'bonus' ? 'Бонус' : `Урок ${l.id}`, durationLabel(l.sec)].filter(Boolean).join(' · ')}</span>
+                      <span className="ez-headline" style={{ fontSize: 15 }}>{l.title}</span>
+                    </span>
+                  </button>
+                  {open === l.id && (
+                    <div className="lesson-player">
+                      {l.vimeo ? (
+                        <div className="video-frame">
+                          <iframe src={vimeoEmbed(l.vimeo)} title={l.title} allow="autoplay; fullscreen; picture-in-picture" allowFullScreen loading="lazy" />
+                        </div>
+                      ) : null}
+                      <p className="ez-caption" style={{ color: 'var(--secondary)', margin: 0 }}>{l.about}</p>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </section>
