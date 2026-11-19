@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { TabBar } from '@/components/TabBar';
 import { Icon } from '@/components/Icon';
+import { VideoPlayer } from '@/components/VideoPlayer';
 import { useRequireProfile } from '@/components/Guard';
 import { GUIDES, LESSON_BLOCKS, LESSONS, durationLabel, vimeoEmbed } from '@/lib/lessons';
 
@@ -32,9 +33,7 @@ export default function Learn() {
                   {open === l.id && (
                     <div className="lesson-player">
                       {l.vimeo ? (
-                        <div className="video-frame">
-                          <iframe src={vimeoEmbed(l.vimeo)} title={l.title} allow="autoplay; fullscreen; picture-in-picture" allowFullScreen loading="lazy" />
-                        </div>
+                        <VideoPlayer src={vimeoEmbed(l.vimeo)} title={l.title} />
                       ) : null}
                       <p className="ez-caption" style={{ color: 'var(--secondary)', margin: 0 }}>{l.about}</p>
                     </div>

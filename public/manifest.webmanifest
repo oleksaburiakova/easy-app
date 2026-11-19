@@ -3,6 +3,7 @@
   "short_name": "Easy",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "lang": "uk",

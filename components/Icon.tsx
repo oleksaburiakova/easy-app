@@ -19,6 +19,7 @@ const P: Record<string, ReactElement> = {
   leaf: (<><path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14z" /><path d="M5 19l7-7" /></>),
   play: <path d="M8 5l11 7-11 7z" />,
   file: (<><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v4h4" /></>),
+  expand: <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />,
 };
 
 export type IconName = keyof typeof P;
