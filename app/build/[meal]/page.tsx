@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Icon } from '@/components/Icon';
+import { productPhoto } from '@/lib/photos';
 import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Selection } from '@/lib/store';
@@ -129,7 +130,12 @@ export default function Build() {
               const sel = picked?.label === o.label;
               return (
                 <button key={o.label} className="ez-card" aria-pressed={sel} onClick={() => choose(o)}>
-                  <span className="ez-card__img ph" aria-hidden="true">{d.name.charAt(0)}</span>
+                  {(() => {
+                    const src = productPhoto(d.name);
+                    return src
+                      ? <img className="ez-card__img" src={src} alt="" loading="lazy" width={360} height={240} />
+                      : <span className="ez-card__img ph" aria-hidden="true">{d.name.charAt(0)}</span>;
+                  })()}
                   <span className="ez-card__row">
                     <span className="ez-card__text">
                       <span className="ez-card__name">{d.name}</span>
