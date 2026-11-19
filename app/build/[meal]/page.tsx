@@ -133,7 +133,7 @@ export default function Build() {
                   {(() => {
                     const src = productPhoto(d.name);
                     return src
-                      ? <img className="ez-card__img" src={src} alt="" loading="lazy" width={360} height={240} />
+                      ? <img className="ez-card__img" src={src} alt="" loading="lazy" />
                       : <span className="ez-card__img ph" aria-hidden="true">{d.name.charAt(0)}</span>;
                   })()}
                   <span className="ez-card__row">

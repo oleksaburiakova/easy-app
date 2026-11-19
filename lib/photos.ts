@@ -1,7 +1,6 @@
 /**
- * Фото продуктів для карток конструктора: public/products/<slug>.webp (720×480, згенеровані в Canva).
+ * Фото продуктів для карток конструктора: public/products/<slug>.webp (фото від Олександри).
  * Правило — регулярний вираз за назвою варіанта; перше збігле перемагає, тому складені варіанти йдуть вище.
- * Усі продукти на фото — сирі (рішення Олександри).
  */
 const RULES: [RegExp, string][] = [
   // складені варіанти гарніру
@@ -46,13 +45,15 @@ const RULES: [RegExp, string][] = [
   [/хамон/i, 'khamon'],
   [/стегно/i, 'kuriache-stehno'],
   [/філе/i, 'kuriache-file'],
-  [/вирізка|телятин/i, 'vyrizka'],
+  [/телятин/i, 'teliatyna'],
+  [/вирізка/i, 'vyrizka'],
   [/кролик/i, 'krolyk'],
   [/печінк/i, 'pechinka'],
   [/серця/i, 'sertsia'],
   // сир, йогурт, десерт
   [/кисломолочн/i, 'syr-kyslomolochnyi'],
-  [/гауда|пармезан/i, 'hauda'],
+  [/пармезан/i, 'parmezan'],
+  [/гауда/i, 'hauda'],
   [/фета/i, 'feta'],
   [/філадельф/i, 'filadelfiia'],
   [/протеїнов/i, 'protein-yogurt'],
@@ -72,7 +73,63 @@ const RULES: [RegExp, string][] = [
 ];
 
 /** Які фото вже лежать у public/products (оновлювати разом із файлами). */
-const AVAILABLE = new Set<string>([]);
+const AVAILABLE = new Set<string>([
+  'bulgur',
+  'dorado',
+  'feta',
+  'filadelfiia',
+  'frukty-kivi',
+  'frukty-lokhyna',
+  'galeta',
+  'grechka',
+  'hauda',
+  'ikra',
+  'kartoplia',
+  'kartoplia-kvasolia',
+  'khamon',
+  'khlib',
+  'kinoa',
+  'krevetky',
+  'krolyk',
+  'kuriache-file',
+  'kuriache-stehno',
+  'lavash',
+  'losos',
+  'losos-ikra',
+  'makarony',
+  'makarony-tsilnozernovi',
+  'midii',
+  'mlyntsi',
+  'ovochi-buriak',
+  'ovochi-kapusta',
+  'ovochi-ohirok',
+  'ovochi-pomidor-perets',
+  'ovochi-salat',
+  'ovochi-sparzha',
+  'ovochi-sumishi',
+  'pankeiky',
+  'parmezan',
+  'pechinka',
+  'protein-yogurt',
+  'pshono',
+  'rys-buryi',
+  'rys-nut',
+  'sardyny',
+  'sertsia',
+  'shokolad',
+  'shynka',
+  'sibas',
+  'soba',
+  'sochevytsia-khlib',
+  'syr-kyslomolochnyi',
+  'teliatyna',
+  'tunets',
+  'tunets-konserva',
+  'vivsianka',
+  'vyrizka',
+  'yaitsia',
+  'yogurt',
+]);
 
 export const photoSlug = (name: string) => RULES.find(([re]) => re.test(name))?.[1] ?? null;
 
