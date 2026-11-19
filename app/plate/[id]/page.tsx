@@ -1,4 +1,6 @@
 'use client';
+import { Photo } from '@/components/Photo';
+import { platePhoto, selectionPhoto } from '@/lib/photos';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -38,7 +40,7 @@ export default function PlatePage() {
         <span className="ez-caption">{mealTitle(plate.meal)} · {LEVEL_LABEL[plate.level]}</span>
       </nav>
       <div className="ez-hero">
-        <div className="ph ph--hero" aria-hidden="true">{title.charAt(0)}</div>
+        <Photo className="ph--hero" src={platePhoto(plate.meal, plate.selections)} letter={title.charAt(0)} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'flex' }} />
         <div className="ez-hero__shade" aria-hidden="true" />
         <h1 className="ez-hero__title">{title}</h1>
       </div>
@@ -51,7 +53,7 @@ export default function PlatePage() {
             if (s.stepKey === 'eggs' && s.label === 'без яєць') return null;
             return (
               <div className="ez-irow" key={s.stepKey}>
-                <span className="ez-irow__thumb ph" style={{ fontSize: 14 }} aria-hidden="true">{d.name.charAt(0)}</span>
+                <Photo className="ez-irow__thumb" src={selectionPhoto(s)} letter={d.name.charAt(0)} style={{ fontSize: 14 }} />
                 <span className="ez-irow__name" style={{ display: 'flex', flexDirection: 'column' }}>
                   <span className="ez-footnote" style={{ fontWeight: 600 }}>{s.stepTitle}</span>
                   {s.stepKey === 'veg' ? tidy(s.label.replace(/^картинка:\s*\(?/, '').replace(/\)$/, '')) : d.name}

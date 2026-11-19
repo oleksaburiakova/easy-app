@@ -1,4 +1,6 @@
 'use client';
+import { Photo } from '@/components/Photo';
+import { platePhoto } from '@/lib/photos';
 import Link from 'next/link';
 import { TabBar } from '@/components/TabBar';
 import { Icon, CheckCircle } from '@/components/Icon';
@@ -63,7 +65,7 @@ export default function Home() {
             if (p) {
               return (
                 <Link key={m.key} href={`/plate/${p.id}`} className="ez-meal ez-meal--photo" style={{ textDecoration: 'none' }}>
-                  <span className="ez-meal__photo ph" aria-hidden="true">{plateTitle(p.meal, p.selections).charAt(0)}</span>
+                  <Photo className="ez-meal__photo" src={platePhoto(p.meal, p.selections)} letter={plateTitle(p.meal, p.selections).charAt(0)} />
                   <span className="ez-meal__body">
                     <span className="ez-meal__tag"><span className="ez-meal__tagicon"><Icon name={m.icon} size={16} /></span>{m.title}</span>
                     <span className="ez-headline" style={{ marginTop: 6 }}>{plateTitle(p.meal, p.selections)}</span>
@@ -97,7 +99,7 @@ export default function Home() {
               {favs.map((p) => (
                 <div className="ez-fav" key={p.id}>
                   <Link href={`/plate/${p.id}`}>
-                    <span className="ez-fav__img ph" aria-hidden="true">{plateTitle(p.meal, p.selections).charAt(0)}</span>
+                    <Photo className="ez-fav__img" src={platePhoto(p.meal, p.selections)} letter={plateTitle(p.meal, p.selections).charAt(0)} />
                     <span className="ez-fav__name">{plateTitle(p.meal, p.selections)}</span>
                   </Link>
                 </div>

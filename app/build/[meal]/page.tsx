@@ -99,9 +99,12 @@ export default function Build() {
         <Link className="ez-nav__back" href="/"><Icon name="back" size={18} /> Головна</Link>
         <span className="ez-caption">{LEVEL_LABEL[profile.level]}</span>
       </nav>
-      <header className="ez-header" style={{ paddingTop: 4 }}>
-        <h1 className="ez-large-title">{mealTitle(meal)}</h1>
-        <p className="ez-subhead">Ідеальна тарілка за {total} кроків</p>
+      <header className="build-hero">
+        <img className="build-hero__img" src="/images/hero.webp" alt="" />
+        <div className="build-hero__text">
+          <h1 className="ez-large-title">{mealTitle(meal)}</h1>
+          <p className="ez-subhead">Ідеальна тарілка<br />за {total} кроків</p>
+        </div>
       </header>
 
       <div className="ez-stepcard">

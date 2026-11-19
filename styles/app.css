@@ -41,3 +41,8 @@ button { font-family: inherit; }
 .video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius-sm); overflow: hidden; background: var(--ink); }
 .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .video-frame:fullscreen { aspect-ratio: auto; border-radius: 0; width: 100vw; height: 100vh; background: #000; }
+/* Шапка конструктора: фото тарілки праворуч, назва ліворуч (як у референсі). */
+.build-hero { position: relative; height: 172px; overflow: hidden; margin-bottom: var(--space-2); }
+.build-hero__img { position: absolute; right: -36px; top: -24px; width: 240px; height: 240px; object-fit: cover; border-radius: 50%; }
+.build-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, var(--surface) 38%, rgba(255,255,255,0) 72%); pointer-events: none; }
+.build-hero__text { position: relative; z-index: 1; padding: var(--space-4) var(--space-3) 0; display: flex; flex-direction: column; gap: var(--space-1); max-width: 60%; }

@@ -1,3 +1,5 @@
+import { display } from './tree';
+
 /**
  * Фото продуктів для карток конструктора: public/products/<slug>.webp (фото від Олександри).
  * Правило — регулярний вираз за назвою варіанта; перше збігле перемагає, тому складені варіанти йдуть вище.
@@ -139,3 +141,21 @@ export function productPhoto(name: string): string | null {
 }
 
 export const PHOTO_SLUGS = [...new Set(RULES.map(([, s]) => s))];
+
+/** Фото обраного варіанта (для тарілки, історії, улюблених). */
+export function selectionPhoto(s: { stepKey: string; label: string }): string | null {
+  const name = s.stepKey === 'eggs' ? s.label.charAt(0).toUpperCase() + s.label.slice(1) : display({ label: s.label }).name;
+  return productPhoto(name);
+}
+
+/** Головне фото тарілки: сніданок — основа, обід і вечеря — білок, потім гарнір. */
+export function platePhoto(meal: string, selections: { stepKey: string; label: string }[]): string | null {
+  const order = meal === 'breakfast' ? ['base', 'protein', 'cheese'] : ['protein', 'side', 'veg'];
+  for (const key of order) {
+    const s = selections.find((x) => x.stepKey === key);
+    const src = s && selectionPhoto(s);
+    if (src) return src;
+  }
+  for (const s of selections) { const src = selectionPhoto(s); if (src) return src; }
+  return null;
+}

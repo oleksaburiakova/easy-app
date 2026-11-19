@@ -1,4 +1,6 @@
 'use client';
+import { Photo } from '@/components/Photo';
+import { platePhoto } from '@/lib/photos';
 import { useState } from 'react';
 import Link from 'next/link';
 import { TabBar } from '@/components/TabBar';
@@ -48,7 +50,7 @@ export default function History() {
             const p = ofDay.filter((x) => x.meal === m.key).slice(-1)[0];
             return (
               <Link key={m.key} href={p ? `/plate/${p.id}` : `/build/${m.key}`} className="ez-hrow" style={{ paddingLeft: 0 }}>
-                <span className="ez-hrow__img ph" aria-hidden="true" style={{ fontSize: 26 }}>{p ? plateTitle(p.meal, p.selections).charAt(0) : <Icon name={m.icon} size={26} />}</span>
+                <Photo className="ez-hrow__img" src={p ? platePhoto(p.meal, p.selections) : null} letter={p ? plateTitle(p.meal, p.selections).charAt(0) : <Icon name={m.icon} size={26} />} style={{ fontSize: 26 }} />
                 <span className="ez-hrow__body">
                   <span className="ez-headline" style={{ fontSize: 16 }}>{m.title}</span>
                   <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{p ? plateTitle(p.meal, p.selections) : 'Зібрати тарілку'}</span>
@@ -70,7 +72,7 @@ export default function History() {
                   Так, повторити
                 </button>
               </div>
-              <span className="ez-repeat__img ph" aria-hidden="true">{plateTitle(fav.meal, fav.selections).charAt(0)}</span>
+              <Photo className="ez-repeat__img" src={platePhoto(fav.meal, fav.selections)} letter={plateTitle(fav.meal, fav.selections).charAt(0)} />
             </section>
           )}
         </div>
