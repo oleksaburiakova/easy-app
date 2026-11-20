@@ -22,7 +22,7 @@ button { font-family: inherit; }
 .fade-in { animation: fade .25s ease-out; }
 @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .fade-in { animation: none; } }
-.welcome-hero { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-4); padding: var(--space-6) var(--space-5) 0; }
+.welcome-hero { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-4); padding: calc(var(--space-7) + env(safe-area-inset-top)) var(--space-5) 0; }
 .welcome-hero img { width: 220px; height: auto; }
 .chip-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .seg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
@@ -112,3 +112,13 @@ button { font-family: inherit; }
 @media (hover: hover) { .guide-card:hover .guide-card__cover { transform: translateY(-2px); } }
 @media (prefers-reduced-motion: reduce) { .guide-card__cover { transition: none; } }
 .guide-card__meta { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+
+/* Логотип-напис Easy (components/Wordmark.tsx) — шрифти гайдів Олени. */
+:root { --font-display: "Cormorant Garamond", Georgia, serif; --font-script: "Great Vibes", cursive; }
+.wordmark { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+.wordmark__name { font-family: var(--font-display); font-weight: 300; text-transform: uppercase; letter-spacing: .16em; color: var(--burgundy); margin-right: -.16em; }
+.wordmark__by { font-family: var(--font-script); color: var(--gold); margin-top: -.15em; }
+.wordmark--lg .wordmark__name { font-size: 64px; }
+.wordmark--lg .wordmark__by { font-size: 28px; }
+.wordmark--sm .wordmark__name { font-size: 28px; }
+.wordmark--sm .wordmark__by { font-size: 15px; }

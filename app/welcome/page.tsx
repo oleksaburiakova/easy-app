@@ -1,10 +1,11 @@
 import Link from 'next/link';
+import { Wordmark } from '@/components/Wordmark';
 
 export default function Welcome() {
   return (
     <main className="app-main fade-in" style={{ paddingBottom: 150 }}>
       <div className="welcome-hero">
-        <img src="/icons/mark.svg" alt="Олена Гаврилова" width={40} height={40} style={{ width: 40 }} />
+        <Wordmark />
         <span className="ez-footnote" style={{ letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--olive-ink)' }}>Конструктор здорового харчування</span>
         <h1 className="ez-large-title">Збалансована тарілка з того, що є вдома</h1>
         <p className="ez-subhead">Без меню й заборон: обирайте продукти — порції вже пораховані під вашу калорійність.</p>
