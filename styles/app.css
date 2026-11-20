@@ -122,3 +122,8 @@ button { font-family: inherit; }
 .wordmark--lg .wordmark__by { font-size: 28px; }
 .wordmark--sm .wordmark__name { font-size: 28px; }
 .wordmark--sm .wordmark__by { font-size: 15px; }
+
+/* Заголовки «Порада Олени» і «Важливо» — помітніші (Олександра, 20.11). */
+.ez-tip__from { font-size: 15px; line-height: 20px; font-weight: 700; margin-bottom: 2px; }
+.ez-notice__title { font-size: 17px; line-height: 22px; font-weight: 700; color: var(--burgundy); margin-bottom: 2px; }
+.ez-tip__icon { width: 36px; height: 36px; }
