@@ -1,7 +1,7 @@
 import { display } from './tree';
 
 /**
- * Фото продуктів для карток конструктора: public/products/<slug>.webp (фото від Олександри).
+ * Фото продуктів для карток конструктора: public/products/<slug>.webp (600×600, фото від Олександри, 20.11).
  * Правило — регулярний вираз за назвою варіанта; перше збігле перемагає, тому складені варіанти йдуть вище.
  */
 const RULES: [RegExp, string][] = [
@@ -76,7 +76,65 @@ const RULES: [RegExp, string][] = [
 
 /** Які фото вже лежать у public/products (оновлювати разом із файлами). */
 const AVAILABLE = new Set<string>([
-  // порожньо: старі фото видалено 20.11, нові завантажує Олександра
+  'bulgur',
+  'dorado',
+  'feta',
+  'filadelfiia',
+  'frukty-kivi',
+  'frukty-lokhyna',
+  'galeta',
+  'grechka',
+  'hauda',
+  'ikra',
+  'kartoplia',
+  'kartoplia-khlib',
+  'kartoplia-kvasolia',
+  'kartoplia-lavash',
+  'kartoplia-nut',
+  'khamon',
+  'khlib',
+  'kinoa',
+  'krevetky',
+  'krolyk',
+  'kuriache-file',
+  'kuriache-stehno',
+  'lavash',
+  'losos',
+  'losos-ikra',
+  'makarony',
+  'makarony-tsilnozernovi',
+  'midii',
+  'mlyntsi',
+  'oseledets',
+  'ovochi-buriak',
+  'ovochi-kapusta',
+  'ovochi-ohirok',
+  'ovochi-pomidor-perets',
+  'ovochi-salat',
+  'ovochi-sparzha',
+  'ovochi-sumishi',
+  'pankeiky',
+  'parmezan',
+  'pechinka',
+  'protein-yogurt',
+  'pshono',
+  'rys-buryi',
+  'rys-nut',
+  'sardyny',
+  'sertsia',
+  'shokolad',
+  'shynka',
+  'sibas',
+  'soba',
+  'sochevytsia-khlib',
+  'syr-kyslomolochnyi',
+  'teliatyna',
+  'tunets',
+  'tunets-konserva',
+  'vivsianka',
+  'vyrizka',
+  'yaitsia',
+  'yogurt',
 ]);
 
 export const photoSlug = (name: string) => RULES.find(([re]) => re.test(name))?.[1] ?? null;
