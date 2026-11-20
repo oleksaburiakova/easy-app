@@ -91,7 +91,7 @@ button { font-family: inherit; }
 .ez-hrow--empty { opacity: .6; }
 
 /* Уроки: обкладинка з Vimeo. */
-.lesson-thumb { position: relative; width: 96px; aspect-ratio: 16 / 9; border-radius: var(--radius-sm); overflow: hidden; flex: none; background: var(--blush-100); }
+.lesson-thumb { position: relative; width: 128px; aspect-ratio: 16 / 9; border-radius: var(--radius-sm); overflow: hidden; flex: none; background: var(--blush-100); }
 .lesson-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .lesson-thumb__play { position: absolute; inset: 0; margin: auto; width: 28px; height: 28px; border-radius: var(--radius-pill); background: rgba(255, 255, 255, .9); color: var(--burgundy); display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(28, 20, 22, .25); }
 .lesson-thumb--empty { background: var(--blush-200); }
