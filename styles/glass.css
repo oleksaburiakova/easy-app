@@ -222,3 +222,25 @@ body::before {
 .ez-icon--fill .s { fill: none; }
 .ez-tab .ez-icon { transition: transform .25s cubic-bezier(.3, 1.4, .5, 1); }
 .ez-tab[aria-current="page"] .ez-icon { transform: scale(1.06); }
+
+/* План дня — головний блок головної: темне бордове скло з відблиском і золотавою гранню, щоб відрізнявся від прийомів їжі. */
+.ez-plan {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--burgundy) 55%, white) 0%, transparent 55%),
+    linear-gradient(160deg, color-mix(in srgb, var(--burgundy) 88%, white) 0%, var(--burgundy) 60%, color-mix(in srgb, var(--burgundy) 85%, black) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .35),
+    inset 0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent),
+    0 18px 36px -12px color-mix(in srgb, var(--burgundy) 60%, transparent),
+    0 2px 6px rgba(28, 20, 22, .1);
+}
+.ez-plan::after { content: ''; position: absolute; inset: 0 0 55% 0; background: linear-gradient(to bottom, rgba(255, 255, 255, .14), transparent); pointer-events: none; }
+.ez-plan .ez-caption { color: rgba(255, 255, 255, .78) !important; }
+.ez-plan .ez-plan__body > .ez-caption:first-child { color: var(--gold) !important; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; }
+.ez-plan .ez-title, .ez-plan .ez-ring__num { color: var(--white); }
+.ez-plan .ez-ring__sub { color: rgba(255, 255, 255, .72); }
+.ez-plan .ez-ring__track { stroke: rgba(255, 255, 255, .9); opacity: .22; }
+.ez-plan .ez-ring__value { stroke: color-mix(in srgb, var(--olive-ring) 70%, white); filter: drop-shadow(0 0 6px color-mix(in srgb, var(--olive-ring) 60%, transparent)); }
+.ez-plan .ez-plan__body { border-left-color: rgba(255, 255, 255, .22); }
