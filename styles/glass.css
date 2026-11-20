@@ -131,3 +131,88 @@
 @media (prefers-reduced-motion: reduce) {
   .ez-btn, .ez-tab, .ez-nav__back, .ez-meal, .ez-hrow, .ez-day, .lesson-card, .ez-fav { transition: none; }
 }
+
+/* =====================================================================
+ * Скло й об'єм для всього інтерфейсу (запит Олександри, 20.11).
+ * Фон — м'які розмиті плями в кольорах бренду (як шпалери iOS), щоб скло було видно.
+ * Картки — напівпрозоре скло з відблиском зверху, тонким світлим краєм і м'якою тінню.
+ * Розмиття (backdrop-filter) на картках НЕ вмикаємо: фон уже розмитий, а десятки
+ * розмиттів гальмують прокрутку на телефоні. Справжнє розмиття — лише в меню й кнопках над контентом.
+ * ===================================================================== */
+:root {
+  --vol-glass: linear-gradient(165deg, rgba(255, 255, 255, .84) 0%, rgba(255, 255, 255, .46) 100%);
+  --vol-tint: linear-gradient(165deg, color-mix(in srgb, var(--blush-50) 92%, transparent) 0%, color-mix(in srgb, var(--blush-200) 62%, transparent) 100%);
+  --vol-picked: linear-gradient(165deg, color-mix(in srgb, var(--blush-50) 96%, transparent) 0%, color-mix(in srgb, var(--blush-200) 80%, transparent) 100%);
+  --vol-edge: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 -1px 1px rgba(255, 255, 255, .4), inset 0 0 0 1px rgba(255, 255, 255, .45);
+  --vol-shadow: 0 0 0 .5px rgba(28, 20, 22, .06), 0 10px 28px -8px rgba(97, 30, 45, .16), 0 2px 6px rgba(28, 20, 22, .05);
+}
+
+/* Фон-«шпалери»: закріплений шар під усім застосунком. */
+html { background: var(--cream); }
+body { background: transparent; }
+.app { background: transparent; }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(75% 40% at 0% 0%, color-mix(in srgb, var(--blush-300) 75%, transparent), transparent 72%),
+    radial-gradient(60% 34% at 100% 22%, color-mix(in srgb, var(--gold) 42%, transparent), transparent 70%),
+    radial-gradient(70% 42% at 100% 90%, color-mix(in srgb, var(--blush-300) 80%, transparent), transparent 72%),
+    radial-gradient(65% 40% at 0% 60%, color-mix(in srgb, var(--olive-50) 100%, var(--olive) 12%), transparent 70%),
+    var(--cream);
+}
+/* Фото в шапці конструктора тане в фон, а не в білу смугу. */
+.build-hero--photo::after { display: none; }
+.build-hero__img { -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
+
+/* Нейтральне скло: картки продуктів, списки, поради, рядки історії, уроки, варіанти анкети, поля. */
+.ez-card, .ez-list, .ez-tip, .ez-choice, .ez-hrow, .lesson-card, .ez-tariff, .ez-meal--photo, .pill-choice, .ez-input, .ez-favs .ez-fav__img {
+  background: var(--vol-glass);
+  box-shadow: var(--vol-edge), var(--vol-shadow);
+}
+.ez-favs .ez-fav__img { background: none; }
+.ez-input { box-shadow: var(--vol-edge), 0 0 0 .5px rgba(28, 20, 22, .06); }
+
+/* Тоноване (пудрове) скло: прийоми їжі, план дня, кроки, дні, «Важливо», «Улюблена ще раз». */
+.ez-meal, .ez-stepcard, .ez-plan, .ez-repeat, .ez-notice, .ez-day {
+  background: var(--vol-tint);
+  box-shadow: var(--vol-edge), var(--vol-shadow);
+}
+.ez-meal--photo { background: var(--vol-glass); }
+
+/* Обране — щільніше пудрове скло з бордовою рамкою. */
+.ez-card[aria-pressed="true"], .ez-choice:has(input:checked), .ez-tariff:has(input:checked), .pill-choice[aria-pressed="true"] {
+  background: var(--vol-picked);
+  box-shadow: var(--vol-edge), 0 0 0 .5px rgba(97, 30, 45, .1), 0 12px 28px -8px rgba(97, 30, 45, .28);
+}
+
+/* Обраний день — об'ємне оливкове скло. */
+.ez-day[aria-current="date"] {
+  background: linear-gradient(165deg, color-mix(in srgb, var(--olive) 78%, white) 0%, var(--olive) 70%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 10px 22px -8px color-mix(in srgb, var(--olive) 70%, transparent);
+}
+
+/* Кружечки кроків, позначки й іконки — об'ємні «кульки» з відблиском. */
+.ez-step--done, .ez-step--current, .ez-card__check {
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .45), inset 0 -2px 3px rgba(0, 0, 0, .15), 0 3px 8px -2px rgba(28, 20, 22, .3);
+}
+.ez-step--done { background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--olive) 60%, white), var(--olive) 70%); }
+.ez-step--current, .ez-card__check { background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--burgundy) 65%, white), var(--burgundy) 70%); }
+.ez-step--todo { background: var(--vol-glass); box-shadow: var(--vol-edge), 0 0 0 .5px rgba(28, 20, 22, .08); }
+.ez-meal__icon, .ez-tip__icon, .ez-meal__tagicon, .lesson-row__num, .ez-rstep__num {
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .8), inset 0 -2px 3px rgba(28, 20, 22, .06), 0 2px 6px -1px rgba(28, 20, 22, .12);
+}
+
+/* Чипи («Зібрати», «Повторити»). */
+.ez-chip--add, .ez-chip--done, .ez-chip--planned { box-shadow: var(--vol-edge), 0 2px 6px rgba(28, 20, 22, .06); }
+
+/* Розділювачі в списках — світлі, як грані скла. */
+.ez-irow, .ez-rstep { border-bottom-color: rgba(28, 20, 22, .06); }
+
+/* Без прозорості (налаштування «Зменшити прозорість») — щільні картки. */
+@media (prefers-reduced-transparency: reduce) {
+  :root { --vol-glass: var(--card); --vol-tint: var(--blush-100); --vol-picked: var(--blush-50); }
+}
