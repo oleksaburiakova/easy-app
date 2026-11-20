@@ -35,7 +35,7 @@ export default function Learn() {
                     {lessonThumb(l) && open !== l.id ? (
                       <span className="lesson-thumb">
                         <img src={lessonThumb(l)!} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                        <span className="lesson-thumb__play"><Icon name="play" size={14} filled /></span>
+                        <span className="lesson-thumb__play"><Icon name="play" size={11} filled /></span>
                       </span>
                     ) : (
                       <span className="lesson-row__num"><Icon name="play" size={16} filled /></span>
