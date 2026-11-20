@@ -244,3 +244,37 @@ body::before {
 .ez-plan .ez-ring__track { stroke: rgba(255, 255, 255, .9); opacity: .22; }
 .ez-plan .ez-ring__value { stroke: color-mix(in srgb, var(--olive-ring) 70%, white); filter: drop-shadow(0 0 6px color-mix(in srgb, var(--olive-ring) 60%, transparent)); }
 .ez-plan .ez-plan__body { border-left-color: rgba(255, 255, 255, .22); }
+
+/* Гайди: обкладинки як об'ємні брошури — корінець зліва, глянцевий відблиск, тінь «на столі»; під ними — скляний чип. */
+.guide-strip { padding: var(--space-3) var(--space-3) 22px; }
+.guide-card { width: 100px; gap: 10px; align-items: center; }
+.guide-card__cover {
+  position: relative;
+  width: 100%;
+  border-radius: 6px 14px 14px 6px;
+  box-shadow:
+    inset 0 0 0 .5px rgba(255, 255, 255, .25),
+    0 1px 2px rgba(28, 20, 22, .2),
+    0 10px 20px -6px rgba(97, 30, 45, .45),
+    4px 4px 0 -1px rgba(255, 255, 255, .9),
+    4px 4px 0 0 rgba(28, 20, 22, .08);
+}
+/* Корінець брошури. */
+.guide-card__cover::before {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: 9px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to right, rgba(0, 0, 0, .35), rgba(255, 255, 255, .18) 55%, rgba(0, 0, 0, 0));
+}
+/* Глянцевий відблиск по діагоналі. */
+.guide-card__cover::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(125deg, rgba(255, 255, 255, .32) 0%, rgba(255, 255, 255, .06) 32%, rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0) 80%, rgba(255, 255, 255, .1) 100%);
+}
+.guide-card:active .guide-card__cover { transform: scale(.96) rotate(-1deg); }
+@media (hover: hover) { .guide-card:hover .guide-card__cover { transform: translateY(-3px) rotate(-1deg); } }
+.guide-card__meta {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 24px; padding: 0 9px; border-radius: var(--radius-pill);
+  font-size: 12px; font-weight: 600; color: var(--burgundy);
+  background: var(--vol-glass);
+  box-shadow: var(--vol-edge), 0 0 0 .5px rgba(28, 20, 22, .06), 0 3px 8px -2px rgba(97, 30, 45, .15);
+}
