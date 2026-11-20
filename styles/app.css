@@ -95,6 +95,8 @@ button { font-family: inherit; }
 .lesson-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 /* Значок «плей» — у правому нижньому куті, щоб не перекривати обличчя Олени. */
 .lesson-thumb__play { position: absolute; right: 4px; bottom: 4px; width: 22px; height: 22px; box-shadow: 0 1px 4px rgba(28, 20, 22, .25); border-radius: var(--radius-pill); background: rgba(255, 255, 255, .9); color: var(--burgundy); display: flex; align-items: center; justify-content: center; }
+.lesson-thumb--empty { background: var(--blush-200); }
+.lesson-thumb--empty img { object-fit: contain; padding: 6px; }
 .lesson-card { scroll-margin-top: 12px; }
 
 /* Нижній аркуш (пояснення в анкеті). */

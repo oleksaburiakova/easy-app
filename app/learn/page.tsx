@@ -32,9 +32,10 @@ export default function Learn() {
               {LESSONS.filter((l) => l.block === b).map((l) => (
                 <div key={l.id} id={`l-${l.id}`} className="lesson-card">
                   <button className="lesson-row" style={{ border: 0, textAlign: 'left', cursor: 'pointer', width: '100%' }} onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>
-                    {lessonThumb(l) && open !== l.id ? (
-                      <span className="lesson-thumb">
-                        <img src={lessonThumb(l)!} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    {open !== l.id ? (
+                      // Без обкладинки у Vimeo — маскот на рожевому тлі, щоб ряд виглядав так само.
+                      <span className={`lesson-thumb${lessonThumb(l) ? '' : ' lesson-thumb--empty'}`}>
+                        <img src={lessonThumb(l) ?? '/mascot.webp'} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                         <span className="lesson-thumb__play"><Icon name="play" size={11} filled /></span>
                       </span>
                     ) : (
