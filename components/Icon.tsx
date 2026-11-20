@@ -1,33 +1,49 @@
-import type { ReactElement, SVGProps } from 'react';
+'use client';
+import { useId, type ReactElement, type SVGProps } from 'react';
 
+/**
+ * Іконки в стилі SF Symbols (iOS 26): м'які, заокруглені, однаковий «вагомий» контур.
+ * Варіант `fill` — об'ємна заливка: градієнт від світлішого верху до насиченого низу + легка тінь (клас ez-icon--fill),
+ * у пару до «рідкого скла». Елементи з класом `s` (промені сонця, ручка ножа тощо) лишаються лінією й у заливці.
+ */
 const P: Record<string, ReactElement> = {
-  chev: <path d="M9 6l6 6-6 6" />,
-  back: <path d="M15 18l-6-6 6-6" />,
-  check: <path d="M5 12l5 5L20 7" />,
-  sun: (<><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></>),
-  fork: <path d="M7 3v8a2 2 0 0 0 2 2v8M11 3v8M3 3v8a2 2 0 0 0 2 2M17 3c-1.7 0-3 2-3 5s1.3 4 3 4v9" />,
-  moon: <path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z" />,
+  chev: <path d="M9.5 5.5 16 12l-6.5 6.5" />,
+  back: <path d="M14.5 5.5 8 12l6.5 6.5" />,
+  check: <path d="M5 12.5 9.5 17 19 7.5" />,
   plus: <path d="M12 5v14M5 12h14" />,
-  clock: (<><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>),
-  heart: <path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 9.3 6c-2.3 4.6-9.3 9-9.3 9z" />,
-  book: <path d="M6 3h12v18l-6-4-6 4z" />,
-  home: <path d="M3 11l9-8 9 8v10H3z" />,
-  plate: (<><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /></>),
-  chart: <path d="M5 20V10M12 20V4M19 20v-7" />,
-  cap: (<><path d="M2 9l10-5 10 5-10 5z" /><path d="M6 11v5c3 2 9 2 12 0v-5" /></>),
-  user: (<><circle cx="12" cy="8" r="4" /><path d="M4 21c1-4 4-6 8-6s7 2 8 6" /></>),
-  leaf: (<><path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14z" /><path d="M5 19l7-7" /></>),
-  play: <path d="M8 5l11 7-11 7z" />,
-  file: (<><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v4h4" /></>),
+  sun: (<><circle cx="12" cy="12" r="4.8" /><path className="s" d="M12 2.2v2M12 19.8v2M4.4 4.4l1.4 1.4M18.2 18.2l1.4 1.4M2.2 12h2M19.8 12h2M4.4 19.6l1.4-1.4M18.2 5.8l1.4-1.4" /></>),
+  fork: (<><path className="s" d="M5 3v5.5a2.5 2.5 0 0 0 5 0V3M7.5 3v18" /><path d="M18.5 3c-2.2 1-3.8 3.8-3.8 7.6v3.4h3.8z" /><path className="s" d="M18.5 13.5V21" /></>),
+  moon: <path d="M20.5 14.2A8.6 8.6 0 1 1 9.8 3.5a7 7 0 0 0 10.7 10.7z" />,
+  clock: (<><circle cx="12" cy="12" r="9" /><path className="s" d="M12 7v5l3.2 2" /></>),
+  heart: <path d="M12 20.3s-8.3-4.7-8.3-10.6A4.6 4.6 0 0 1 12 7.2a4.6 4.6 0 0 1 8.3 2.5c0 5.9-8.3 10.6-8.3 10.6z" />,
+  book: (<><path d="M5 4.8C5 3.8 5.8 3 6.8 3H19v15.5H6.8A1.8 1.8 0 0 0 5 20.3z" /><path className="s" d="M5 20.3c0 .9.8 1.7 1.8 1.7H19" /></>),
+  home: <path d="M3.5 10.6 12 3.4l8.5 7.2v8.6c0 .9-.7 1.6-1.6 1.6h-4.2v-5.4a1.3 1.3 0 0 0-1.3-1.3h-2.8a1.3 1.3 0 0 0-1.3 1.3v5.4H5.1c-.9 0-1.6-.7-1.6-1.6z" />,
+  plate: (<><circle cx="12" cy="12" r="9" /><circle className="s" cx="12" cy="12" r="5" /></>),
+  chart: (<><rect x="3.5" y="12" width="4.2" height="8.5" rx="1.6" /><rect x="9.9" y="3.5" width="4.2" height="17" rx="1.6" /><rect x="16.3" y="8.5" width="4.2" height="12" rx="1.6" /></>),
+  cap: (<><path d="M12 4.2 2.6 8.9 12 13.6l9.4-4.7z" /><path d="M6.4 11.7 12 14.5l5.6-2.8v4c0 1.6-2.5 3.2-5.6 3.2s-5.6-1.6-5.6-3.2z" /><path className="s" d="M21.4 9v5.2" /></>),
+  user: (<><circle cx="12" cy="7.8" r="4" /><path d="M4.4 20.2c0-3.6 3.4-6 7.6-6s7.6 2.4 7.6 6c0 .5-.4.8-.8.8H5.2c-.4 0-.8-.3-.8-.8z" /></>),
+  leaf: (<><path d="M5 19.5C5 10.9 10.6 4.5 20 4.5c0 9.4-6.4 15-15 15z" /><path className="s" d="M5 19.5l7.5-7.5" /></>),
+  play: <path d="M8 5.7v12.6c0 .8.9 1.3 1.6.9l9.8-6.3c.6-.4.6-1.4 0-1.8L9.6 4.8C8.9 4.4 8 4.9 8 5.7z" />,
+  file: (<><path d="M7 3h6.6L19 8.4V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" /><path className="s" d="M13.5 3v5.5H19" /></>),
   expand: <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />,
-  redo: (<><path d="M20 12a8 8 0 1 1-2.3-5.7" /><path d="M20 4v5h-5" /></>),
+  redo: (<><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" /><path d="M19.5 4.2v4.6h-4.6" /></>),
 };
 
 export type IconName = keyof typeof P;
 
-export function Icon({ name, size = 20, strokeWidth = 2, filled = false, ...rest }: { name: IconName; size?: number; strokeWidth?: number; filled?: boolean } & SVGProps<SVGSVGElement>) {
+export function Icon({ name, size = 20, strokeWidth = 2, filled = false, variant, ...rest }: { name: IconName; size?: number; strokeWidth?: number; filled?: boolean; variant?: 'line' | 'fill' } & SVGProps<SVGSVGElement>) {
+  const id = useId().replace(/:/g, '');
+  const fill = (variant ?? (filled ? 'fill' : 'line')) === 'fill';
   return (
-    <svg className="ez-icon" width={size} height={size} viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...rest}>
+    <svg className={`ez-icon${fill ? ' ez-icon--fill' : ''}`} width={size} height={size} viewBox="0 0 24 24" fill={fill ? `url(#g${id})` : 'none'} stroke="currentColor" strokeWidth={fill ? Math.min(strokeWidth, 1.6) : strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...rest}>
+      {fill && (
+        <defs>
+          <linearGradient id={`g${id}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="currentColor" stopOpacity=".62" />
+            <stop offset="1" stopColor="currentColor" stopOpacity="1" />
+          </linearGradient>
+        </defs>
+      )}
       {P[name]}
     </svg>
   );

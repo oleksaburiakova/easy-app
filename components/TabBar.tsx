@@ -18,7 +18,7 @@ export function TabBar() {
       <nav className="ez-tabs" aria-label="Головне меню">
         {TABS.map((t) => (
           <Link key={t.href} href={t.href} className="ez-tab" aria-current={active(t.href) ? 'page' : undefined}>
-            <Icon name={t.icon} size={22} />
+            <Icon name={t.icon} size={22} variant={active(t.href) ? 'fill' : 'line'} strokeWidth={1.8} />
             {t.label}
           </Link>
         ))}

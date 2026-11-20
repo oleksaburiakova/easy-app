@@ -7,7 +7,7 @@ export function Tip({ hint, className }: { hint: Hint; className?: string }) {
   const pdf = href.endsWith('.pdf');
   return (
     <div className={`ez-tip${className ? ` ${className}` : ''}`}>
-      <span className="ez-tip__icon"><Icon name="leaf" size={16} /></span>
+      <span className="ez-tip__icon"><Icon name="leaf" size={17} variant="fill" /></span>
       <span className="ez-tip__body">
         <span className="ez-tip__from">Порада Олени</span>
         {hint.text}

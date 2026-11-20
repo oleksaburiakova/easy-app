@@ -216,3 +216,9 @@ body::before {
 @media (prefers-reduced-transparency: reduce) {
   :root { --vol-glass: var(--card); --vol-tint: var(--blush-100); --vol-picked: var(--blush-50); }
 }
+
+/* Іконки: заливка — з легкою тінню під гліфом, як об'ємні SF Symbols. */
+.ez-icon--fill { filter: drop-shadow(0 1px 1px rgba(28, 20, 22, .18)); overflow: visible; }
+.ez-icon--fill .s { fill: none; }
+.ez-tab .ez-icon { transition: transform .25s cubic-bezier(.3, 1.4, .5, 1); }
+.ez-tab[aria-current="page"] .ez-icon { transform: scale(1.06); }

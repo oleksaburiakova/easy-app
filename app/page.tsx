@@ -68,7 +68,7 @@ export default function Home() {
                 <Link key={m.key} href={`/plate/${p.id}`} className="ez-meal ez-meal--photo" style={{ textDecoration: 'none' }}>
                   <Photo className="ez-meal__photo" src={platePhoto(p.meal, p.selections)} letter={plateTitle(p.meal, p.selections).charAt(0)} />
                   <span className="ez-meal__body">
-                    <span className="ez-meal__tag"><span className="ez-meal__tagicon"><Icon name={m.icon} size={16} /></span>{m.title}</span>
+                    <span className="ez-meal__tag"><span className="ez-meal__tagicon"><Icon name={m.icon} size={16} variant="fill" /></span>{m.title}</span>
                     <span className="ez-headline" style={{ marginTop: 6 }}>{plateTitle(p.meal, p.selections)}</span>
                   </span>
                   <span className="ez-meal__chev"><Icon name="chev" size={18} /></span>
@@ -77,7 +77,7 @@ export default function Home() {
             }
             return (
               <Link key={m.key} href={`/build/${m.key}`} className="ez-meal" style={{ textDecoration: 'none' }}>
-                <span className="ez-meal__icon"><Icon name={m.icon} size={22} /></span>
+                <span className="ez-meal__icon"><Icon name={m.icon} size={25} variant="fill" /></span>
                 <span className="ez-meal__body">
                   <span className="ez-headline" style={{ fontSize: 16 }}>{m.title}</span>
                   <span className="ez-subhead">Зібрати тарілку</span>

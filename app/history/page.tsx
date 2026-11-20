@@ -51,7 +51,7 @@ export default function History() {
             const isToday = day === todayISO();
             const inner = (
               <>
-                <Photo className="ez-hrow__img" src={p ? platePhoto(p.meal, p.selections) : null} letter={p ? plateTitle(p.meal, p.selections).charAt(0) : <Icon name={m.icon} size={26} />} style={{ fontSize: 26 }} />
+                <Photo className="ez-hrow__img" src={p ? platePhoto(p.meal, p.selections) : null} letter={p ? plateTitle(p.meal, p.selections).charAt(0) : <Icon name={m.icon} size={36} variant="fill" />} style={{ fontSize: 26 }} />
                 <span className="ez-hrow__body">
                   <span className="ez-headline" style={{ fontSize: 16 }}>{m.title}</span>
                   <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{p ? plateTitle(p.meal, p.selections) : isToday ? 'Зібрати тарілку' : day < todayISO() ? 'Не за конструктором' : '—'}</span>
