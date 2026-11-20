@@ -102,3 +102,13 @@ button { font-family: inherit; }
 /* Нижній аркуш (пояснення в анкеті). */
 .sheet-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(28, 20, 22, .4); display: flex; align-items: flex-end; justify-content: center; }
 .sheet { width: 100%; max-width: 480px; background: var(--surface); border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--space-5) var(--space-4) var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+
+/* Гайди: сітка обкладинок (верх першої сторінки PDF). */
+.guide-grid { padding-top: var(--space-2); }
+.guide-card { display: flex; flex-direction: column; gap: var(--space-2); color: var(--secondary); text-decoration: none; }
+.guide-card__cover { display: block; aspect-ratio: 3 / 4; border-radius: var(--radius-md); overflow: hidden; background: var(--burgundy); box-shadow: 0 4px 14px rgba(28, 20, 22, .12); transition: transform .15s ease; }
+.guide-card__cover img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.guide-card:active .guide-card__cover { transform: scale(.98); }
+@media (hover: hover) { .guide-card:hover .guide-card__cover { transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) { .guide-card__cover { transition: none; } }
+.guide-card__meta { display: flex; align-items: center; gap: 6px; padding: 0 2px; }

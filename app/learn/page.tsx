@@ -60,14 +60,12 @@ export default function Learn() {
           </section>
         ))}
         <h2 id="guides" className="ez-headline" style={{ padding: '12px 12px 0' }}>Гайди</h2>
-        <div className="ez-stack">
+        {/* Гайди — сіткою обкладинок: назва вже на обкладинці, під нею — обсяг. */}
+        <div className="ez-grid guide-grid">
           {GUIDES.map((g) => (
-            <a key={g.file} href={g.file} target="_blank" rel="noopener" className="lesson-row">
-              <span className="lesson-thumb">
-                <img src={g.cover} alt="" loading="lazy" />
-                <span className="lesson-thumb__play"><Icon name="file" size={12} /></span>
-              </span>
-              <span className="lesson-row__body"><span className="ez-caption">PDF · {g.pages} стор.</span><span className="ez-headline" style={{ fontSize: 15 }}>{g.title}</span></span>
+            <a key={g.file} href={g.file} target="_blank" rel="noopener" className="guide-card" aria-label={`${g.title}, PDF, ${g.pages} стор.`}>
+              <span className="guide-card__cover"><img src={g.cover} alt="" loading="lazy" /></span>
+              <span className="ez-caption guide-card__meta"><Icon name="file" size={14} /> PDF · {g.pages} стор.</span>
             </a>
           ))}
         </div>

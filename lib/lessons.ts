@@ -32,7 +32,7 @@ export const LESSONS: Lesson[] = [
 
 /**
  * PDF-гайди Олени: public/guides/*.pdf — мобільні версії (вузька сторінка, 20.11).
- * Обкладинка — public/guides/covers/<name>.webp, 384×216: два фото з першої сторінки гайду.
+ * Обкладинка — public/guides/covers/<name>.webp: верх першої сторінки гайду (ширина 400 px), у списку — сіткою 2 колонки.
  */
 export interface Guide { title: string; file: string; pages: number; cover: string }
 export const GUIDES: Guide[] = [
