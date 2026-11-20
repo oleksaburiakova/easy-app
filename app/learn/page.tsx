@@ -36,7 +36,7 @@ export default function Learn() {
                       // Без обкладинки у Vimeo — маскот на рожевому тлі, щоб ряд виглядав так само.
                       <span className={`lesson-thumb${lessonThumb(l) ? '' : ' lesson-thumb--empty'}`}>
                         <img src={lessonThumb(l) ?? '/mascot.webp'} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                        <span className="lesson-thumb__play"><Icon name="play" size={11} filled /></span>
+                        <span className="lesson-thumb__play"><Icon name="play" size={14} filled /></span>
                       </span>
                     ) : (
                       <span className="lesson-row__num"><Icon name="play" size={16} filled /></span>
