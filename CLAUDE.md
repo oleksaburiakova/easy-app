@@ -19,7 +19,7 @@
 - Акценти: бордовий — дія й поточне, оливковий — виконане.
 
 ## Структура
-- `app/` — екрани: `/welcome`, `/onboarding`, `/result`, `/` (головна), `/build/[meal]` (конструктор), `/plate/[id]`, `/plate`, `/history`, `/learn`, `/profile`.
+- `app/` — екрани: `/welcome`, `/onboarding`, `/result`, `/` (головна), `/build/[meal]` (конструктор), `/plate/[id]`, `/history`, `/learn`, `/profile`.
 - `lib/tree.ts` — доступ до дерева, відображення варіантів, коефіцієнти. `lib/store.ts` — дані користувача (етап 1: localStorage; етап 2: Supabase, ті самі хуки). `lib/hints.ts` — поради Олени з уроків. `lib/lessons.ts` — уроки й гайди; відео — Vimeo (`vimeo: "id/hash"`, плеєр на `/learn`); PDF-гайди — `public/guides/`.
 - `lib/photos.ts` — фото продуктів для карток: назва варіанта → `public/products/<slug>.webp`. Новий файл фото додати також у `AVAILABLE`. Без фото картка показує літеру. Шапка конструктора — `public/images/hero-<meal>.webp` (`buildHero`).
 - `components/` — TabBar, Icon, Tip/Disclaimer, Guard.

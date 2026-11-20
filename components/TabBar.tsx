@@ -5,7 +5,6 @@ import { Icon, type IconName } from './Icon';
 
 const TABS: { href: string; label: string; icon: IconName }[] = [
   { href: '/', label: 'Головна', icon: 'home' },
-  { href: '/plate', label: 'Моя тарілка', icon: 'plate' },
   { href: '/history', label: 'Історія', icon: 'chart' },
   { href: '/learn', label: 'Навчання', icon: 'cap' },
   { href: '/profile', label: 'Профіль', icon: 'user' },
