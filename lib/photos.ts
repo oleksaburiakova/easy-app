@@ -152,8 +152,9 @@ export function selectionPhoto(s: { stepKey: string; label: string }): string | 
   return productPhoto(name);
 }
 
-/** Фото тарілки в шапці конструктора (public/images/…); null — шапка без фото. */
-export const BUILD_HERO: string | null = null;
+/** Фото тарілки в шапці конструктора: public/images/hero-<meal>.webp (тарілка праворуч, ліворуч місце під заголовок). */
+export const buildHero = (meal: string): string | null =>
+  ['breakfast', 'lunch', 'dinner'].includes(meal) ? `/images/hero-${meal}.webp` : null;
 
 /** Головне фото тарілки: сніданок — основа, обід і вечеря — білок, потім гарнір. */
 export function platePhoto(meal: string, selections: { stepKey: string; label: string }[]): string | null {

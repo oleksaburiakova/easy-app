@@ -41,8 +41,11 @@ button { font-family: inherit; }
 .video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius-sm); overflow: hidden; background: var(--ink); }
 .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .video-frame:fullscreen { aspect-ratio: auto; border-radius: 0; width: 100vw; height: 100vh; background: #000; }
-/* Шапка конструктора: фото тарілки праворуч, назва ліворуч (як у референсі). */
-.build-hero { position: relative; height: 172px; overflow: hidden; margin-bottom: var(--space-2); }
-.build-hero__img { position: absolute; right: -36px; top: -24px; width: 240px; height: 240px; object-fit: cover; border-radius: 50%; }
-.build-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, var(--surface) 38%, rgba(255,255,255,0) 72%); pointer-events: none; }
-.build-hero__text { position: relative; z-index: 1; padding: var(--space-4) var(--space-3) 0; display: flex; flex-direction: column; gap: var(--space-1); max-width: 60%; }
+/* Шапка конструктора: фото тарілки на всю ширину (тарілка праворуч), назва ліворуч — як у референсі. */
+.build-hero { position: relative; margin-bottom: var(--space-2); }
+.build-hero--photo { height: 236px; overflow: hidden; }
+.build-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 45%; }
+.build-hero--photo::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 56px; background: linear-gradient(to bottom, rgba(255,255,255,0), var(--surface)); pointer-events: none; }
+.build-hero > * { position: relative; z-index: 1; }
+.build-hero > .build-hero__img { position: absolute; z-index: 0; }
+.build-hero__text { padding: var(--space-2) var(--space-3) 0; display: flex; flex-direction: column; gap: var(--space-1); max-width: 46%; }
