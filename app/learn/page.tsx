@@ -43,6 +43,7 @@ export default function Learn() {
                     <span className="lesson-row__body">
                       <span className="ez-caption">{[l.id === 'intro' ? 'Вступ' : l.id === 'bonus' ? 'Бонус' : `Урок ${l.id}`, durationLabel(l.sec)].filter(Boolean).join(' · ')}</span>
                       <span className="ez-headline" style={{ fontSize: 15 }}>{l.title}</span>
+                      <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{l.about}</span>
                     </span>
                   </button>
                   {open === l.id && (
@@ -50,7 +51,6 @@ export default function Learn() {
                       {l.vimeo ? (
                         <VideoPlayer src={vimeoEmbed(l.vimeo)} title={l.title} />
                       ) : null}
-                      <p className="ez-caption" style={{ color: 'var(--secondary)', margin: 0 }}>{l.about}</p>
                     </div>
                   )}
                 </div>
