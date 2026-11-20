@@ -60,12 +60,12 @@ export default function Learn() {
           </section>
         ))}
         <h2 id="guides" className="ez-headline" style={{ padding: '12px 12px 0' }}>Гайди</h2>
-        {/* Гайди — сіткою обкладинок: назва вже на обкладинці, під нею — обсяг. */}
-        <div className="ez-grid guide-grid">
+        {/* Гайди — компактним рядком обкладинок, що гортається вбік: головне в «Навчанні» — відео. */}
+        <div className="guide-strip">
           {GUIDES.map((g) => (
             <a key={g.file} href={g.file} target="_blank" rel="noopener" className="guide-card" aria-label={`${g.title}, PDF, ${g.pages} стор.`}>
               <span className="guide-card__cover"><img src={g.cover} alt="" loading="lazy" /></span>
-              <span className="ez-caption guide-card__meta"><Icon name="file" size={14} /> PDF · {g.pages} стор.</span>
+              <span className="ez-caption guide-card__meta"><Icon name="file" size={12} /> {g.pages} стор.</span>
             </a>
           ))}
         </div>
