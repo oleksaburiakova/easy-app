@@ -1,4 +1,4 @@
-import { display } from './tree';
+import { dishBase, display } from './tree';
 
 /**
  * Фото продуктів для карток конструктора: public/products/<slug>.webp (600×600, фото від Олександри, 20.11).
@@ -146,10 +146,25 @@ export function productPhoto(name: string): string | null {
 
 export const PHOTO_SLUGS = [...new Set(RULES.map(([, s]) => s))];
 
-/** Фото обраного варіанта (для тарілки, історії, улюблених). */
+/** Фото обраного варіанта (для тарілки, історії, улюблених). Для основ страв — за складом («картопля + лаваш»). */
 export function selectionPhoto(s: { stepKey: string; label: string }): string | null {
+  if (dishBase(s.label)) return productPhoto(s.label);
   const name = s.stepKey === 'eggs' ? s.label.charAt(0).toUpperCase() + s.label.slice(1) : display({ label: s.label }).name;
   return productPhoto(name);
+}
+
+/** Варіант «без …» (без яєць, без шоколаду): фото продукту, яке картка показує приглушеним і перекресленим. */
+const NONE_PHOTO: Record<string, string> = { 'без яєць': 'yaitsia', 'без шоколаду': 'shokolad' };
+export const nonePhoto = (label: string): string | null => {
+  const slug = NONE_PHOTO[label.toLowerCase()];
+  return slug && AVAILABLE.has(slug) ? `/products/${slug}.webp` : null;
+};
+
+/** Фото для колажу тарілки: усі обрані продукти з фото, без повторів, до 4. */
+export function plateCollage(meal: string, selections: { stepKey: string; label: string }[]): string[] {
+  const main = platePhoto(meal, selections);
+  const all = selections.map(selectionPhoto).filter((x): x is string => !!x);
+  return [...new Set([main, ...all].filter((x): x is string => !!x))].slice(0, 4);
 }
 
 /** Фото тарілки в шапці конструктора: public/images/hero-<meal>.webp (тарілка праворуч, ліворуч місце під заголовок). */

@@ -1,13 +1,14 @@
-import { display, type MealKey } from './tree';
+import { dishBase, display, splitOil, type MealKey } from './tree';
 import type { Selection } from './store';
 
 /** Назва страви з вибраних продуктів, напр. «Вівсянка · яйця · лосось». Назву-страву («Плов») дасть ІІ-рецепт. */
 export function plateTitle(meal: MealKey, s: Selection[]): string {
   const name = (k: string) => {
     const x = s.find((y) => y.stepKey === k);
-    return x ? display({ label: x.label }).name : '';
+    return x ? display({ label: splitOil(x.label).rest }).name : '';
   };
-  const first = name('base') || name('side');
+  const side = s.find((y) => y.stepKey === 'side');
+  const first = name('base') || (side && dishBase(side.label)?.dish) || name('side');
   const eggs = s.find((y) => y.stepKey === 'eggs');
   const protein = name('protein');
   const parts: string[] = [];

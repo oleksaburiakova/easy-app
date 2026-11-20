@@ -2,29 +2,31 @@
  * 12 відеоуроків і гайди. Відео — Vimeo (приховані посилання «за посиланням»), `vimeo` = "id/hash".
  * Етап 3: доступ лише з активною підпискою (зараз бачить кожен, хто відкрив застосунок).
  */
-export interface Lesson { id: string; block: string; title: string; about: string; vimeo?: string; sec?: number }
+export interface Lesson { id: string; block: string; title: string; about: string; vimeo?: string; sec?: number; thumb?: string }
 
 export const vimeoEmbed = (v: string) => {
   const [id, h] = v.split('/');
   return `https://player.vimeo.com/video/${id}?h=${h}&title=0&byline=0&portrait=0&dnt=1`;
 };
+/** Обкладинка уроку з Vimeo (оновиться, якщо в Vimeo змінити обкладинку — тоді оновити й `thumb`). */
+export const lessonThumb = (l: Lesson) => (l.thumb ? `https://i.vimeocdn.com/video/${l.thumb}-d_640` : null);
 export const durationLabel = (sec?: number) => (sec ? `${Math.round(sec / 60)} хв` : '');
 
 export const LESSON_BLOCKS = ['Вступ', 'Харчування', 'Нутрієнти', 'Не лише їжа'] as const;
 
 export const LESSONS: Lesson[] = [
-  { id: 'intro', block: 'Вступ', title: 'Знайомство з Оленою і конструктором', about: 'Принципи: комплексний підхід і гнучкість. Для кого конструктор і як ним користуватися.', vimeo: '1248517322/b59b5c586e', sec: 351 },
-  { id: '1', block: 'Харчування', title: 'Здорові продукти ≠ збалансоване харчування', about: 'Чому навіть зі здоровими продуктами вдома результату може не бути.', vimeo: '1248517323/9424a51e01', sec: 1063 },
-  { id: '2', block: 'Нутрієнти', title: 'Нутрієнти', about: 'Білки, жири й вуглеводи — частини одного рецепта здоров’я.', vimeo: '1248517325/3cdfed0663', sec: 240 },
-  { id: '2.1', block: 'Нутрієнти', title: 'Вуглеводи — дрова', about: 'Швидка енергія, клітковина, резистентний крохмаль.', vimeo: '1248517404/6f03aeba9f', sec: 479 },
-  { id: '2.2', block: 'Нутрієнти', title: 'Жири — вугілля', about: 'Тривала енергія, гормони, жиророзчинні вітаміни.', vimeo: '1248517433/57ad22a2ee', sec: 529 },
-  { id: '2.3', block: 'Нутрієнти', title: 'Білок — цегла', about: 'Імунітет, ситість, м’язи. Більше не означає краще.', vimeo: '1248517455/6835a5a045', sec: 501 },
-  { id: '2.4', block: 'Нутрієнти', title: 'Баланс на тарілці', about: 'Стартова модель: 40–45% вуглеводів, ~30% жирів, ~25% білка.', vimeo: '1248517476/9454dc379e', sec: 544 },
-  { id: 'bonus', block: 'Нутрієнти', title: 'Бонус: смаки і текстури', about: 'Їжу на тарілці ви маєте хотіти їсти.', vimeo: '1248517324/5952f9b454', sec: 705 },
+  { id: 'intro', block: 'Вступ', title: 'Знайомство з Оленою і конструктором', about: 'Принципи: комплексний підхід і гнучкість. Для кого конструктор і як ним користуватися.', vimeo: '1248517322/b59b5c586e', thumb: '2228637030-36dec2190353c850d1efa7a62c8204af0b785b929ac6265d3fb37c1d67c385cc', sec: 351 },
+  { id: '1', block: 'Харчування', title: 'Здорові продукти ≠ збалансоване харчування', about: 'Чому навіть зі здоровими продуктами вдома результату може не бути.', vimeo: '1248517323/9424a51e01', thumb: '2228636975-4a4634133baf6b32e53392ad137f3279cfb752b03fba2228ce28bea0eb58ef4b', sec: 1063 },
+  { id: '2', block: 'Нутрієнти', title: 'Нутрієнти', about: 'Білки, жири й вуглеводи — частини одного рецепта здоров’я.', vimeo: '1248517325/3cdfed0663', thumb: '2228637012-28c481aa7172664dea4dbc62ec64722d143e153896162f2da8944566c4da3ae2', sec: 240 },
+  { id: '2.1', block: 'Нутрієнти', title: 'Вуглеводи — дрова', about: 'Швидка енергія, клітковина, резистентний крохмаль.', vimeo: '1248517404/6f03aeba9f', thumb: '2228637124-2debb6ff4c722694729ec198b2b9071f410d55b5cbf45bcf8639c0b8a1f122f3', sec: 479 },
+  { id: '2.2', block: 'Нутрієнти', title: 'Жири — вугілля', about: 'Тривала енергія, гормони, жиророзчинні вітаміни.', vimeo: '1248517433/57ad22a2ee', thumb: '2228637142-5ecb2bbe616a167d32bcdd8fc28622379a82583bad45f3384aada451babfc1ad', sec: 529 },
+  { id: '2.3', block: 'Нутрієнти', title: 'Білок — цегла', about: 'Імунітет, ситість, м’язи. Більше не означає краще.', vimeo: '1248517455/6835a5a045', thumb: '2228637191-4a59b020c9cace8db2410dc20a7976aba434137d0894db48e3b39d33cd1e765f', sec: 501 },
+  { id: '2.4', block: 'Нутрієнти', title: 'Баланс на тарілці', about: 'Стартова модель: 40–45% вуглеводів, ~30% жирів, ~25% білка.', vimeo: '1248517476/9454dc379e', thumb: '2228637196-76fc46805dbd76a6f7838b27d904265384b00afb15f7606f4a40231b63f1216f', sec: 544 },
+  { id: 'bonus', block: 'Нутрієнти', title: 'Бонус: смаки і текстури', about: 'Їжу на тарілці ви маєте хотіти їсти.', vimeo: '1248517324/5952f9b454', thumb: '2228637056-446f738f437e4eeb3740f10b86acefffc8f42c9d4e5b8562006d9b7f2a071d6d', sec: 705 },
   { id: '3.1', block: 'Не лише їжа', title: 'Що ще впливає на результат', about: 'Помірний дефіцит замість урізання раціону.', vimeo: '1248517528/0bf7b4f6a2', sec: 443 },
-  { id: '3.2', block: 'Не лише їжа', title: 'Бути активною', about: 'Побутова активність і тренування: базовий і середній рівень.', vimeo: '1248517539/14a8b8291c', sec: 403 },
-  { id: '3.3', block: 'Не лише їжа', title: 'Сон', about: 'Ранкове світло, вечірня темрява й менше гаджетів.', vimeo: '1248517583/e07cc728c2', sec: 348 },
-  { id: '3.4', block: 'Не лише їжа', title: 'Режим харчування', about: 'Сніданок, обід і вечеря у своєму стабільному графіку.', vimeo: '1248517585/938720823f', sec: 403 },
+  { id: '3.2', block: 'Не лише їжа', title: 'Бути активною', about: 'Побутова активність і тренування: базовий і середній рівень.', vimeo: '1248517539/14a8b8291c', thumb: '2228637259-7fd8f751532616a0ad59ededd7edfb141354ec2c1c1d9df03545861f4f5ab380', sec: 403 },
+  { id: '3.3', block: 'Не лише їжа', title: 'Сон', about: 'Ранкове світло, вечірня темрява й менше гаджетів.', vimeo: '1248517583/e07cc728c2', thumb: '2228637297-0672cb66f57e2e7553dc6fb9171a00450ebe0e2823694663af2002e670fd4466', sec: 348 },
+  { id: '3.4', block: 'Не лише їжа', title: 'Режим харчування', about: 'Сніданок, обід і вечеря у своєму стабільному графіку.', vimeo: '1248517585/938720823f', thumb: '2228637280-930126cc211d8fa3624f5cc940a98c9ec2c8038e0bc11a25cb9e3617b8cce067', sec: 403 },
 ];
 
 /** PDF-гайди Олени: public/guides/*.pdf. */
@@ -36,3 +38,17 @@ export const GUIDES: Guide[] = [
   { title: 'Налагодження сну', file: '/guides/son.pdf', pages: 4 },
   { title: 'Базові добавки', file: '/guides/dobavky.pdf', pages: 11 },
 ];
+
+/**
+ * Посилання з поради на конкретний урок чи гайд.
+ * «Урок 2.4 · Баланс» → /learn#l-2.4, «Вступ» → /learn#l-intro, «Бонус · …» → /learn#l-bonus, «Гайд · Список здорових продуктів» → PDF.
+ */
+export function lessonHref(ref: string): string {
+  const guide = ref.match(/^Гайд\s*·\s*(.+)$/);
+  if (guide) return GUIDES.find((g) => g.title === guide[1].trim())?.file ?? '/learn#guides';
+  const num = ref.match(/^Урок\s+([\d.]+)/);
+  if (num && LESSONS.some((l) => l.id === num[1])) return `/learn#l-${num[1]}`;
+  if (/^Вступ/.test(ref)) return '/learn#l-intro';
+  if (/^Бонус/.test(ref)) return '/learn#l-bonus';
+  return '/learn';
+}

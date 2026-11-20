@@ -5,7 +5,7 @@ import { TabBar } from '@/components/TabBar';
 import { Disclaimer } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates } from '@/lib/store';
-import { LEVEL_LABEL } from '@/lib/calories';
+import { ACTIVITY_LABEL, LEVEL_LABEL } from '@/lib/calories';
 
 export default function Profile() {
   const { profile, ready } = useRequireProfile();
@@ -17,7 +17,7 @@ export default function Profile() {
     ['Стать', profile.sex === 'female' ? 'Жінка' : 'Чоловік'],
     ['Вік', `${profile.age}`],
     ['Зріст', `${profile.height} см`],
-    ['Активність', profile.activity === 'base' ? 'Базова' : 'Середня'],
+    ['Активність', ACTIVITY_LABEL[profile.activity] ?? 'Базова'],
     ['Режим дня', `${profile.wake} – ${profile.sleep}`],
   ];
   return (

@@ -15,6 +15,7 @@ export default function Onboarding() {
   const [wake, setWake] = useState(profile?.wake ?? '07:00');
   const [sleep, setSleep] = useState(profile?.sleep ?? '23:00');
   const [tried, setTried] = useState(false);
+  const [minInfo, setMinInfo] = useState(false);
 
   const ageN = Number(age);
   const hN = Number(height);
@@ -67,6 +68,10 @@ export default function Onboarding() {
           <legend className="ez-label" style={{ marginBottom: 8 }}>Активність</legend>
           <div className="ez-choices">
             <label className="ez-choice">
+              <input type="radio" name="act" checked={activity === 'min'} onChange={() => { setActivity('min'); setMinInfo(true); }} />
+              <span><span className="ez-choice__title">Мінімальна</span><span className="ez-choice__text">Менше, ніж базова: мало кроків і без тренувань</span></span>
+            </label>
+            <label className="ez-choice">
               <input type="radio" name="act" checked={activity === 'base'} onChange={() => setActivity('base')} />
               <span><span className="ez-choice__title">Базова</span><span className="ez-choice__text">{sex === 'male' ? '8–9 тис. кроків на день і 2–3 тренування на тиждень' : '≈ 7 000 кроків на день і 1–2 тренування на тиждень'}</span></span>
             </label>
@@ -89,6 +94,16 @@ export default function Onboarding() {
         </div>
         <p className="ez-hint">Час потрібен для нагадувань: сніданок, обід і вечеря у вашому ритмі.</p>
       </div>
+
+      {minInfo && (
+        <div className="sheet-backdrop" role="presentation" onClick={() => setMinInfo(false)}>
+          <div className="sheet pop-in" role="dialog" aria-modal="true" aria-labelledby="min-title" onClick={(e) => e.stopPropagation()}>
+            <h2 id="min-title" className="ez-title" style={{ margin: 0 }}>Порції розрахуємо як для базової активності</h2>
+            <p className="ez-subhead" style={{ margin: 0 }}>Без руху харчування саме по собі працює гірше. Обов’язково перегляньте урок 3.2 «Бути активною» в розділі «Навчання»: у ньому — як поступово дійти до базового рівня.</p>
+            <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setMinInfo(false)}>Зрозуміло</button>
+          </div>
+        </div>
+      )}
 
       <div className="bottom-bar">
         <div className="bottom-bar__inner">

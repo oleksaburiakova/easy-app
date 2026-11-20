@@ -3,13 +3,15 @@ import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Icon } from '@/components/Icon';
-import { buildHero, productPhoto } from '@/lib/photos';
+import { buildHero, nonePhoto, platePhoto, productPhoto } from '@/lib/photos';
+import { Photo } from '@/components/Photo';
 import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
-import { usePlates, todayISO, type Selection } from '@/lib/store';
-import { EGG_BRANCHES, GROUP_TITLES, STEP_TITLES, cookedHint, display, levelNode, mealTitle, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
+import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
+import { EGG_BRANCHES, GROUP_TITLES, SKIP_OPTIONS, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
-import { STEP_HINTS } from '@/lib/hints';
+import { stepHint } from '@/lib/hints';
+import { plateTitle } from '@/lib/plate';
 
 type Picks = Record<string, TreeOption>;
 
@@ -17,10 +19,12 @@ export default function Build() {
   const { meal } = useParams<{ meal: MealKey }>();
   const router = useRouter();
   const { profile, ready } = useRequireProfile();
-  const { addPlate } = usePlates();
+  const { plates, addPlate, ready: plReady } = usePlates();
   const [picks, setPicks] = useState<Picks>({});
   const [idx, setIdx] = useState(0);
   const [noneOpen, setNoneOpen] = useState(false);
+  /** Екран «Улюблена страва чи зібрати заново» — поки людина не обрала «Зібрати заново». */
+  const [fresh, setFresh] = useState(false);
 
   const node = profile && ['breakfast', 'lunch', 'dinner'].includes(meal) ? levelNode(meal, profile.level) : null;
 
@@ -37,7 +41,23 @@ export default function Build() {
     return eggs ? [...out, ...(node.branches[eggs.label]?.steps ?? [])] : out;
   }, [node, meal, picks.base, picks.eggs]);
 
-  if (!ready || !profile) return null;
+  /** Улюблені страви цього прийому їжі під поточну калорійність (з іншою калорійністю грамовки не ті). */
+  const favs: Plate[] = useMemo(() => {
+    if (!profile) return [];
+    const seen = new Set<string>();
+    return plates
+      .filter((p) => p.favorite && p.meal === meal && p.level === profile.level)
+      .reverse()
+      .filter((p) => {
+        const sig = p.selections.map((x) => x.label).join('|');
+        if (seen.has(sig)) return false;
+        seen.add(sig);
+        return true;
+      })
+      .slice(0, 3);
+  }, [plates, meal, profile]);
+
+  if (!ready || !profile || !plReady) return null;
   if (!node) return <main className="app-main empty">Такого прийому їжі немає. <Link className="link" href="/">На головну</Link></main>;
 
   const step = steps[idx];
@@ -58,8 +78,14 @@ export default function Build() {
     });
   };
 
+  const repeat = (fav: Plate) => {
+    const plate = addPlate({ date: todayISO(), meal, level: fav.level, selections: fav.selections, status: 'eaten', favorite: false });
+    router.push(`/plate/${plate.id}`);
+  };
+
   const finish = () => {
-    const selections: Selection[] = steps.map((s) => {
+    // «Без шоколаду» тощо в тарілку не потрапляє; «без яєць» лишається — від нього залежить гілка.
+    const selections: Selection[] = steps.filter((s) => !(SKIP_OPTIONS[s.key] && picks[s.key]?.label === SKIP_OPTIONS[s.key])).map((s) => {
       const o = picks[s.key];
       const sel: Selection = { stepKey: s.key, stepTitle: STEP_TITLES[s.key] ?? s.title, label: o.label, group: o.group ?? null };
       if (s.key === 'veg') sel.portion = `${s.amount_g} г`;
@@ -77,22 +103,26 @@ export default function Build() {
     window.scrollTo({ top: 0 });
   };
   const back = () => {
-    if (idx === 0) return router.push('/');
+    if (idx === 0) {
+      if (fresh && favs.length) { setFresh(false); setPicks({}); return; }
+      return router.push('/');
+    }
     setIdx((i) => i - 1);
     setNoneOpen(false);
   };
 
   // Групи (крупи / макарони / …) показуємо підзаголовками.
   const byGroup = new Map<string | null, TreeOption[]>();
-  for (const o of step?.options ?? []) {
-    const g = o.group ?? null;
+  const skip = step && SKIP_OPTIONS[step.key];
+  for (const o of [...(step?.options ?? []), ...(skip ? [{ label: skip }] : [])]) {
+    const g = optionGroup(o);
     byGroup.set(g, [...(byGroup.get(g) ?? []), o]);
   }
   const groups = [...byGroup.entries()];
-  const hints = STEP_HINTS[step?.key ?? ''] ?? [];
-  const hint = hints.length ? hints[(idx + (meal === 'dinner' ? 2 : 0)) % hints.length] : null;
+  const hint = step ? stepHint(step.key, meal, idx) : null;
   const stepTitle = STEP_TITLES[step?.key ?? ''] ?? step?.title;
   const hero = buildHero(meal);
+  const choosing = !fresh && idx === 0 && !picks[steps[0]?.key ?? ''] && favs.length > 0;
 
   return (
     <main className="app-main fade-in" style={{ paddingBottom: 120 }}>
@@ -109,6 +139,22 @@ export default function Build() {
         </div>
       </header>
 
+      {choosing ? (
+        <div className="ez-stack fade-in">
+          <section className="ez-list" aria-label="Улюблені страви">
+            <p className="ez-list__title">Улюблена страва?</p>
+            <p className="ez-list__note" style={{ marginTop: 0 }}>Одним натиском — та сама тарілка на сьогодні.</p>
+            {favs.map((f) => (
+              <button key={f.id} className="ez-irow fav-pick" onClick={() => repeat(f)}>
+                <Photo className="fav-pick__img" src={platePhoto(f.meal, f.selections)} letter={plateTitle(f.meal, f.selections).charAt(0)} />
+                <span className="ez-irow__name">{plateTitle(f.meal, f.selections)}</span>
+                <span className="ez-chip ez-chip--add"><Icon name="redo" size={14} /> Повторити</span>
+              </button>
+            ))}
+          </section>
+          <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setFresh(true)}>Зібрати заново <Icon name="chev" size={18} /></button>
+        </div>
+      ) : (<>
       <div className="ez-stepcard">
         <span className="ez-caption" style={{ color: 'var(--secondary)' }}>Крок {idx + 1} з {total}</span>
         <span className="ez-headline">{stepTitle}{step?.key === 'veg' ? ` · ${step.amount_g} г` : ''}</span>
@@ -124,19 +170,23 @@ export default function Build() {
         </ol>
       </div>
 
+      {hint && <div className="step-tip"><Tip hint={hint} key={`${step.key}-${idx}`} className="pop-in" /></div>}
+
       {groups.map(([g, opts]) => (
         <section key={`${step.key}-${g ?? 'all'}`}>
           {g && GROUP_TITLES[g] && <h2 className="ez-headline" style={{ padding: '16px 12px 0', fontSize: 15 }}>{GROUP_TITLES[g]}</h2>}
           <div className="ez-grid">
             {opts.map((o) => {
-              const d = step.key === 'eggs' ? { name: o.label.charAt(0).toUpperCase() + o.label.slice(1), portion: '' } : display(o);
-              const portion = step.key === 'veg' ? `${step.amount_g} г` : d.portion;
+              const none = isNoneOption(o.label);
+              const d = step.key === 'eggs' || none ? { name: o.label.charAt(0).toUpperCase() + o.label.slice(1), portion: '' } : display(o);
+              const portion = none ? '' : step.key === 'veg' ? `${step.amount_g} г` : d.portion;
               const cooked = cookedHint(o);
+              const note = optionNote(o);
               const sel = picked?.label === o.label;
               return (
-                <button key={o.label} className="ez-card" aria-pressed={sel} onClick={() => choose(o)}>
+                <button key={o.label} className={`ez-card${none ? ' ez-card--skip' : ''}`} aria-pressed={sel} onClick={() => choose(o)}>
                   {(() => {
-                    const src = productPhoto(d.name);
+                    const src = none ? nonePhoto(o.label) : productPhoto(dishBase(o.label) ? o.label : d.name);
                     return src
                       ? <img className="ez-card__img" src={src} alt="" loading="lazy" />
                       : <span className="ez-card__img ph" aria-hidden="true">{d.name.charAt(0)}</span>;
@@ -145,7 +195,7 @@ export default function Build() {
                     <span className="ez-card__text">
                       <span className="ez-card__name">{d.name}</span>
                       {(portion || cooked) && <span className="ez-card__portion">{[portion, cooked].filter(Boolean).join(' · ')}</span>}
-                      {o.note && <span className="ez-card__portion">{o.note}</span>}
+                      {note && <span className="ez-card__portion ez-card__note">{note}</span>}
                     </span>
                     <span className="ez-card__check"><Icon name="check" size={14} strokeWidth={3} /></span>
                   </span>
@@ -166,15 +216,15 @@ export default function Build() {
         {noneOpen && (
           <Tip hint={{ text: idx > 0 ? 'Поверніться на крок назад і оберіть іншу основу чи гарнір — разом з ними зміниться й список. А на майбутнє загляньте в «Список здорових продуктів»: що варто мати вдома.' : 'Загляньте в «Список здорових продуктів»: там те, що варто мати вдома для збалансованих тарілок.', lesson: 'Гайд · Список здорових продуктів' }} />
         )}
-        {hint && <Tip hint={hint} />}
       </div>
+      </>)}
 
-      <div className="bottom-bar">
+      {!choosing && <div className="bottom-bar">
         <div className="bottom-bar__inner ez-pair">
           <button className="ez-btn ez-btn--back" onClick={back}><Icon name="back" size={18} /> Назад</button>
           <button className="ez-btn ez-btn--primary" onClick={next} disabled={!picked}>{isLast ? 'Готово' : 'Продовжити'} <Icon name="chev" size={18} /></button>
         </div>
-      </div>
+      </div>}
     </main>
   );
 }

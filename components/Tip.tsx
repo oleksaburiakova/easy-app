@@ -1,14 +1,17 @@
 import { Icon } from './Icon';
 import type { Hint } from '@/lib/hints';
+import { lessonHref } from '@/lib/lessons';
 
-export function Tip({ hint }: { hint: Hint }) {
+export function Tip({ hint, className }: { hint: Hint; className?: string }) {
+  const href = hint.lesson ? lessonHref(hint.lesson) : '';
+  const pdf = href.endsWith('.pdf');
   return (
-    <div className="ez-tip">
+    <div className={`ez-tip${className ? ` ${className}` : ''}`}>
       <span className="ez-tip__icon"><Icon name="leaf" size={16} /></span>
       <span className="ez-tip__body">
         <span className="ez-tip__from">Порада Олени</span>
         {hint.text}
-        {hint.lesson && <a href="/learn">{hint.lesson} ›</a>}
+        {hint.lesson && <a href={href} {...(pdf ? { target: '_blank', rel: 'noopener' } : {})}>{hint.lesson} ›</a>}
       </span>
     </div>
   );

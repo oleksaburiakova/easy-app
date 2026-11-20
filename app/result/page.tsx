@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useRequireProfile } from '@/components/Guard';
 import { LEVEL_LABEL } from '@/lib/calories';
-import { Disclaimer } from '@/components/Tip';
+import { Disclaimer, Tip } from '@/components/Tip';
 
 export default function Result() {
   const { profile, ready } = useRequireProfile();
@@ -22,6 +22,9 @@ export default function Result() {
           <div className="ez-irow"><span className="ez-irow__name">Змінюйте калорійність, лише якщо активність стабільно зросла 3–4 тижні.</span></div>
           <div className="ez-irow"><span className="ez-irow__name">Дефіцит регулюємо рухом, а не урізанням їжі.</span></div>
         </div>
+        {profile.activity === 'min' && (
+          <Tip hint={{ text: `Порції розраховані як для базової активності. Щоб вони працювали, поступово додавайте рух — до ${profile.sex === 'male' ? '8–9 тис. кроків на день і 2–3 тренувань' : '≈ 7 000 кроків на день і 1–2 тренувань'} на тиждень.`, lesson: 'Урок 3.2 · Активність' }} />
+        )}
         <Disclaimer />
       </div>
       <div className="bottom-bar">

@@ -48,17 +48,22 @@ export default function History() {
         <div className="ez-stack" style={{ paddingTop: 0 }}>
           {MEALS.map((m) => {
             const p = ofDay.filter((x) => x.meal === m.key).slice(-1)[0];
-            return (
-              <Link key={m.key} href={p ? `/plate/${p.id}` : `/build/${m.key}`} className="ez-hrow" style={{ paddingLeft: 0 }}>
+            const isToday = day === todayISO();
+            const inner = (
+              <>
                 <Photo className="ez-hrow__img" src={p ? platePhoto(p.meal, p.selections) : null} letter={p ? plateTitle(p.meal, p.selections).charAt(0) : <Icon name={m.icon} size={26} />} style={{ fontSize: 26 }} />
                 <span className="ez-hrow__body">
                   <span className="ez-headline" style={{ fontSize: 16 }}>{m.title}</span>
-                  <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{p ? plateTitle(p.meal, p.selections) : 'Зібрати тарілку'}</span>
+                  <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{p ? plateTitle(p.meal, p.selections) : isToday ? 'Зібрати тарілку' : day < todayISO() ? 'Не за конструктором' : '—'}</span>
                 </span>
-                {!p && day === todayISO() && <span className="ez-chip ez-chip--add"><Icon name="plus" size={14} /> Зібрати</span>}
-                <span className="ez-meal__chev"><Icon name="chev" size={18} /></span>
-              </Link>
+                {!p && isToday && <span className="ez-chip ez-chip--add"><Icon name="plus" size={14} /> Зібрати</span>}
+                {(p || isToday) && <span className="ez-meal__chev"><Icon name="chev" size={18} /></span>}
+              </>
             );
+            // Історія — лише перегляд: зібрати можна тільки сьогоднішній прийом їжі.
+            return p || isToday
+              ? <Link key={m.key} href={p ? `/plate/${p.id}` : `/build/${m.key}`} className="ez-hrow" style={{ paddingLeft: 0 }}>{inner}</Link>
+              : <div key={m.key} className="ez-hrow ez-hrow--empty" style={{ paddingLeft: 0 }}>{inner}</div>;
           })}
 
           {fav && favMealFree && (

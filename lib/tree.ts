@@ -68,6 +68,7 @@ export const GROUP_TITLES: Record<string, string> = {
   'мясо': "М'ясо",
   'риба': 'Риба',
   'морепродукти': 'Морепродукти',
+  'основи страв': 'Основи для страв',
 };
 
 /* ---------- Відображення варіантів ---------- */
@@ -94,6 +95,8 @@ export function tidy(s: string): string {
 
 /** Назва і порція для картки. Складені варіанти («картопля + нут») показуємо цілим текстом. */
 export function display(opt: TreeOption): { name: string; portion: string } {
+  const dish = dishBase(opt.label);
+  if (dish) return { name: dish.title, portion: dishBasePortion(opt.label) };
   const label = tidy(opt.label.replace(/^картинка:\s*/, ''));
   if (opt.composite) return { name: cap(label), portion: '' };
   const lead = label.match(/^(\d+(?:[.,]\d+)?\s*(?:г|шт|мл))\s+(.*)$/);
@@ -131,3 +134,49 @@ export function cookedHint(opt: TreeOption): string | null {
   }
   return null;
 }
+
+/* ---------- Основи для страв (комбінації з дошки, що вже задумані як страва) ---------- */
+
+export interface DishBase { dish: string; title: string; note: string }
+const DISH_BASES: [RegExp, DishBase][] = [
+  [/\(\s*плов\s*\)/i, { dish: 'Плов', title: 'Основа для плову', note: 'Без нуту теж можна: оберіть просто рис' }],
+  [/\(\s*шаурма\s*\)/i, { dish: 'Шаурма', title: 'Основа для шаурми', note: 'Додайте білок і овочі — і загорніть у лаваш' }],
+  [/\(\s*суп/i, { dish: 'Суп', title: 'Основа для супу', note: 'Додайте овочі — вийде борщ чи суп-пюре, хліб — до супу' }],
+];
+export const DISH_GROUP = 'основи страв';
+
+export const dishBase = (label: string): DishBase | null => DISH_BASES.find(([re]) => re.test(label))?.[1] ?? null;
+
+/** Група для підзаголовка в конструкторі: основи страв — окремою групою. */
+export const optionGroup = (opt: TreeOption): string | null => (dishBase(opt.label) ? DISH_GROUP : opt.group ?? null);
+
+/** Склад основи страви без позначки «(плов)»: «рис 40 г + нут варений 40». */
+export const dishBasePortion = (label: string) => tidy(label.replace(/\(\s*(плов|шаурма|суп[^)]*)\)/i, ''));
+
+/** Підказки до окремих варіантів (тексти перевіряє Олена). */
+const OPTION_NOTES: [RegExp, string][] = [
+  [/^лосось.*ікр/i, 'Ідея: перебийте ікру з фетою — вийде ікорка'],
+];
+export function optionNote(opt: TreeOption): string | null {
+  const extra = dishBase(opt.label)?.note ?? OPTION_NOTES.find(([re]) => re.test(opt.label))?.[1];
+  return [opt.note, extra].filter(Boolean).join(' · ') || null;
+}
+
+/* ---------- Жир окремим пунктом: «тунець 60 г + 5 мл олії» ---------- */
+
+const OIL_RE = /\s*\+\s*(?:олія\s*)?(\d+)\s*мл(?:\s*олі[їяі]|\s*олія)?\s*$/i;
+
+/** Відділяє «+ N мл олії» від білка. Текст дошки не змінюється — лише показ. */
+export function splitOil(label: string): { rest: string; oilMl: number | null } {
+  const m = label.match(OIL_RE);
+  return m ? { rest: label.slice(0, m.index).trim(), oilMl: Number(m[1]) } : { rest: label, oilMl: null };
+}
+
+/** Рівноцінні заміни олії (Олена, созвон 20.11): 5 мл олії = 5 г вершкового масла = 30 г авокадо. Горіхи — грамовку дасть Олена. */
+export const oilChoices = (ml: number) => [`олія ${ml} мл`, `вершкове масло ${ml} г`, `авокадо ${ml * 6} г`];
+
+/* ---------- Кроки, які можна пропустити ---------- */
+
+/** Крок → варіант «без»: додається останнім у сітку, у тарілку не потрапляє. */
+export const SKIP_OPTIONS: Record<string, string> = { chocolate: 'без шоколаду' };
+export const isNoneOption = (label: string) => /^без\s/i.test(label);
