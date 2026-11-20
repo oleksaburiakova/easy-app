@@ -76,61 +76,7 @@ const RULES: [RegExp, string][] = [
 
 /** Які фото вже лежать у public/products (оновлювати разом із файлами). */
 const AVAILABLE = new Set<string>([
-  'bulgur',
-  'dorado',
-  'feta',
-  'filadelfiia',
-  'frukty-kivi',
-  'frukty-lokhyna',
-  'galeta',
-  'grechka',
-  'hauda',
-  'ikra',
-  'kartoplia',
-  'kartoplia-kvasolia',
-  'khamon',
-  'khlib',
-  'kinoa',
-  'krevetky',
-  'krolyk',
-  'kuriache-file',
-  'kuriache-stehno',
-  'lavash',
-  'losos',
-  'losos-ikra',
-  'makarony',
-  'makarony-tsilnozernovi',
-  'midii',
-  'mlyntsi',
-  'ovochi-buriak',
-  'ovochi-kapusta',
-  'ovochi-ohirok',
-  'ovochi-pomidor-perets',
-  'ovochi-salat',
-  'ovochi-sparzha',
-  'ovochi-sumishi',
-  'pankeiky',
-  'parmezan',
-  'pechinka',
-  'protein-yogurt',
-  'pshono',
-  'rys-buryi',
-  'rys-nut',
-  'sardyny',
-  'sertsia',
-  'shokolad',
-  'shynka',
-  'sibas',
-  'soba',
-  'sochevytsia-khlib',
-  'syr-kyslomolochnyi',
-  'teliatyna',
-  'tunets',
-  'tunets-konserva',
-  'vivsianka',
-  'vyrizka',
-  'yaitsia',
-  'yogurt',
+  // порожньо: старі фото видалено 20.11, нові завантажує Олександра
 ]);
 
 export const photoSlug = (name: string) => RULES.find(([re]) => re.test(name))?.[1] ?? null;
@@ -147,6 +93,9 @@ export function selectionPhoto(s: { stepKey: string; label: string }): string | 
   const name = s.stepKey === 'eggs' ? s.label.charAt(0).toUpperCase() + s.label.slice(1) : display({ label: s.label }).name;
   return productPhoto(name);
 }
+
+/** Фото тарілки в шапці конструктора (public/images/…); null — шапка без фото. */
+export const BUILD_HERO: string | null = null;
 
 /** Головне фото тарілки: сніданок — основа, обід і вечеря — білок, потім гарнір. */
 export function platePhoto(meal: string, selections: { stepKey: string; label: string }[]): string | null {

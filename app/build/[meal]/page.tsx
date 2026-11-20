@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Icon } from '@/components/Icon';
-import { productPhoto } from '@/lib/photos';
+import { BUILD_HERO, productPhoto } from '@/lib/photos';
 import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Selection } from '@/lib/store';
@@ -99,8 +99,8 @@ export default function Build() {
         <Link className="ez-nav__back" href="/"><Icon name="back" size={18} /> Головна</Link>
         <span className="ez-caption">{LEVEL_LABEL[profile.level]}</span>
       </nav>
-      <header className="build-hero">
-        <img className="build-hero__img" src="/images/hero.webp" alt="" />
+      <header className="build-hero" style={BUILD_HERO ? undefined : { height: "auto", paddingBottom: 8 }}>
+        {BUILD_HERO && <img className="build-hero__img" src={BUILD_HERO} alt="" />}
         <div className="build-hero__text">
           <h1 className="ez-large-title">{mealTitle(meal)}</h1>
           <p className="ez-subhead">Ідеальна тарілка<br />за {total} кроків</p>
