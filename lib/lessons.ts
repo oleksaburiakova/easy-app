@@ -47,6 +47,22 @@ export const GUIDES: Guide[] = [
  * Посилання з поради на конкретний урок чи гайд.
  * «Урок 2.4 · Баланс» → /learn#l-2.4, «Вступ» → /learn#l-intro, «Бонус · …» → /learn#l-bonus, «Гайд · Список здорових продуктів» → PDF.
  */
+function lessonByRef(ref: string): Lesson | undefined {
+  const num = ref.match(/^Урок\s+([\d.]+)/);
+  if (num) return LESSONS.find((l) => l.id === num[1]);
+  if (/^Вступ/.test(ref)) return LESSONS.find((l) => l.id === 'intro');
+  if (/^Бонус/.test(ref)) return LESSONS.find((l) => l.id === 'bonus');
+  return undefined;
+}
+
+/** Підпис посилання в пораді: актуальна назва уроку без рядка-гачка — «Урок 2.3 · Чому «більше білка» — не завжди краще». Гайди — як є. */
+export function lessonLabel(ref: string): string {
+  const l = lessonByRef(ref);
+  if (!l) return ref;
+  const prefix = l.id === 'intro' ? 'Вступ' : l.id === 'bonus' ? 'Бонус' : `Урок ${l.id}`;
+  return `${prefix} · ${l.title}`;
+}
+
 export function lessonHref(ref: string): string {
   const guide = ref.match(/^Гайд\s*·\s*(.+)$/);
   if (guide) return GUIDES.find((g) => g.title === guide[1].trim())?.file ?? '/learn#guides';
