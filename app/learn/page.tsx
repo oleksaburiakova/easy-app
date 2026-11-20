@@ -63,8 +63,11 @@ export default function Learn() {
         <div className="ez-stack">
           {GUIDES.map((g) => (
             <a key={g.file} href={g.file} target="_blank" rel="noopener" className="lesson-row">
-              <span className="lesson-row__num"><Icon name="file" size={18} /></span>
-              <span className="lesson-row__body"><span className="ez-headline" style={{ fontSize: 15 }}>{g.title}</span><span className="ez-caption">PDF · {g.pages} стор.</span></span>
+              <span className="lesson-thumb">
+                <img src={g.cover} alt="" loading="lazy" />
+                <span className="lesson-thumb__play"><Icon name="file" size={12} /></span>
+              </span>
+              <span className="lesson-row__body"><span className="ez-caption">PDF · {g.pages} стор.</span><span className="ez-headline" style={{ fontSize: 15 }}>{g.title}</span></span>
             </a>
           ))}
         </div>

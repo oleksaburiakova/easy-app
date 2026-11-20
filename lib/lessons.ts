@@ -30,14 +30,17 @@ export const LESSONS: Lesson[] = [
   { id: '3.4', block: 'Не лише їжа', title: 'Чому ввечері тягне до холодильника', about: 'Вечірнє переїдання починається зранку: коли снідати, обідати й вечеряти.', vimeo: '1248517585/938720823f', thumb: '2228637280-930126cc211d8fa3624f5cc940a98c9ec2c8038e0bc11a25cb9e3617b8cce067', sec: 403 },
 ];
 
-/** PDF-гайди Олени: public/guides/*.pdf. */
-export interface Guide { title: string; file: string; pages: number }
+/**
+ * PDF-гайди Олени: public/guides/*.pdf — мобільні версії (вузька сторінка, 20.11).
+ * Обкладинка — public/guides/covers/<name>.webp, 384×216: два фото з першої сторінки гайду.
+ */
+export interface Guide { title: string; file: string; pages: number; cover: string }
 export const GUIDES: Guide[] = [
-  { title: 'Як обрати свою калорійність', file: '/guides/kaloriinist.pdf', pages: 6 },
-  { title: 'Список здорових продуктів', file: '/guides/zdorovi-produkty.pdf', pages: 10 },
-  { title: 'Продукти, які варто виключити', file: '/guides/vykliuchyty.pdf', pages: 9 },
-  { title: 'Налагодження сну', file: '/guides/son.pdf', pages: 4 },
-  { title: 'Базові добавки', file: '/guides/dobavky.pdf', pages: 11 },
+  { title: 'Як обрати свою калорійність', file: '/guides/kaloriinist.pdf', pages: 8, cover: '/guides/covers/kaloriinist.webp' },
+  { title: 'Список здорових продуктів', file: '/guides/zdorovi-produkty.pdf', pages: 11, cover: '/guides/covers/zdorovi-produkty.webp' },
+  { title: 'Продукти, які варто виключити', file: '/guides/vykliuchyty.pdf', pages: 12, cover: '/guides/covers/vykliuchyty.webp' },
+  { title: 'Налагодження сну', file: '/guides/son.pdf', pages: 6, cover: '/guides/covers/son.webp' },
+  { title: 'Базові добавки', file: '/guides/dobavky.pdf', pages: 16, cover: '/guides/covers/dobavky.webp' },
 ];
 
 /**
