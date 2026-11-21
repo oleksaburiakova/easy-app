@@ -35,7 +35,7 @@ export default function Learn() {
                     {open !== l.id ? (
                       // Без обкладинки у Vimeo — маскот на рожевому тлі, щоб ряд виглядав так само.
                       <span className={`lesson-thumb${lessonThumb(l) ? '' : ' lesson-thumb--empty'}`}>
-                        <img src={lessonThumb(l) ?? '/mascot.webp'} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                        <img src={lessonThumb(l) ?? '/mascot/easy-bot-still.webp'} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                         <span className="lesson-thumb__play"><Icon name="play" size={14} filled /></span>
                       </span>
                     ) : (

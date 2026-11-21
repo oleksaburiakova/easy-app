@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Wordmark } from '@/components/Wordmark';
+import { Mascot } from '@/components/Mascot';
 
 export default function Welcome() {
   return (
@@ -9,7 +10,7 @@ export default function Welcome() {
         <span className="ez-footnote" style={{ letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--olive-ink)' }}>Конструктор здорового харчування</span>
         <h1 className="ez-large-title">Збалансована тарілка з того, що є вдома</h1>
         <p className="ez-subhead">Без меню й заборон: обирайте продукти — порції вже пораховані під вашу калорійність.</p>
-        <img src="/mascot.webp" alt="" width={220} height={213} />
+        <Mascot />
       </div>
       <div className="bottom-bar">
         <div className="bottom-bar__inner gap-3">
