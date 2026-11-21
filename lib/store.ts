@@ -10,6 +10,8 @@ import type { TrackerData, TrackerDay, TrackerGoals } from './tracker';
  */
 export interface Profile {
   name?: string;
+  /** Своє фото профілю — стиснуте до 256×256 JPEG (data URL). Етап 2 — сховище Supabase. */
+  photo?: string;
   sex: Sex;
   age: number;
   height: number;

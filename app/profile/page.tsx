@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { TabBar } from '@/components/TabBar';
@@ -22,7 +22,9 @@ export default function Profile() {
   const { plates, clearAll } = usePlates();
   const { data: tracker } = useTracker();
   const router = useRouter();
-  const [sheet, setSheet] = useState<null | 'schedule' | 'install'>(null);
+  const [sheet, setSheet] = useState<null | 'schedule' | 'install' | 'photo' | 'name'>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [photoErr, setPhotoErr] = useState('');
   const [installed, setInstalled] = useState(false);
   useEffect(() => {
     setInstalled(window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true);
@@ -47,10 +49,13 @@ export default function Profile() {
 
         <div className="ez-stack" style={{ paddingTop: 0 }}>
           <section className="pf-hero" aria-label="Мій профіль">
-            <span className="pf-hero__avatar"><img src="/mascot/easy-bot-avatar.webp" alt="" width={76} height={76} /></span>
+            <button className={`pf-hero__avatar${profile.photo ? ' pf-hero__avatar--photo' : ''}`} onClick={() => setSheet('photo')} aria-label="Змінити фото профілю">
+              <img src={profile.photo ?? '/mascot/easy-bot-avatar.webp'} alt="" width={76} height={76} />
+              <span className="pf-hero__edit" aria-hidden="true"><Icon name="plus" size={14} strokeWidth={3} /></span>
+            </button>
             <span className="pf-hero__body">
-              <span className="pf-hero__label">Мій план</span>
-              <span className="pf-hero__kcal">{LEVEL_LABEL[profile.level]}</span>
+              {profile.name ? <span className="pf-hero__name">{profile.name}</span> : <span className="pf-hero__label">Мій план</span>}
+              <span className={profile.name ? 'pf-hero__kcal pf-hero__kcal--sm' : 'pf-hero__kcal'}>{LEVEL_LABEL[profile.level]}</span>
               <span className="pf-hero__meta">{days > 0 ? `З Easy вже ${days} ${plural(days, 'день', 'дні', 'днів')}` : 'Вітаємо в Easy!'}</span>
             </span>
           </section>
@@ -84,6 +89,7 @@ export default function Profile() {
 
           <details className="ez-list pf-details">
             <summary className="ez-list__title">Особисті дані <span className="pf-details__chev"><Icon name="chev" size={18} /></span></summary>
+            <Row title="Ім'я" value={profile.name || 'Додати'} onClick={() => setSheet('name')} />
             <Row title="Стать" value={profile.sex === 'female' ? 'Жінка' : 'Чоловік'} />
             <Row title="Вік" value={`${profile.age}`} />
             <Row title="Зріст" value={`${profile.height} см`} />
@@ -100,6 +106,22 @@ export default function Profile() {
       {sheet === 'schedule' && (
         <ScheduleSheet wake={profile.wake} sleep={profile.sleep} onClose={() => setSheet(null)} onSave={(wake, sleep) => { saveProfile({ ...profile, wake, sleep }); setSheet(null); }} />
       )}
+      <input ref={fileRef} type="file" accept="image/*" hidden onChange={async (e) => {
+        const f = e.target.files?.[0];
+        e.target.value = '';
+        if (!f) return;
+        try { saveProfile({ ...profile, photo: await squarePhoto(f) }); setPhotoErr(''); setSheet(null); }
+        catch { setPhotoErr('Не вдалося відкрити це фото. Спробуйте інше.'); }
+      }} />
+      {sheet === 'photo' && (
+        <Sheet title="Фото профілю" onClose={() => setSheet(null)}>
+          <p className="ez-subhead" style={{ margin: 0 }}>Фото зберігається лише на цьому пристрої.</p>
+          {photoErr && <p className="ez-hint" style={{ color: 'var(--error)', margin: 0 }}>{photoErr}</p>}
+          <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => fileRef.current?.click()}>{profile.photo ? 'Обрати інше фото' : 'Обрати своє фото'}</button>
+          {profile.photo && <button className="ez-btn ez-btn--back ez-btn--block" onClick={() => { saveProfile({ ...profile, photo: undefined }); setSheet(null); }}>Повернути маскота</button>}
+        </Sheet>
+      )}
+      {sheet === 'name' && <NameSheet name={profile.name ?? ''} onClose={() => setSheet(null)} onSave={(n) => { saveProfile({ ...profile, name: n || undefined }); setSheet(null); }} />}
       {sheet === 'install' && (
         <Sheet title="Встановити Easy" onClose={() => setSheet(null)}>
           <p className="ez-subhead" style={{ margin: 0 }}>Так Easy відкривається як звичайний застосунок — на весь екран, з іконкою. І так зможуть приходити нагадування.</p>
@@ -141,6 +163,36 @@ function ScheduleSheet({ wake, sleep, onSave, onClose }: { wake: string; sleep: 
       <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => onSave(w || wake, s || sleep)}>Зберегти</button>
     </Sheet>
   );
+}
+
+function NameSheet({ name, onSave, onClose }: { name: string; onSave: (n: string) => void; onClose: () => void }) {
+  const [v, setV] = useState(name);
+  return (
+    <Sheet title="Як до вас звертатися?" onClose={onClose}>
+      <input className="ez-input" autoFocus autoComplete="given-name" autoCapitalize="words" maxLength={30} placeholder="Ваше ім'я" value={v} onChange={(e) => setV(e.target.value)} aria-label="Ім'я" />
+      <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => onSave(v.trim())}>Зберегти</button>
+    </Sheet>
+  );
+}
+
+/** Своє фото: обрізаємо до квадрата по центру й стискаємо до 256×256 JPEG (≈ 15–30 КБ) — щоб влізло в пам'ять браузера. */
+function squarePhoto(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const side = Math.min(img.naturalWidth, img.naturalHeight);
+      const c = document.createElement('canvas');
+      c.width = c.height = 256;
+      const ctx = c.getContext('2d');
+      if (!ctx || !side) { URL.revokeObjectURL(url); return reject(new Error('no image')); }
+      ctx.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, 256, 256);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+    img.src = url;
+  });
 }
 
 /** Скільки днів людина з Easy: від анкети (або першої тарілки, якщо дати анкети немає). */

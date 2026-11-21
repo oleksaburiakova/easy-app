@@ -8,6 +8,7 @@ import { Icon } from '@/components/Icon';
 export default function Onboarding() {
   const router = useRouter();
   const { profile, saveProfile } = useProfile();
+  const [name, setName] = useState(profile?.name ?? '');
   const [sex, setSex] = useState<Sex>(profile?.sex ?? 'female');
   const [age, setAge] = useState(profile ? String(profile.age) : '');
   const [height, setHeight] = useState(profile ? String(profile.height) : '');
@@ -25,7 +26,7 @@ export default function Onboarding() {
   const submit = () => {
     setTried(true);
     if (ageErr || hErr) return;
-    saveProfile({ sex, age: ageN, height: hN, activity, wake, sleep, level: calcLevel(sex, hN, activity), createdAt: profile?.createdAt ?? new Date().toISOString() });
+    saveProfile({ ...(profile ?? {}), name: name.trim() || undefined, sex, age: ageN, height: hN, activity, wake, sleep, level: calcLevel(sex, hN, activity), createdAt: profile?.createdAt ?? new Date().toISOString() });
     router.push('/result');
   };
 
@@ -40,6 +41,11 @@ export default function Onboarding() {
       </header>
 
       <div className="ez-stack">
+        <div className="ez-field">
+          <label className="ez-label" htmlFor="name">Як до вас звертатися?</label>
+          <input className="ez-input" id="name" autoComplete="given-name" autoCapitalize="words" maxLength={30} placeholder="Ваше ім'я" value={name} onChange={(e) => setName(e.target.value)} />
+        </div>
+
         <fieldset className="ez-field" style={{ border: 0, padding: 0, margin: 0 }}>
           <legend className="ez-label" style={{ marginBottom: 8 }}>Стать</legend>
           <div className="seg">
