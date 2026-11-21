@@ -27,6 +27,14 @@ const P: Record<string, ReactElement> = {
   file: (<><path d="M7 3h6.6L19 8.4V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" /><path className="s" d="M13.5 3v5.5H19" /></>),
   expand: <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />,
   redo: (<><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" /><path d="M19.5 4.2v4.6h-4.6" /></>),
+  minus: <path d="M5 12h14" />,
+  drop: <path d="M12 3.2c-.3 0-.5.1-.7.4C9.6 6 6 10.6 6 14.3a6 6 0 0 0 12 0c0-3.7-3.6-8.3-5.3-10.7-.2-.3-.4-.4-.7-.4z" />,
+  steps: (<><path d="M8.2 3.3c-1.8 0-3 2.3-3 4.8 0 2 .6 3.4 1.2 4.4.3.5.9.8 1.5.8h1c.8 0 1.4-.6 1.4-1.4V8.1c0-2.6-.5-4.8-2.1-4.8z" /><path d="M6.6 15.4h3.5v1.4a1.75 1.75 0 0 1-3.5 0z" /><path d="M15.8 7.3c1.6 0 2.1 2.2 2.1 4.8v3.8c0 .8-.6 1.4-1.4 1.4h-1c-.6 0-1.2-.3-1.5-.8-.6-1-1.2-2.4-1.2-4.4 0-2.5 1.2-4.8 3-4.8z" /><path d="M13.9 19.4h3.5v.4a1.75 1.75 0 0 1-3.5 0z" /></>),
+  dumbbell: (<><rect x="5.2" y="6.5" width="3.2" height="11" rx="1.2" /><rect x="15.6" y="6.5" width="3.2" height="11" rx="1.2" /><rect x="2.4" y="9.3" width="2.8" height="5.4" rx="1.1" /><rect x="18.8" y="9.3" width="2.8" height="5.4" rx="1.1" /><path className="s" d="M8.4 12h7.2" /></>),
+  bolt: <path d="M13.2 2.6 5.4 13.3h5.8l-1.4 8.1 8.8-11.6h-6z" />,
+  smile: (<><circle cx="12" cy="12" r="9" /><path className="s" d="M8.4 14.1c.9 1.3 2.1 1.9 3.6 1.9s2.7-.6 3.6-1.9M9 9.6v.6M15 9.6v.6" /></>),
+  sliders: (<><path className="s" d="M4 7h9.5M18.5 7H20M4 17h3.5M12.5 17H20" /><circle cx="16" cy="7" r="2.4" /><circle cx="10" cy="17" r="2.4" /></>),
+  pulse: <path className="s" d="M2.5 12.5h4l2.4-6 4.2 12 2.6-6.5h5.8" />,
 };
 
 export type IconName = keyof typeof P;

@@ -16,6 +16,7 @@
   /* Скло має світлий відблиск зверху і тонкий край — так воно «відділяється» від фону. */
   --glass-edge: inset 0 1px 0 rgba(255, 255, 255, .85), inset 0 -1px 0 rgba(255, 255, 255, .3), 0 0 0 .5px rgba(28, 20, 22, .08);
   --glass-shadow: 0 10px 30px rgba(28, 20, 22, .12), 0 2px 6px rgba(28, 20, 22, .06);
+  --radius-card: 22px;
   --radius-xl: 28px;
   --radius-sheet: 34px;
   --press: transform .2s cubic-bezier(.3, 1.4, .5, 1);
@@ -98,7 +99,7 @@
 .lesson-thumb__play { background: var(--glass-bg-strong); box-shadow: var(--glass-edge), 0 2px 8px rgba(28, 20, 22, .2); }
 
 /* ---- Контент: більші, «концентричні» заокруглення, як в iOS 26 ---- */
-.ez-card, .ez-choice, .ez-tip, .ez-hrow, .ez-day, .ez-meal { border-radius: 22px; }
+.ez-card, .ez-choice, .ez-tip, .ez-hrow, .ez-day, .ez-meal { border-radius: var(--radius-card); }
 .ez-list, .ez-notice, .ez-stepcard, .ez-repeat, .ez-plan, .lesson-card { border-radius: var(--radius-xl); }
 .lesson-row { border-radius: var(--radius-xl); }
 .ez-input { border-radius: 14px; }
@@ -278,3 +279,69 @@ body::before {
   background: var(--vol-glass);
   box-shadow: var(--vol-edge), 0 0 0 .5px rgba(28, 20, 22, .06), 0 3px 8px -2px rgba(97, 30, 45, .15);
 }
+
+/* =====================================================================
+ * Трекер (app/tracker): вода, кроки, тренування, самопочуття. Те саме скло й об'єм.
+ * Прогрес — оливковий (виконане), поточне й дія — бордові.
+ * ===================================================================== */
+.trk-head { flex-direction: row; align-items: flex-start; justify-content: space-between; }
+.trk-round { width: 42px; height: 42px; flex: none; border: 0; border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: center; color: var(--burgundy); background: var(--glass-bg-strong); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); box-shadow: var(--glass-edge), 0 4px 14px rgba(28, 20, 22, .1); cursor: pointer; transition: var(--press); }
+.trk-round:active { transform: scale(.92); }
+
+/* Головна ціль для «Мінімальної» активності — як картка плану: темне бордове скло. */
+.trk-goal { position: relative; overflow: hidden; margin: 0 var(--space-3) var(--space-3); padding: var(--space-5); border-radius: var(--radius-xl); color: var(--white); display: grid; gap: 6px;
+  background: radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--burgundy) 55%, white) 0%, transparent 55%), linear-gradient(160deg, color-mix(in srgb, var(--burgundy) 88%, white) 0%, var(--burgundy) 60%, color-mix(in srgb, var(--burgundy) 85%, black) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), inset 0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent), 0 18px 36px -12px color-mix(in srgb, var(--burgundy) 60%, transparent); }
+.trk-goal__label { color: var(--gold); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.trk-goal__title { margin: 0; font-size: 19px; line-height: 24px; font-weight: 700; }
+.trk-goal__bar { height: 8px; border-radius: var(--radius-pill); background: rgba(255, 255, 255, .18); overflow: hidden; margin-top: 4px; }
+.trk-goal__bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--olive-ring) 70%, white), var(--olive-ring)); box-shadow: 0 0 8px color-mix(in srgb, var(--olive-ring) 60%, transparent); }
+.trk-goal__meta { margin: 0; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, .85); }
+.trk-goal__text { margin: 0; font-size: 13px; line-height: 18px; color: rgba(255, 255, 255, .72); }
+
+/* Тиждень: кільця днів. */
+.trk-week { list-style: none; margin: 0; padding: var(--space-1) var(--space-3) var(--space-2); display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.trk-day { width: 100%; border: 0; background: none; padding: 6px 0 8px; border-radius: var(--radius-pill); display: flex; flex-direction: column; align-items: center; gap: 4px; font: inherit; color: var(--secondary); cursor: pointer; transition: var(--press), background-color .2s ease; }
+.trk-day:disabled { opacity: .45; cursor: default; }
+.trk-day:active:not(:disabled) { transform: scale(.94); }
+.trk-day--on { background: var(--vol-glass); box-shadow: var(--vol-edge), 0 6px 16px -6px rgba(97, 30, 45, .22); color: var(--ink); }
+.trk-day[aria-current="date"] .trk-day__wd { color: var(--burgundy); font-weight: 700; }
+.trk-day__wd { font-size: 12px; font-weight: 600; }
+.trk-day__ring { position: relative; width: 42px; height: 42px; display: block; }
+.trk-day__ring svg { display: block; }
+.trk-ring__track { fill: none; stroke: var(--blush-200); stroke-width: 3.5; }
+.trk-ring__value { fill: none; stroke: var(--olive-ring); stroke-width: 3.5; stroke-linecap: round; }
+.trk-day__num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+.trk-day__star { position: absolute; top: -3px; right: -3px; width: 13px; height: 13px; border-radius: var(--radius-pill); background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--olive) 55%, white), var(--olive) 70%); box-shadow: 0 0 0 2px var(--white), 0 2px 4px rgba(28, 20, 22, .2); }
+
+/* Картки звичок: скло, прогрес заливкою зліва направо, кнопка дії праворуч. */
+.trk-card { position: relative; overflow: hidden; display: flex; align-items: center; gap: var(--space-2); padding-right: var(--space-4); border-radius: var(--radius-card); background: var(--vol-glass); box-shadow: var(--vol-edge), var(--shadow-volume, 0 10px 28px -8px rgba(97, 30, 45, .16)); }
+.trk-card__fill { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, color-mix(in srgb, var(--olive-50) 95%, transparent), color-mix(in srgb, var(--olive-ring) 38%, transparent)); transition: width .45s cubic-bezier(.3, 1.2, .5, 1); pointer-events: none; }
+.trk-card__main { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4); border: 0; background: none; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
+.trk-card__icon { width: 46px; height: 46px; flex: none; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: var(--burgundy); background: var(--vol-tint); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .8), 0 2px 6px -1px rgba(28, 20, 22, .12); }
+.trk-card--done .trk-card__icon { color: var(--olive-ink); }
+.trk-card__text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.trk-card__title { font-size: 17px; line-height: 22px; font-weight: 700; }
+.trk-card__value { font-size: 14px; font-weight: 600; color: var(--secondary); font-variant-numeric: tabular-nums; }
+.trk-card__note { font-size: 12px; color: var(--tertiary); }
+.trk-card__action { position: relative; width: 40px; height: 40px; flex: none; border: 0; border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--burgundy); background: var(--glass-bg-strong); box-shadow: var(--glass-edge), 0 3px 10px rgba(28, 20, 22, .1); transition: var(--press); }
+.trk-card__action:active { transform: scale(.9); }
+.trk-card--done .trk-card__action, .trk-card__action[aria-pressed="true"] { color: var(--white); background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--olive) 60%, white), var(--olive) 70%); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .45), 0 3px 8px -2px rgba(28, 20, 22, .3); }
+
+/* Самопочуття: шкали 1–5. */
+.trk-feel { padding-bottom: var(--space-3); }
+.trk-scale { padding: var(--space-2) 0; }
+.trk-scale + .trk-scale { border-top: 1px solid rgba(28, 20, 22, .06); }
+.trk-scale__title { font-size: 15px; font-weight: 600; }
+.trk-scale__row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-2); margin-top: 8px; }
+.trk-pill { height: 40px; border: 0; border-radius: var(--radius-pill); font: inherit; font-weight: 700; color: var(--secondary); background: var(--vol-glass); box-shadow: var(--vol-edge), 0 0 0 .5px rgba(28, 20, 22, .08); cursor: pointer; transition: var(--press); }
+.trk-pill:active { transform: scale(.92); }
+.trk-pill[aria-checked="true"] { color: var(--white); background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--burgundy) 65%, white), var(--burgundy) 70%); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .4), 0 4px 10px -3px color-mix(in srgb, var(--burgundy) 60%, transparent); }
+.trk-scale__ends { display: flex; justify-content: space-between; margin-top: 4px; font-size: 12px; color: var(--tertiary); }
+
+/* Аркуші трекера. */
+.trk-sheet__big { margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.trk-sheet__big small { font-size: 16px; font-weight: 600; color: var(--tertiary); }
+.trk-quick { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.trk-quick .ez-btn { flex: 1; min-width: 90px; padding: 0 var(--space-3); }
+@media (prefers-reduced-motion: reduce) { .trk-card__fill, .trk-day, .trk-pill, .trk-round, .trk-card__action { transition: none; } }

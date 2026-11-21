@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Level, MealKey } from './tree';
 import type { Activity, Sex } from './calories';
+import type { TrackerData, TrackerDay, TrackerGoals } from './tracker';
 
 /**
  * Етап 1: дані зберігаються лише в браузері (localStorage).
@@ -37,7 +38,7 @@ export interface Plate {
   createdAt: string;
 }
 
-const KEYS = { profile: 'easy.profile.v1', plates: 'easy.plates.v1' } as const;
+const KEYS = { profile: 'easy.profile.v1', plates: 'easy.plates.v1', tracker: 'easy.tracker.v1' } as const;
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -93,9 +94,25 @@ export function usePlates() {
     save(read<Plate[]>(KEYS.plates, []).map((x) => (x.id === id ? { ...x, ...patch } : x)));
   const clearAll = () => {
     write(KEYS.plates, []);
+    write(KEYS.tracker, { days: {} });
     write(KEYS.profile, null);
   };
   return { plates, addPlate, updatePlate, clearAll, ready };
+}
+
+const EMPTY_TRACKER: TrackerData = { days: {} };
+
+/** Трекер (вода, кроки, тренування, самопочуття). Етап 1 — localStorage, етап 2 — Supabase. */
+export function useTracker() {
+  const [data, save, ready] = useStored<TrackerData>(KEYS.tracker, EMPTY_TRACKER);
+  const current = () => read<TrackerData>(KEYS.tracker, EMPTY_TRACKER);
+  const updateDay = (date: string, patch: Partial<TrackerDay>) => {
+    const d = current();
+    save({ ...d, days: { ...d.days, [date]: { ...d.days[date], ...patch } } });
+  };
+  const setGoals = (goals: Partial<TrackerGoals> | undefined) => save({ ...current(), goals });
+  const startChallenge = (date: string) => { const d = current(); if (!d.challengeStart) save({ ...d, challengeStart: date }); };
+  return { data, ready, updateDay, setGoals, startChallenge };
 }
 
 export const todayISO = (d = new Date()) => {
