@@ -9,8 +9,8 @@ import { useEffect, useRef, useState } from 'react';
  *
  * Старт без білого тла й без «двох маскотів»:
  * 1) спершу видно картинку — ПЕРШИЙ КАДР САМОГО ВІДЕО (easy-bot-first.webp, теж на білому й теж multiply) — кольори збігаються до пікселя;
- * 2) відео завантажується на паузі на першому кадрі під картинкою (майже прозоре — щоб браузер уже його відмалював, але без подвійного затемнення);
- *    далі миттєва підміна на паузі й лише потім play().
+ * 2) відео запускається непомітно під картинкою (майже прозоре); на першому показаному кадрі — пауза й перемотка на 0,
+ *    далі миттєва підміна на паузі й знову play(). Без play() Safari на iPhone відео навіть не завантажує.
  * Якщо відео не запускається (режим енергозбереження iPhone) — лишається перший кадр.
  * «Зменшити рух» — статичний останній кадр (easy-bot-still.webp, з відео, multiply). Грає один раз, зупиняється на останньому кадрі.
  * Файли — public/mascot/. Прозорий WebM не використовуємо: Safari на iPhone не підтримує прозорість у WebM.
@@ -23,22 +23,33 @@ export function Mascot({ size = 290 }: { size?: number }) {
     const v = video.current;
     if (!v || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let cancelled = false;
-    const start = () => {
-      if (cancelled) return;
-      // Дати браузеру відмалювати перший кадр відео під картинкою, потім миттєво підмінити й запустити.
-      setTimeout(() => {
-        if (cancelled) return;
-        v.currentTime = 0;
-        setLive(true); // підміна на паузі: відео стоїть на тому самому першому кадрі, що й картинка
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          if (cancelled) return;
-          v.play().catch(() => setLive(false)); // енергозбереження: повертаємо перший кадр-картинку
-        }));
-      }, 150);
+    let swapped = false;
+
+    // Миттєва підміна картинки на відео, коли відео стоїть на першому кадрі, — і лише тоді запуск.
+    const swapAndPlay = () => {
+      if (cancelled || swapped) return;
+      swapped = true;
+      setLive(true);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (!cancelled) v.play().catch(() => setLive(false));
+      }));
     };
-    if (v.readyState >= 2) start();
-    else v.addEventListener('loadeddata', start, { once: true });
-    return () => { cancelled = true; v.removeEventListener('loadeddata', start); };
+
+    // Safari на iPhone не вантажить відео без play(), тому: запускаємо (непомітно, під картинкою),
+    // на першому показаному кадрі ставимо на паузу й повертаємо на 0, після перемотки — підміна й запуск.
+    const onFirstFrame = () => {
+      if (cancelled || swapped) return;
+      v.pause();
+      v.addEventListener('seeked', swapAndPlay, { once: true });
+      v.currentTime = 0;
+      setTimeout(swapAndPlay, 600); // запасний шлях, якщо подія перемотки не прийде
+    };
+    const rvfc = (v as HTMLVideoElement & { requestVideoFrameCallback?: (cb: () => void) => number }).requestVideoFrameCallback;
+    if (rvfc) rvfc.call(v, onFirstFrame);
+    else v.addEventListener('playing', onFirstFrame, { once: true });
+
+    v.play().catch(() => { /* енергозбереження iPhone: відео не запуститься — лишається перший кадр-картинка */ });
+    return () => { cancelled = true; };
   }, []);
 
   return (
