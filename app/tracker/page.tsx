@@ -152,8 +152,8 @@ export default function Tracker() {
       {sheet === 'workout' && (
         <WorkoutSheet
           day={d} isToday={isToday} onClose={() => setSheet(null)}
-          onSave={(type, min) => { updateDay(day, { workout: true, workoutType: type, workoutMin: min }); setSheet(null); }}
-          onRemove={() => { updateDay(day, { workout: false, workoutType: undefined, workoutMin: undefined }); setSheet(null); }}
+          onSave={(type, min, other) => { updateDay(day, { workout: true, workoutType: type, workoutMin: min, workoutOther: type === 'other' ? other : undefined }); setSheet(null); }}
+          onRemove={() => { updateDay(day, { workout: false, workoutType: undefined, workoutMin: undefined, workoutOther: undefined }); setSheet(null); }}
         />
       )}
 
@@ -229,9 +229,11 @@ function GoalsSheet({ goals, rec, range, onSave, onReset, onClose }: { goals: Tr
   );
 }
 
-function WorkoutSheet({ day, isToday, onSave, onRemove, onClose }: { day: TrackerDay; isToday: boolean; onSave: (t: WorkoutType, min?: number) => void; onRemove: () => void; onClose: () => void }) {
+function WorkoutSheet({ day, isToday, onSave, onRemove, onClose }: { day: TrackerDay; isToday: boolean; onSave: (t: WorkoutType, min?: number, other?: string) => void; onRemove: () => void; onClose: () => void }) {
   const [type, setType] = useState<WorkoutType | undefined>(day.workoutType);
   const [min, setMin] = useState<number | undefined>(day.workoutMin);
+  const [other, setOther] = useState(day.workoutOther ?? '');
+  const otherOk = type !== 'other' || other.trim().length > 0;
   return (
     <Sheet title={isToday ? 'Тренування сьогодні' : 'Тренування'} onClose={onClose}>
       <div className="trk-chips" role="radiogroup" aria-label="Вид тренування">
@@ -239,13 +241,17 @@ function WorkoutSheet({ day, isToday, onSave, onRemove, onClose }: { day: Tracke
           <button key={t.key} role="radio" aria-checked={type === t.key} className="trk-chip" onClick={() => setType(t.key)}>{t.label}</button>
         ))}
       </div>
+      {type === 'other' && (
+        <input className="ez-input" autoFocus placeholder="Напр. теніс, бокс, стретчинг" maxLength={40} value={other} onChange={(e) => setOther(e.target.value)} aria-label="Вид тренування" />
+      )}
+      <p className="ez-hint" style={{ margin: 0 }}>Прогулянки рахуються в кроках.</p>
       <p className="ez-label" style={{ margin: '4px 0 0' }}>Тривалість (за бажанням)</p>
       <div className="trk-chips trk-chips--row" role="radiogroup" aria-label="Тривалість">
         {WORKOUT_MINUTES.map((m) => (
           <button key={m} role="radio" aria-checked={min === m} className="trk-chip" onClick={() => setMin(min === m ? undefined : m)}>{m === 90 ? '90+ хв' : `${m} хв`}</button>
         ))}
       </div>
-      <button className="ez-btn ez-btn--primary ez-btn--block" disabled={!type} onClick={() => type && onSave(type, min)}>Зберегти</button>
+      <button className="ez-btn ez-btn--primary ez-btn--block" disabled={!type || !otherOk} onClick={() => type && otherOk && onSave(type, min, other.trim())}>Зберегти</button>
       {day.workout && <button className="ez-btn ez-btn--back ez-btn--block" onClick={onRemove}>Тренування не було</button>}
     </Sheet>
   );
