@@ -128,12 +128,13 @@ button { font-family: inherit; }
 .ez-notice .ez-notice__title { font-size: 17px; line-height: 22px; font-weight: 700; color: var(--burgundy); margin-bottom: 2px; }
 .ez-tip__icon { width: 36px; height: 36px; }
 
-/* Анімований маскот (components/Mascot.tsx): біле тло відео розчиняється у фоні; до старту відео — перший кадр з прозорістю. */
+/* Анімований маскот (components/Mascot.tsx): відео й картинки — на білому, біле розчиняється у фоні (multiply) однаково для всіх. */
 .mascot { position: relative; margin: calc(var(--space-2) * -1) auto 0; }
-.mascot .mascot__video, .mascot .mascot__still, .mascot .mascot__first { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.mascot .mascot__video { mix-blend-mode: multiply; background: transparent; opacity: 0; transition: opacity .2s ease; }
-.mascot--playing .mascot__video { opacity: 1; }
-.mascot--playing .mascot__first { opacity: 0; transition: opacity .2s ease .1s; }
+.mascot .mascot__video, .mascot .mascot__still, .mascot .mascot__first { position: absolute; inset: 0; width: 100%; height: 100%; display: block; mix-blend-mode: multiply; }
+/* Перший кадр лежить поверх відео, поки те не запуститься; підміна миттєва, без плавного переходу — щоб не було двох маскотів. */
+.mascot .mascot__video { opacity: .01; }
+.mascot--live .mascot__video { opacity: 1; }
+.mascot--live .mascot__first { visibility: hidden; }
 .mascot .mascot__still { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .mascot .mascot__video, .mascot .mascot__first { display: none; }
