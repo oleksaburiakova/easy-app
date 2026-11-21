@@ -121,7 +121,7 @@ export default function Tracker() {
             <p className="ez-list__title">{isToday ? 'Як ви сьогодні?' : 'Як ви були цього дня?'}</p>
             {SCALES.map((s) => (
               <div className="trk-scale" key={s.key} role="radiogroup" aria-label={s.title}>
-                <span className="trk-scale__head"><span className="trk-scale__icon"><Icon name={s.icon} size={18} variant="fill" /></span><span className="trk-scale__title">{s.title}</span></span>
+                <span className="trk-scale__head"><span className="trk-scale__icon"><Icon name={s.icon} size={27} variant="fill" /></span><span className="trk-scale__title">{s.title}</span></span>
                 <div className="trk-scale__row">
                   {[1, 2, 3, 4, 5].map((n) => (
                     <button key={n} role="radio" aria-checked={d[s.key] === n} className="trk-pill" onClick={() => updateDay(day, { [s.key]: d[s.key] === n ? undefined : n })}>{n}</button>

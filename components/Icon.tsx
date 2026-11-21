@@ -40,11 +40,11 @@ const P: Record<string, ReactElement> = {
 
 export type IconName = keyof typeof P;
 
-export function Icon({ name, size = 20, strokeWidth = 2, filled = false, variant, ...rest }: { name: IconName; size?: number; strokeWidth?: number; filled?: boolean; variant?: 'line' | 'fill' } & SVGProps<SVGSVGElement>) {
+export function Icon({ name, size = 20, strokeWidth = 2, filled = false, variant, style, ...rest }: { name: IconName; size?: number; strokeWidth?: number; filled?: boolean; variant?: 'line' | 'fill' } & SVGProps<SVGSVGElement>) {
   const id = useId().replace(/:/g, '');
   const fill = (variant ?? (filled ? 'fill' : 'line')) === 'fill';
   return (
-    <svg className={`ez-icon${fill ? ' ez-icon--fill' : ''}`} width={size} height={size} viewBox="0 0 24 24" fill={fill ? `url(#g${id})` : 'none'} stroke="currentColor" strokeWidth={fill ? Math.min(strokeWidth, 1.6) : strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...rest}>
+    <svg className={`ez-icon${fill ? ' ez-icon--fill' : ''}`} width={size} height={size} viewBox="0 0 24 24" fill={fill ? `url(#g${id})` : 'none'} stroke="currentColor" strokeWidth={fill ? Math.min(strokeWidth, 1.6) : strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ width: size, height: size, ...style }} {...rest}>
       {fill && (
         <defs>
           <linearGradient id={`g${id}`} x1="0" y1="0" x2="0" y2="1">

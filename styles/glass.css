@@ -332,7 +332,7 @@ body::before {
 .trk-feel { padding-bottom: var(--space-3); }
 .trk-scale { padding: var(--space-2) 0; }
 .trk-scale + .trk-scale { border-top: 1px solid rgba(28, 20, 22, .06); }
-.trk-scale__title { font-size: 15px; font-weight: 600; }
+.trk-scale__title { font-size: 17px; font-weight: 700; }
 .trk-scale__row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-2); margin-top: 8px; }
 .trk-pill { height: 40px; border: 0; border-radius: var(--radius-pill); font: inherit; font-weight: 700; color: var(--secondary); background: var(--vol-glass); box-shadow: var(--vol-edge), 0 0 0 .5px rgba(28, 20, 22, .08); cursor: pointer; transition: var(--press); }
 .trk-pill:active { transform: scale(.92); }
@@ -347,8 +347,8 @@ body::before {
 @media (prefers-reduced-motion: reduce) { .trk-card__fill, .trk-day, .trk-pill, .trk-round, .trk-card__action { transition: none; } }
 
 /* Шкали самопочуття: іконка в об'ємному кружечку поруч із назвою. */
-.trk-scale__head { display: flex; align-items: center; gap: var(--space-2); }
-.trk-scale__icon { width: 30px; height: 30px; flex: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--burgundy); background: var(--vol-tint); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .8), 0 2px 6px -1px rgba(28, 20, 22, .12); }
+.trk-scale__head { display: flex; align-items: center; gap: var(--space-3); }
+.trk-scale__icon { width: 44px; height: 44px; flex: none; border-radius: 13px; display: flex; align-items: center; justify-content: center; color: var(--burgundy); background: var(--vol-tint); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .8), 0 2px 6px -1px rgba(28, 20, 22, .12); }
 
 /* Аркуш над клавіатурою: коли вона відкрита (--kb), аркуш не ховається під нею й прокручується, якщо не влазить. */
 .sheet-backdrop { transition: padding-bottom .15s ease; }
