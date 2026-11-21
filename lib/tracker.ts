@@ -1,7 +1,7 @@
 import type { Activity, Sex } from './calories';
 
 /**
- * Трекер: вода, кроки, тренування + настрій, енергія, голод.
+ * Трекер: вода, кроки, тренування + настрій, енергія, ситість.
  * Кроки людина вписує сама: сайт (PWA) не має доступу до «Здоров'я» / Google Fit.
  * Цілі за замовчуванням — з анкети (рівні активності Олени, урок 3.2); людина може змінити.
  * Вагу не трекаємо (ризик РХП). Хвалимо за звичку («5 з 7 днів»), без «серій» і сорому за пропуск.
@@ -13,7 +13,7 @@ export interface TrackerDay {
   workout?: boolean;
   mood?: number; // 1–5
   energy?: number; // 1–5
-  hunger?: number; // 1–5
+  satiety?: number; // 1–5, ситість протягом дня
 }
 export interface TrackerGoals {
   water: number; // мл на день
@@ -122,10 +122,10 @@ export function recalcHint(data: TrackerData, sex: Sex, activity: Activity, toda
 
 /* ---------- Шкали самопочуття ---------- */
 
-export const SCALES: { key: 'mood' | 'energy' | 'hunger'; title: string; low: string; high: string }[] = [
+export const SCALES: { key: 'mood' | 'energy' | 'satiety'; title: string; low: string; high: string }[] = [
   { key: 'mood', title: 'Настрій', low: 'поганий', high: 'чудовий' },
   { key: 'energy', title: 'Енергія', low: 'без сил', high: 'багато сил' },
-  { key: 'hunger', title: 'Голод протягом дня', low: 'ситість', high: 'сильний голод' },
+  { key: 'satiety', title: 'Ситість', low: 'постійно голодно', high: 'ситно весь день' },
 ];
 
 export const fmt = (n: number) => n.toLocaleString('uk-UA');
