@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'Збалансована тарілка з того, що є вдома. Конструктор нутриціолога Олени Гаврилової.',
   manifest: '/manifest.webmanifest',
   appleWebApp: { capable: true, title: 'Easy', statusBarStyle: 'default' },
-  icons: { icon: '/icons/icon-192.png', apple: '/icons/icon-192.png' },
+  icons: { icon: [{ url: '/icons/favicon-32.png', sizes: '32x32' }, { url: '/icons/favicon-48.png', sizes: '48x48' }, { url: '/icons/icon-192.png', sizes: '192x192' }], apple: '/icons/apple-touch-icon.png' },
 };
 
 export const viewport: Viewport = {
