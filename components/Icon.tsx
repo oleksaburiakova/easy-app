@@ -34,6 +34,7 @@ const P: Record<string, ReactElement> = {
   bolt: <path d="M13.2 2.6 5.4 13.3h5.8l-1.4 8.1 8.8-11.6h-6z" />,
   smile: (<><circle cx="12" cy="12" r="9" /><path className="s" d="M8.4 14.1c.9 1.3 2.1 1.9 3.6 1.9s2.7-.6 3.6-1.9M9 9.6v.6M15 9.6v.6" /></>),
   sliders: (<><path className="s" d="M4 7h9.5M18.5 7H20M4 17h3.5M12.5 17H20" /><circle cx="16" cy="7" r="2.4" /><circle cx="10" cy="17" r="2.4" /></>),
+  bowl: (<><path d="M3.5 11.2h17c0 4.5-3.8 8.1-8.5 8.1s-8.5-3.6-8.5-8.1z" /><path className="s" d="M9 4.3c-.7.9-.7 1.8 0 2.7M12 3.3c-.7.9-.7 1.8 0 2.7M15 4.3c-.7.9-.7 1.8 0 2.7" /></>),
   pulse: <path className="s" d="M2.5 12.5h4l2.4-6 4.2 12 2.6-6.5h5.8" />,
 };
 

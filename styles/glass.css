@@ -345,3 +345,13 @@ body::before {
 .trk-quick { display: flex; gap: var(--space-2); flex-wrap: wrap; }
 .trk-quick .ez-btn { flex: 1; min-width: 90px; padding: 0 var(--space-3); }
 @media (prefers-reduced-motion: reduce) { .trk-card__fill, .trk-day, .trk-pill, .trk-round, .trk-card__action { transition: none; } }
+
+/* Шкали самопочуття: іконка в об'ємному кружечку поруч із назвою. */
+.trk-scale__head { display: flex; align-items: center; gap: var(--space-2); }
+.trk-scale__icon { width: 30px; height: 30px; flex: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--burgundy); background: var(--vol-tint); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .8), 0 2px 6px -1px rgba(28, 20, 22, .12); }
+
+/* Аркуш над клавіатурою: коли вона відкрита (--kb), аркуш не ховається під нею й прокручується, якщо не влазить. */
+.sheet-backdrop { transition: padding-bottom .15s ease; }
+.sheet { max-height: calc(100dvh - var(--kb, 0px) - 16px); overflow-y: auto; }
+.trk-sheet__rec { margin: 0; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 20px; color: var(--secondary); background: var(--vol-tint); box-shadow: var(--vol-edge); }
+.trk-sheet__rec b { color: var(--burgundy); }

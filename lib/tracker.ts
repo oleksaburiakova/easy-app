@@ -41,6 +41,9 @@ const STEP_LEVELS: Record<Sex, { base: number; mid: number }> = {
   male: { base: 8000, mid: 9500 },
 };
 
+/** Рекомендований діапазон кроків на день (Олександра, 21.11: «7 000–10 000»; для чоловіків базова від 8 000 — урок 3.2). */
+export const stepRange = (sex: Sex): readonly [number, number] => (sex === 'male' ? [8000, 10000] : [7000, 10000]);
+
 /** Цілі з анкети. «Мінімальна» — ціль базової: туди й рухаємось. */
 export function recommendedGoals(sex: Sex, activity: Activity): TrackerGoals {
   const lv = STEP_LEVELS[sex];
@@ -122,10 +125,10 @@ export function recalcHint(data: TrackerData, sex: Sex, activity: Activity, toda
 
 /* ---------- Шкали самопочуття ---------- */
 
-export const SCALES: { key: 'mood' | 'energy' | 'satiety'; title: string; low: string; high: string }[] = [
-  { key: 'mood', title: 'Настрій', low: 'поганий', high: 'чудовий' },
-  { key: 'energy', title: 'Енергія', low: 'без сил', high: 'багато сил' },
-  { key: 'satiety', title: 'Ситість', low: 'постійно голодно', high: 'ситно весь день' },
+export const SCALES: { key: 'mood' | 'energy' | 'satiety'; icon: 'smile' | 'bolt' | 'bowl'; title: string; low: string; high: string }[] = [
+  { key: 'mood', icon: 'smile', title: 'Настрій', low: 'поганий', high: 'чудовий' },
+  { key: 'energy', icon: 'bolt', title: 'Енергія', low: 'без сил', high: 'багато сил' },
+  { key: 'satiety', icon: 'bowl', title: 'Ситість', low: 'постійно голодно', high: 'ситно весь день' },
 ];
 
 export const fmt = (n: number) => n.toLocaleString('uk-UA');

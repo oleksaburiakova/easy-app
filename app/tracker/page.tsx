@@ -8,7 +8,7 @@ import { useRequireProfile } from '@/components/Guard';
 import { useTracker, todayISO } from '@/lib/store';
 import {
   CHALLENGE_DAYS, CHALLENGE_STEPS, GLASS_ML, SCALES, WEEKDAYS,
-  challengeProgress, dayComplete, dayProgress, fmt, fromIso, goalsFor, recalcHint, recommendedGoals, weekCount, weekOf,
+  challengeProgress, dayComplete, dayProgress, fmt, fromIso, goalsFor, recalcHint, recommendedGoals, stepRange, weekCount, weekOf,
   type TrackerGoals,
 } from '@/lib/tracker';
 
@@ -121,7 +121,7 @@ export default function Tracker() {
             <p className="ez-list__title">{isToday ? 'Як ви сьогодні?' : 'Як ви були цього дня?'}</p>
             {SCALES.map((s) => (
               <div className="trk-scale" key={s.key} role="radiogroup" aria-label={s.title}>
-                <span className="trk-scale__title">{s.title}</span>
+                <span className="trk-scale__head"><span className="trk-scale__icon"><Icon name={s.icon} size={18} variant="fill" /></span><span className="trk-scale__title">{s.title}</span></span>
                 <div className="trk-scale__row">
                   {[1, 2, 3, 4, 5].map((n) => (
                     <button key={n} role="radio" aria-checked={d[s.key] === n} className="trk-pill" onClick={() => updateDay(day, { [s.key]: d[s.key] === n ? undefined : n })}>{n}</button>
@@ -148,11 +148,11 @@ export default function Tracker() {
         </Sheet>
       )}
 
-      {sheet === 'steps' && <StepsSheet value={d.steps ?? 0} goal={g.steps} onSave={(v) => { updateDay(day, { steps: v }); setSheet(null); }} onClose={() => setSheet(null)} />}
+      {sheet === 'steps' && <StepsSheet range={stepRange(profile.sex)} value={d.steps ?? 0} goal={g.steps} onSave={(v) => { updateDay(day, { steps: v }); setSheet(null); }} onClose={() => setSheet(null)} />}
 
       {sheet === 'goals' && (
         <GoalsSheet
-          goals={g} rec={recommendedGoals(profile.sex, profile.activity)}
+          goals={g} rec={recommendedGoals(profile.sex, profile.activity)} range={stepRange(profile.sex)}
           onSave={(x) => { setGoals(x); setSheet(null); }} onReset={() => { setGoals(undefined); setSheet(null); }} onClose={() => setSheet(null)}
         />
       )}
@@ -184,9 +184,28 @@ function Habit({ icon, title, value, progress, note, onOpen, action }: {
   );
 }
 
+/**
+ * Висота екранної клавіатури. На iPhone клавіатура відкривається поверх сторінки й ховає нижні аркуші,
+ * тож піднімаємо аркуш на її висоту (visualViewport — видима частина екрана без клавіатури).
+ */
+function useKeyboardInset() {
+  const [kb, setKb] = useState(0);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => setKb(Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)));
+    update();
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => { vv.removeEventListener('resize', update); vv.removeEventListener('scroll', update); };
+  }, []);
+  return kb;
+}
+
 function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+  const kb = useKeyboardInset();
   return (
-    <div className="sheet-backdrop" role="presentation" onClick={onClose}>
+    <div className="sheet-backdrop" role="presentation" onClick={onClose} style={kb ? { paddingBottom: kb, ['--kb' as string]: `${kb}px` } : undefined}>
       <div className="sheet pop-in" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
         <h2 className="ez-title" style={{ margin: 0 }}>{title}</h2>
         {children}
@@ -195,12 +214,13 @@ function Sheet({ title, onClose, children }: { title: string; onClose: () => voi
   );
 }
 
-function StepsSheet({ value, goal, onSave, onClose }: { value: number; goal: number; onSave: (v: number) => void; onClose: () => void }) {
+function StepsSheet({ range, value, goal, onSave, onClose }: { range: readonly [number, number]; value: number; goal: number; onSave: (v: number) => void; onClose: () => void }) {
   const [v, setV] = useState(value ? String(value) : '');
   const n = Number(v) || 0;
   return (
     <Sheet title="Кроки" onClose={onClose}>
-      <p className="ez-subhead" style={{ margin: 0 }}>Подивіться кількість у застосунку «Здоров'я» на iPhone або Google Fit — і впишіть сюди. Мета: {fmt(goal)}.</p>
+      <p className="ez-subhead" style={{ margin: 0 }}>Подивіться кількість у застосунку «Здоров'я» на iPhone або Google Fit — і впишіть сюди.</p>
+      <p className="trk-sheet__rec">Ваша мета — <b>{fmt(goal)}</b> · рекомендовано {fmt(range[0])}–{fmt(range[1])} кроків на день</p>
       <input className="ez-input" inputMode="numeric" autoFocus placeholder="Напр. 7500" value={v} onChange={(e) => setV(e.target.value.replace(/\D/g, '').slice(0, 6))} aria-label="Кількість кроків" />
       <div className="trk-quick">
         {[500, 1000, 2000].map((x) => <button key={x} className="ez-btn ez-btn--soft" onClick={() => setV(String(n + x))}>+{fmt(x)}</button>)}
@@ -210,7 +230,7 @@ function StepsSheet({ value, goal, onSave, onClose }: { value: number; goal: num
   );
 }
 
-function GoalsSheet({ goals, rec, onSave, onReset, onClose }: { goals: TrackerGoals; rec: TrackerGoals; onSave: (g: TrackerGoals) => void; onReset: () => void; onClose: () => void }) {
+function GoalsSheet({ goals, rec, range, onSave, onReset, onClose }: { goals: TrackerGoals; rec: TrackerGoals; range: readonly [number, number]; onSave: (g: TrackerGoals) => void; onReset: () => void; onClose: () => void }) {
   const [w, setW] = useState(String(goals.water));
   const [s, setS] = useState(String(goals.steps));
   const [t, setT] = useState(String(goals.workouts));
@@ -221,7 +241,7 @@ function GoalsSheet({ goals, rec, onSave, onReset, onClose }: { goals: TrackerGo
       <label className="ez-field"><span className="ez-label">Вода на день, мл</span><input className="ez-input" inputMode="numeric" value={w} onChange={(e) => setW(e.target.value.replace(/\D/g, '').slice(0, 4))} /></label>
       <label className="ez-field"><span className="ez-label">Кроки на день</span><input className="ez-input" inputMode="numeric" value={s} onChange={(e) => setS(e.target.value.replace(/\D/g, '').slice(0, 5))} /></label>
       <label className="ez-field"><span className="ez-label">Тренування на тиждень</span><input className="ez-input" inputMode="numeric" value={t} onChange={(e) => setT(e.target.value.replace(/\D/g, '').slice(0, 1))} /></label>
-      <p className="ez-hint">Рекомендовано: {fmt(rec.water)} мл · {fmt(rec.steps)} кроків · {rec.workouts} тренування на тиждень.</p>
+      <p className="ez-hint">Рекомендовано: {fmt(rec.water)} мл води · {fmt(range[0])}–{fmt(range[1])} кроків на день · {rec.workouts} тренування на тиждень.</p>
       <div className="ez-pair">
         <button className="ez-btn ez-btn--back" onClick={onReset}>Як в анкеті</button>
         <button className="ez-btn ez-btn--primary" onClick={() => onSave({ water: num(w, 250, rec.water), steps: num(s, 1000, rec.steps), workouts: num(t, 1, rec.workouts) })}>Зберегти</button>
