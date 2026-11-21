@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { TabBar } from '@/components/TabBar';
 import { Icon, type IconName } from '@/components/Icon';
 import { Tip } from '@/components/Tip';
+import { Sheet } from '@/components/Sheet';
 import { useRequireProfile } from '@/components/Guard';
 import { useTracker, todayISO } from '@/lib/store';
 import {
@@ -180,36 +181,6 @@ function Habit({ icon, title, value, progress, note, onOpen, action }: {
       <button className="trk-card__action" onClick={action.onClick} aria-label={action.label} aria-pressed={action.pressed}>
         <Icon name={done && action.icon !== 'check' ? 'check' : action.icon} size={18} strokeWidth={2.4} />
       </button>
-    </div>
-  );
-}
-
-/**
- * Висота екранної клавіатури. На iPhone клавіатура відкривається поверх сторінки й ховає нижні аркуші,
- * тож піднімаємо аркуш на її висоту (visualViewport — видима частина екрана без клавіатури).
- */
-function useKeyboardInset() {
-  const [kb, setKb] = useState(0);
-  useEffect(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;
-    const update = () => setKb(Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)));
-    update();
-    vv.addEventListener('resize', update);
-    vv.addEventListener('scroll', update);
-    return () => { vv.removeEventListener('resize', update); vv.removeEventListener('scroll', update); };
-  }, []);
-  return kb;
-}
-
-function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
-  const kb = useKeyboardInset();
-  return (
-    <div className="sheet-backdrop" role="presentation" onClick={onClose} style={kb ? { paddingBottom: kb, ['--kb' as string]: `${kb}px` } : undefined}>
-      <div className="sheet pop-in" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
-        <h2 className="ez-title" style={{ margin: 0 }}>{title}</h2>
-        {children}
-      </div>
     </div>
   );
 }
