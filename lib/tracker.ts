@@ -11,6 +11,8 @@ export interface TrackerDay {
   water?: number; // мл
   steps?: number;
   workout?: boolean;
+  workoutType?: WorkoutType;
+  workoutMin?: number; // тривалість, хв (необов'язково)
   mood?: number; // 1–5
   energy?: number; // 1–5
   satiety?: number; // 1–5, ситість протягом дня
@@ -122,6 +124,26 @@ export function recalcHint(data: TrackerData, sex: Sex, activity: Activity, toda
   if (activity !== 'min' && avg < lv.base * 0.85) return { kind: 'down', avg };
   return null;
 }
+
+/* ---------- Види тренувань ---------- */
+
+export type WorkoutType = 'strength' | 'cardio' | 'pilates' | 'stretch' | 'dance' | 'swim' | 'bike' | 'hiit' | 'walk' | 'other';
+/** Силові — «з вагою або з власною вагою тіла» (урок 3.2: для середньої активності — 3 такі на тиждень). */
+export const WORKOUT_TYPES: { key: WorkoutType; label: string }[] = [
+  { key: 'strength', label: 'Силове' },
+  { key: 'cardio', label: 'Кардіо / біг' },
+  { key: 'hiit', label: 'Інтервальне' },
+  { key: 'pilates', label: 'Пілатес / йога' },
+  { key: 'stretch', label: 'Розтяжка' },
+  { key: 'dance', label: 'Танці' },
+  { key: 'swim', label: 'Плавання' },
+  { key: 'bike', label: 'Велосипед' },
+  { key: 'walk', label: 'Довга прогулянка' },
+  { key: 'other', label: 'Інше' },
+];
+export const WORKOUT_MINUTES = [20, 30, 45, 60, 90];
+export const workoutLabel = (d: TrackerDay) =>
+  [WORKOUT_TYPES.find((t) => t.key === d.workoutType)?.label, d.workoutMin ? `${d.workoutMin} хв` : ''].filter(Boolean).join(' · ');
 
 /* ---------- Шкали самопочуття ---------- */
 

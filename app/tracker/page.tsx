@@ -9,11 +9,11 @@ import { useRequireProfile } from '@/components/Guard';
 import { useTracker, todayISO } from '@/lib/store';
 import {
   CHALLENGE_DAYS, CHALLENGE_STEPS, GLASS_ML, SCALES, WEEKDAYS,
-  challengeProgress, dayComplete, dayProgress, fmt, fromIso, goalsFor, recalcHint, recommendedGoals, stepRange, weekCount, weekOf,
-  type TrackerGoals,
+  WORKOUT_MINUTES, WORKOUT_TYPES, challengeProgress, dayComplete, dayProgress, fmt, fromIso, goalsFor, recalcHint, recommendedGoals, stepRange, weekCount, weekOf, workoutLabel,
+  type TrackerDay, type TrackerGoals, type WorkoutType,
 } from '@/lib/tracker';
 
-type Sheet = null | 'water' | 'steps' | 'goals';
+type Sheet = null | 'water' | 'steps' | 'goals' | 'workout';
 
 export default function Tracker() {
   const { profile, ready } = useRequireProfile();
@@ -113,9 +113,9 @@ export default function Tracker() {
           />
           <Habit
             icon="dumbbell" title="Тренування" value={`${workoutsWeek} з ${g.workouts} цього тижня`} progress={workoutsWeek / g.workouts}
-            note={d.workout ? (isToday ? 'Сьогодні було' : 'Цього дня було') : isToday ? 'Сьогодні ще ні' : 'Цього дня не було'}
-            onOpen={() => updateDay(day, { workout: !d.workout })}
-            action={{ label: d.workout ? 'Тренування було — скасувати' : 'Відмітити тренування', icon: 'check', pressed: !!d.workout, onClick: () => updateDay(day, { workout: !d.workout }) }}
+            note={d.workout ? `${isToday ? 'Сьогодні' : 'Цього дня'}: ${workoutLabel(d) || 'було'}` : isToday ? 'Сьогодні ще ні' : 'Цього дня не було'}
+            onOpen={() => setSheet('workout')}
+            action={{ label: d.workout ? 'Змінити тренування' : 'Відмітити тренування', icon: d.workout ? 'check' : 'plus', pressed: !!d.workout, onClick: () => setSheet('workout') }}
           />
 
           <section className="ez-list trk-feel" aria-label="Самопочуття">
@@ -147,6 +147,14 @@ export default function Tracker() {
           </div>
           <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setSheet(null)}>Готово</button>
         </Sheet>
+      )}
+
+      {sheet === 'workout' && (
+        <WorkoutSheet
+          day={d} isToday={isToday} onClose={() => setSheet(null)}
+          onSave={(type, min) => { updateDay(day, { workout: true, workoutType: type, workoutMin: min }); setSheet(null); }}
+          onRemove={() => { updateDay(day, { workout: false, workoutType: undefined, workoutMin: undefined }); setSheet(null); }}
+        />
       )}
 
       {sheet === 'steps' && <StepsSheet range={stepRange(profile.sex)} value={d.steps ?? 0} goal={g.steps} onSave={(v) => { updateDay(day, { steps: v }); setSheet(null); }} onClose={() => setSheet(null)} />}
@@ -217,6 +225,28 @@ function GoalsSheet({ goals, rec, range, onSave, onReset, onClose }: { goals: Tr
         <button className="ez-btn ez-btn--back" onClick={onReset}>Як в анкеті</button>
         <button className="ez-btn ez-btn--primary" onClick={() => onSave({ water: num(w, 250, rec.water), steps: num(s, 1000, rec.steps), workouts: num(t, 1, rec.workouts) })}>Зберегти</button>
       </div>
+    </Sheet>
+  );
+}
+
+function WorkoutSheet({ day, isToday, onSave, onRemove, onClose }: { day: TrackerDay; isToday: boolean; onSave: (t: WorkoutType, min?: number) => void; onRemove: () => void; onClose: () => void }) {
+  const [type, setType] = useState<WorkoutType | undefined>(day.workoutType);
+  const [min, setMin] = useState<number | undefined>(day.workoutMin);
+  return (
+    <Sheet title={isToday ? 'Тренування сьогодні' : 'Тренування'} onClose={onClose}>
+      <div className="trk-chips" role="radiogroup" aria-label="Вид тренування">
+        {WORKOUT_TYPES.map((t) => (
+          <button key={t.key} role="radio" aria-checked={type === t.key} className="trk-chip" onClick={() => setType(t.key)}>{t.label}</button>
+        ))}
+      </div>
+      <p className="ez-label" style={{ margin: '4px 0 0' }}>Тривалість (за бажанням)</p>
+      <div className="trk-chips trk-chips--row" role="radiogroup" aria-label="Тривалість">
+        {WORKOUT_MINUTES.map((m) => (
+          <button key={m} role="radio" aria-checked={min === m} className="trk-chip" onClick={() => setMin(min === m ? undefined : m)}>{m === 90 ? '90+ хв' : `${m} хв`}</button>
+        ))}
+      </div>
+      <button className="ez-btn ez-btn--primary ez-btn--block" disabled={!type} onClick={() => type && onSave(type, min)}>Зберегти</button>
+      {day.workout && <button className="ez-btn ez-btn--back ez-btn--block" onClick={onRemove}>Тренування не було</button>}
     </Sheet>
   );
 }
