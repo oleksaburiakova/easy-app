@@ -11,12 +11,11 @@ import { MEALS } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { DAILY_TIPS, pick } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
+import { vocative } from '@/lib/names';
 
-function greeting(h: number) {
-  if (h < 5) return 'Доброї ночі!';
-  if (h < 12) return 'Доброго ранку!';
-  if (h < 18) return 'Доброго дня!';
-  return 'Доброго вечора!';
+function greeting(h: number, name?: string) {
+  const g = h < 5 ? 'Доброї ночі' : h < 12 ? 'Доброго ранку' : h < 18 ? 'Доброго дня' : 'Доброго вечора';
+  return name?.trim() ? `${g}, ${vocative(name)}!` : `${g}!`;
 }
 
 export default function Home() {
@@ -35,7 +34,7 @@ export default function Home() {
     <>
       <main className="app-main fade-in">
         <header className="ez-header" style={{ paddingTop: 20 }}>
-          <h1 className="ez-large-title">{greeting(now.getHours())}</h1>
+          <h1 className="ez-large-title">{greeting(now.getHours(), profile.name)}</h1>
           <p className="ez-subhead">Новий день — нова збалансована тарілка.</p>
           <span className="ez-caption">{now.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' })}</span>
         </header>
