@@ -399,3 +399,15 @@ a.pf-row:active, .pf-row--btn:active { transform: scale(.98); }
 .pf-hero__avatar:active { transform: scale(.96); }
 .pf-hero__name { font-size: 24px; line-height: 30px; font-weight: 800; letter-spacing: -.01em; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pf-hero__kcal--sm { font-size: 17px; line-height: 22px; font-weight: 700; }
+
+/* Улюблені рядком зверху першого кроку конструктора. */
+.bf-favs { padding: 0 0 var(--space-2); }
+.bf-favs__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); padding: 0 var(--space-3) var(--space-2); }
+.bf-favs__row { display: flex; gap: var(--space-3); overflow-x: auto; padding: 4px var(--space-3) 14px; scroll-snap-type: x mandatory; scroll-padding-inline: var(--space-3); scrollbar-width: none; }
+.bf-favs__row::-webkit-scrollbar { display: none; }
+.bf-fav { flex: 0 0 150px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 6px; padding: 0 0 10px; border: 0; border-radius: var(--radius-card); overflow: hidden; text-align: left; font: inherit; color: var(--ink); cursor: pointer; background: var(--vol-glass); box-shadow: var(--vol-edge), var(--shadow-volume, 0 10px 28px -8px rgba(97, 30, 45, .16)); transition: var(--press); }
+.bf-fav:active { transform: scale(.96); }
+.bf-fav__img { width: 100%; height: 96px; object-fit: cover; display: flex; font-size: 28px; }
+.bf-fav__name { padding: 0 10px; font-size: 13px; line-height: 17px; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 34px; }
+.bf-fav__go { margin: 0 10px; align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 10px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 700; color: var(--burgundy); background: var(--vol-tint); box-shadow: var(--vol-edge); }
+.bf-favs__or { margin: 0; padding: 0 var(--space-3); font-size: 13px; font-weight: 600; color: var(--tertiary); text-align: center; }

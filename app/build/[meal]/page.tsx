@@ -23,8 +23,6 @@ export default function Build() {
   const [picks, setPicks] = useState<Picks>({});
   const [idx, setIdx] = useState(0);
   const [noneOpen, setNoneOpen] = useState(false);
-  /** Екран «Улюблена страва чи зібрати заново» — поки людина не обрала «Зібрати заново». */
-  const [fresh, setFresh] = useState(false);
 
   const node = profile && ['breakfast', 'lunch', 'dinner'].includes(meal) ? levelNode(meal, profile.level) : null;
 
@@ -54,7 +52,7 @@ export default function Build() {
         seen.add(sig);
         return true;
       })
-      .slice(0, 3);
+      .slice(0, 6);
   }, [plates, meal, profile]);
 
   if (!ready || !profile || !plReady) return null;
@@ -103,10 +101,7 @@ export default function Build() {
     window.scrollTo({ top: 0 });
   };
   const back = () => {
-    if (idx === 0) {
-      if (fresh && favs.length) { setFresh(false); setPicks({}); return; }
-      return router.push('/');
-    }
+    if (idx === 0) return router.push('/');
     setIdx((i) => i - 1);
     setNoneOpen(false);
   };
@@ -122,7 +117,8 @@ export default function Build() {
   const hint = step ? stepHint(step.key, meal, idx) : null;
   const stepTitle = STEP_TITLES[step?.key ?? ''] ?? step?.title;
   const hero = buildHero(meal);
-  const choosing = !fresh && idx === 0 && !picks[steps[0]?.key ?? ''] && favs.length > 0;
+  // Улюблені — рядком зверху першого кроку (рішення Олександри 22.11: без окремого екрана вибору).
+  const showFavs = idx === 0 && favs.length > 0;
 
   return (
     <main className="app-main fade-in" style={{ paddingBottom: 120 }}>
@@ -139,22 +135,25 @@ export default function Build() {
         </div>
       </header>
 
-      {choosing ? (
-        <div className="ez-stack fade-in">
-          <section className="ez-list" aria-label="Улюблені страви">
-            <p className="ez-list__title">Улюблена страва?</p>
-            <p className="ez-list__note" style={{ marginTop: 0 }}>Одним натиском — та сама тарілка на сьогодні.</p>
+      {showFavs && (
+        <section className="bf-favs" aria-label="Улюблені страви">
+          <div className="bf-favs__head">
+            <h2 className="ez-headline">Улюблені</h2>
+            <span className="ez-caption">Одним натиском — та сама тарілка</span>
+          </div>
+          <div className="bf-favs__row">
             {favs.map((f) => (
-              <button key={f.id} className="ez-irow fav-pick" onClick={() => repeat(f)}>
-                <Photo className="fav-pick__img" src={platePhoto(f.meal, f.selections)} letter={plateTitle(f.meal, f.selections).charAt(0)} />
-                <span className="ez-irow__name">{plateTitle(f.meal, f.selections)}</span>
-                <span className="ez-chip ez-chip--add"><Icon name="redo" size={14} /> Повторити</span>
+              <button key={f.id} className="bf-fav" onClick={() => repeat(f)} aria-label={`Повторити: ${plateTitle(f.meal, f.selections)}`}>
+                <Photo className="bf-fav__img" src={platePhoto(f.meal, f.selections)} letter={plateTitle(f.meal, f.selections).charAt(0)} />
+                <span className="bf-fav__name">{plateTitle(f.meal, f.selections)}</span>
+                <span className="bf-fav__go"><Icon name="redo" size={14} /> Повторити</span>
               </button>
             ))}
-          </section>
-          <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setFresh(true)}>Зібрати заново <Icon name="chev" size={18} /></button>
-        </div>
-      ) : (<>
+          </div>
+          <p className="bf-favs__or">або зберіть нову тарілку</p>
+        </section>
+      )}
+
       <div className="ez-stepcard">
         <span className="ez-caption" style={{ color: 'var(--secondary)' }}>Крок {idx + 1} з {total}</span>
         <span className="ez-headline">{stepTitle}{step?.key === 'veg' ? ` · ${step.amount_g} г` : ''}</span>
@@ -217,14 +216,13 @@ export default function Build() {
           <Tip hint={{ text: idx > 0 ? 'Поверніться на крок назад і оберіть іншу основу чи гарнір — разом з ними зміниться й список. А на майбутнє загляньте в «Список здорових продуктів»: що варто мати вдома.' : 'Загляньте в «Список здорових продуктів»: там те, що варто мати вдома для збалансованих тарілок.', lesson: 'Гайд · Список здорових продуктів' }} />
         )}
       </div>
-      </>)}
 
-      {!choosing && <div className="bottom-bar">
+      <div className="bottom-bar">
         <div className="bottom-bar__inner ez-pair">
           <button className="ez-btn ez-btn--back" onClick={back}><Icon name="back" size={18} /> Назад</button>
           <button className="ez-btn ez-btn--primary" onClick={next} disabled={!picked}>{isLast ? 'Готово' : 'Продовжити'} <Icon name="chev" size={18} /></button>
         </div>
-      </div>}
+      </div>
     </main>
   );
 }
