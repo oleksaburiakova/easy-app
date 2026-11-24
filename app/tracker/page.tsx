@@ -55,7 +55,10 @@ export default function Tracker() {
 
         {ch && (
           <section className="trk-goal" aria-label="Головна ціль">
-            <span className="trk-goal__label">Головна ціль</span>
+            <div className="trk-goal__head">
+              <span className="trk-goal__icon" aria-hidden="true"><Icon name="steps" size={28} variant="fill" /></span>
+              <span className="trk-goal__label">Головна ціль</span>
+            </div>
             <p className="trk-goal__title">Більше руху: {CHALLENGE_DAYS} днів щонайменше {fmt(CHALLENGE_STEPS)} кроків</p>
             <div className="trk-goal__bar" aria-hidden="true"><span style={{ width: `${(ch.done / CHALLENGE_DAYS) * 100}%` }} /></div>
             <p className="trk-goal__meta">{ch.finished ? `Готово: ${ch.done} з ${CHALLENGE_DAYS} днів` : `День ${ch.dayN} з ${CHALLENGE_DAYS} · виконано ${ch.done}`}</p>

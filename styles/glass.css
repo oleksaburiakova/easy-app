@@ -475,3 +475,9 @@ a.pf-row:active, .pf-row--btn:active { transform: scale(.98); }
 .pf-awards { display: flex; gap: var(--space-3); overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: none; }
 .pf-awards::-webkit-scrollbar { display: none; }
 .pf-award { flex: none; width: 76px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; font-size: 12px; line-height: 15px; font-weight: 600; color: var(--secondary); text-decoration: none; }
+
+/* Іконка в «Головній цілі» трекера — кроки в об'ємному золотавому колі. */
+.trk-goal__head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: 4px; }
+.trk-goal__icon { width: 52px; height: 52px; flex: none; border-radius: 17px; display: flex; align-items: center; justify-content: center; color: var(--burgundy);
+  background: radial-gradient(circle at 32% 28%, #fff6e3 0%, color-mix(in srgb, var(--gold) 70%, white) 35%, var(--gold) 75%, color-mix(in srgb, var(--gold) 75%, black) 100%);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .8), inset 0 -3px 6px rgba(97, 30, 45, .2), 0 6px 14px -4px rgba(0, 0, 0, .35); }
