@@ -125,7 +125,7 @@ export default function Build() {
   // Групи (крупи / макарони / …) показуємо підзаголовками.
   const byGroup = new Map<string | null, TreeOption[]>();
   const skip = step && SKIP_OPTIONS[step.key];
-  const stepOptions = step ? (multiCfg ? multiOptions(step) : [...step.options, ...(EXTRA_OPTIONS[step.key] ?? [])]) : [];
+  const stepOptions = step ? (multiCfg ? multiOptions(step, meal) : [...step.options, ...(EXTRA_OPTIONS[step.key] ?? [])]) : [];
   for (const o of [...stepOptions, ...(skip ? [{ label: skip }] : [])]) {
     const g = optionGroup(o);
     byGroup.set(g, [...(byGroup.get(g) ?? []), o]);
