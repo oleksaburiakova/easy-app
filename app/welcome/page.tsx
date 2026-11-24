@@ -1,8 +1,23 @@
-import Link from 'next/link';
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Wordmark } from '@/components/Wordmark';
 import { Mascot } from '@/components/Mascot';
+import { InstallFirstSheet } from '@/components/StartFlow';
+import { useInstalled, useDismissed } from '@/components/Install';
 
+/**
+ * Перший екран. «Почати» → спершу «Додайте Easy на головний екран» (рішення 24.11), потім анкета.
+ * Чому до анкети: на iPhone встановлений застосунок має окреме сховище від Safari — анкета, заповнена в Safari,
+ * у застосунку з іконки не з'явиться. До акаунтів (етап 2) ставимо застосунок першим.
+ */
 export default function Welcome() {
+  const router = useRouter();
+  const installed = useInstalled();
+  const [asked, markAsked] = useDismissed('easy.flow.install');
+  const [open, setOpen] = useState(false);
+  const start = () => (installed || asked ? router.push('/onboarding') : setOpen(true));
+  const toOnboarding = () => { markAsked(); router.push('/onboarding'); };
   return (
     <main className="app-main fade-in" style={{ paddingBottom: 150 }}>
       <div className="welcome-hero">
@@ -14,10 +29,11 @@ export default function Welcome() {
       </div>
       <div className="bottom-bar">
         <div className="bottom-bar__inner gap-3">
-          <Link href="/onboarding" className="ez-btn ez-btn--primary ez-btn--block">Почати</Link>
+          <button className="ez-btn ez-btn--primary ez-btn--block" onClick={start}>Почати</button>
           <p className="ez-caption center" style={{ margin: 0 }}>Нутриціолог Олена Гаврилова · 5+ років у нутриціології</p>
         </div>
       </div>
+      {open && <InstallFirstSheet onContinue={toOnboarding} onClose={() => setOpen(false)} />}
     </main>
   );
 }
