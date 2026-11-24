@@ -63,6 +63,7 @@ const RULES: [RegExp, string][] = [
   [/шоколад/i, 'shokolad'],
   // овочі
   [/набір для борщу/i, 'ovochi-buriak'],
+  [/набір для супу/i, 'ovochi-nabir-sup'], // фото ще немає — буде літера
   [/мікс салат/i, 'ovochi-salat'],
   [/мікс|суміш/i, 'ovochi-sumishi'],
   [/спарж|стручков/i, 'ovochi-sparzha'],

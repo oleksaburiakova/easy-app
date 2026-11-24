@@ -9,7 +9,7 @@ import { Tip } from '@/components/Tip';
 import { Sheet } from '@/components/Sheet';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
-import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, proteinSnackNote, cheeseOptions, expandOptions, proteinSnackOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, dishRank, DISH_GROUP, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
+import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, OTHER_SWEET, sweetGrams, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, proteinSnackNote, cheeseOptions, expandOptions, proteinSnackOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, dishRank, DISH_GROUP, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
@@ -27,6 +27,9 @@ export default function Build() {
   const [idx, setIdx] = useState(0);
   const [noneOpen, setNoneOpen] = useState(false);
   const [skipWarn, setSkipWarn] = useState<string | null>(null);
+  /** «Інша солодощ»: що обрали й калорійність на 100 г — порахуємо грами на 50–80 ккал. */
+  const [sweet, setSweet] = useState({ name: '', kcal: '' });
+  const sweetPortion = sweetGrams(Number(sweet.kcal));
 
   const node = profile && ['breakfast', 'lunch', 'dinner'].includes(meal) ? levelNode(meal, profile.level) : null;
 
@@ -107,6 +110,8 @@ export default function Build() {
         return { stepKey: s.key, stepTitle: STEP_TITLES[s.key] ?? s.title, label: (multi[s.key] ?? []).join(', '), portion: multiPortion(s), group: null };
       }
       const o = picks[s.key];
+      // Своя солодощ — з тим, що вписали, і грамами за калорійністю.
+      if (o.label === OTHER_SWEET) return { stepKey: s.key, stepTitle: STEP_TITLES[s.key] ?? s.title, label: sweet.name.trim() || OTHER_SWEET, portion: sweetPortion ? `≈ ${sweetPortion}` : undefined, group: null };
       return { stepKey: s.key, stepTitle: STEP_TITLES[s.key] ?? s.title, label: o.label, group: o.group ?? null };
     });
     const plate = addPlate({ date: todayISO(), meal, level: profile.level, selections, status: 'eaten', favorite: false });
@@ -243,13 +248,29 @@ export default function Build() {
       ))}
 
       <div className="ez-stack" style={{ paddingTop: 0 }}>
+        {picked?.label === OTHER_SWEET && (
+          <>
+            <Tip hint={{ text: EXTRA_HINTS[OTHER_SWEET] }} className="pop-in" />
+            <div className="ez-list pop-in" style={{ padding: 16, display: 'grid', gap: 12 }}>
+              <label className="ez-field"><span className="ez-label">Що обрали</span>
+                <input className="ez-input" maxLength={40} placeholder="Напр. зефір, пастила, печиво" value={sweet.name} onChange={(e) => setSweet((v) => ({ ...v, name: e.target.value }))} />
+              </label>
+              <label className="ez-field"><span className="ez-label">Ккал на 100 г (з упаковки)</span>
+                <input className="ez-input" inputMode="numeric" placeholder="Напр. 320" value={sweet.kcal} onChange={(e) => setSweet((v) => ({ ...v, kcal: e.target.value.replace(/\D/g, '').slice(0, 3) }))} />
+              </label>
+              {sweetPortion
+                ? <p className="ez-headline" style={{ margin: 0 }}>Візьміть ≈ {sweetPortion}</p>
+                : sweet.kcal && <p className="ez-footnote" style={{ margin: 0 }}>Перевірте число: калорійність на 100 г — зазвичай від 50 до 900 ккал.</p>}
+            </div>
+          </>
+        )}
         {step && step.key !== 'eggs' && (
           <button className="ez-card ez-card--none" onClick={() => setNoneOpen((v) => !v)} aria-expanded={noneOpen}>
             <span className="ez-card__name">Нічого з цього немає вдома</span>
             <span className="ez-card__portion">Підкажемо, що робити</span>
           </button>
         )}
-        {picked && EXTRA_HINTS[picked.label] && <Tip hint={{ text: EXTRA_HINTS[picked.label] }} className="pop-in" />}
+        {picked && picked.label !== OTHER_SWEET && EXTRA_HINTS[picked.label] && <Tip hint={{ text: EXTRA_HINTS[picked.label] }} className="pop-in" />}
         {noneOpen && (
           <Tip hint={{ text: `${idx > 0 ? 'Спробуйте повернутися на крок назад і обрати іншу основу чи гарнір — разом з ними зміниться й список. ' : ''}Перевірте, що є вдома, складіть список покупок і почніть завтра — так буде з чого збирати тарілки. Зверніть увагу на білково-жирові продукти, що швидко псуються, і на овочі: їх зазвичай немає в запасі.`, lesson: 'Гайд · Список здорових продуктів' }} />
         )}
