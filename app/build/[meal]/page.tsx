@@ -9,7 +9,7 @@ import { Tip } from '@/components/Tip';
 import { Sheet } from '@/components/Sheet';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
-import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, PROTEIN_SNACK_NOTE, cheeseOptions, expandOptions, proteinSnackOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
+import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, proteinSnackNote, cheeseOptions, expandOptions, proteinSnackOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
@@ -202,7 +202,7 @@ export default function Build() {
         </ol>
       </div>
 
-      {step?.key === 'protein_snack' && <div className="step-tip"><Tip hint={PROTEIN_SNACK_NOTE} className="pop-in" /></div>}
+      {step?.key === 'protein_snack' && <div className="step-tip"><Tip hint={proteinSnackNote(picks.eggs?.label)} className="pop-in" /></div>}
       {hint && <div className="step-tip"><Tip hint={hint} key={`${step.key}-${idx}`} className="pop-in" /></div>}
 
       {groups.map(([g, opts]) => (
