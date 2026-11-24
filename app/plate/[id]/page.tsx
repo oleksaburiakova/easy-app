@@ -31,7 +31,15 @@ export default function PlatePage() {
     if (c) notes.push(`${display({ label: s.label }).name} — суха вага, після варіння ${c.replace(/ (готов\S+)$/, '')}.`);
   }
   if (plate.meal !== 'breakfast' && plate.selections.some((x) => x.stepKey === 'protein')) notes.push("М'ясо й рибу важимо в сирому вигляді.");
-  notes.push('Зелень — щонайменше 10 г до кожного прийому їжі.');
+  // Зелень — окремим рядком інгредієнтів (10 г до кожного прийому їжі): після овочів, а без них — у кінці.
+  const hasVeg = plate.selections.some((x) => x.stepKey === 'veg');
+  const greens = (
+    <div className="ez-irow" key="greens">
+      <span className="ez-irow__thumb ph" aria-hidden="true" style={{ fontSize: 18 }}>З</span>
+      <span className="ez-irow__name">Зелень</span>
+      <span className="ez-irow__grams">10 г</span>
+    </div>
+  );
 
   const flash = (t: string) => { setToast(t); setTimeout(() => setToast(''), 1800); };
 
@@ -84,9 +92,11 @@ export default function PlatePage() {
                     </span>
                   </div>
                 )}
+                {s.stepKey === 'veg' && greens}
               </div>
             );
           })}
+          {!hasVeg && greens}
           {notes.map((n) => <p className="ez-list__note" key={n}>{n}</p>)}
         </section>
       </div>
