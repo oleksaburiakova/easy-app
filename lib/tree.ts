@@ -110,7 +110,8 @@ export function display(opt: TreeOption): { name: string; portion: string } {
   const dish = dishBase(opt.label);
   if (dish) return { name: dish.title, portion: dishBasePortion(opt.label) };
   const label = tidy(opt.label.replace(/^картинка:\s*/, ''));
-  if (opt.composite) return { name: cap(label), portion: '' };
+  // Складений варіант показуємо одним рядком, крім «кілька назв — одна грамовка»: «куряче/індиче філе 150 г (+ 5 мл олії)» → назва й грамовка окремо.
+  if (opt.composite && !singleWeight(label)) return { name: cap(label), portion: '' };
   const lead = label.match(/^(\d+(?:[.,]\d+)?\s*(?:г|шт|мл))\s+(.*)$/);
   if (lead) return { name: cap(lead[2]), portion: lead[1] };
   // Порція починається з першого числа з одиницею (г, шт, мл, порції), а не з будь-якої цифри («до 3% 80 г»).
@@ -118,6 +119,12 @@ export function display(opt: TreeOption): { name: string; portion: string } {
   const i = m?.index ?? -1;
   if (i <= 0) return { name: cap(label.replace(/[()]/g, '').trim()), portion: '' };
   return { name: cap(label.slice(0, i).trim()), portion: label.slice(i).trim() };
+}
+
+/** Одна грамовка на весь варіант (без «+ інший продукт»; жир окремо не рахується). */
+function singleWeight(label: string): boolean {
+  const rest = splitOil(label).rest;
+  return !/\+/.test(rest) && (rest.match(/\d+/g) ?? []).length === 1 && /\d+\s*г\s*$/.test(rest);
 }
 
 /* ---------- Суха / готова вага (коефіцієнти Олени) ---------- */
