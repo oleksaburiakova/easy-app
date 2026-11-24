@@ -69,6 +69,7 @@ export const GROUP_TITLES: Record<string, string> = {
   'риба': 'Риба',
   'морепродукти': 'Морепродукти',
   'основи страв': 'Основи для страв',
+  'альтернативи сиру': 'Альтернативи сиру',
 };
 
 /* ---------- Відображення варіантів ---------- */
@@ -237,3 +238,30 @@ export const EXTRA_OPTIONS: Record<string, TreeOption[]> = { chocolate: [{ label
 export const EXTRA_HINTS: Record<string, string> = {
   'інша солодощ': 'Своя солодощ — приблизно на 50–80 ккал, як 10 г чорного шоколаду (≈ 53 ккал). Подивіться калорійність на 100 г на упаковці й розрахуйте, скільки грамів узяти. Не частіше, ніж через день.',
 };
+
+/* ---------- Інші сири й альтернативи сиру (Олена, 24.11) ---------- */
+
+/**
+ * На кроці «Сир» поруч із гаудою: моцарела, едам, радамер — у тій самій кількості, що гауда;
+ * і альтернативи (без молочного) за таблицею Олени для гауди 15 / 20 / 30 г.
+ * Для гауди 25 і 40 г таблиці немає — грамовки пропорційно колонці 30 г, округлено до 5 г (needs_review: погоджує Олена).
+ */
+export const ALT_GROUP = 'альтернативи сиру';
+const ALT_TABLE: Record<number, [string, number][]> = {
+  15: [['тофу', 35], ['хумус', 30], ['квасоля варена', 40], ['протеїновий пудинг', 65]],
+  20: [['тофу', 50], ['хумус', 45], ['квасоля варена', 55], ['протеїновий пудинг', 90]],
+  30: [['тофу', 75], ['хумус', 65], ['квасоля варена', 85], ['протеїновий пудинг', 135]],
+};
+const altFor = (g: number): [string, number][] =>
+  ALT_TABLE[g] ?? ALT_TABLE[30].map(([n, v]) => [n, Math.round((v / 30) * g / 5) * 5]);
+
+export function cheeseOptions(step: TreeStep): TreeOption[] {
+  if (step.key !== 'cheese') return step.options;
+  const gauda = step.options.find((o) => /гауда/i.test(o.label));
+  const g = Number(gauda?.label.match(/гауда\s*(\d+)/i)?.[1]);
+  if (!g) return step.options;
+  const review = ALT_TABLE[g] ? undefined : `Грамовку пораховано пропорційно до гауди ${g} г — погоджує Олена.`;
+  const cheeses: TreeOption[] = ['моцарела', 'едам', 'радамер'].map((n) => ({ label: `${n} ${g} г`, group: null }));
+  const alts: TreeOption[] = altFor(g).map(([n, v]) => ({ label: `${n} ${v} г`, group: ALT_GROUP, ...(review ? { needs_review: review } : {}) }));
+  return [...step.options.map((o) => ({ ...o, group: o.group ?? null })), ...cheeses, ...alts];
+}

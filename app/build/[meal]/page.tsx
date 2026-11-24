@@ -8,7 +8,7 @@ import { Photo } from '@/components/Photo';
 import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
-import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, expandOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
+import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, cheeseOptions, expandOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
@@ -263,7 +263,7 @@ export default function Build() {
 
 /** Порядок кроків: «Сир» — після «Овочі», щоб до салату можна було підказати фету (рішення 24.11). Варіанти «a \\ b \\ c» — окремими картками. */
 function arrange(steps: TreeStep[]): TreeStep[] {
-  const out = steps.map((s) => ({ ...s, options: expandOptions(s.options) }));
+  const out = steps.map((s) => ({ ...s, options: cheeseOptions({ ...s, options: expandOptions(s.options) }) }));
   const c = out.findIndex((s) => s.key === 'cheese');
   const v = out.findIndex((s) => s.key === 'veg');
   if (c >= 0 && v > c) out.splice(v, 0, out.splice(c, 1)[0]);
