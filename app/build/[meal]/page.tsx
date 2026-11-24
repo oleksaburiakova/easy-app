@@ -270,16 +270,20 @@ export default function Build() {
           </>
         )}
         {step && step.key !== 'eggs' && (
-          <button className="ez-card ez-card--none" onClick={() => setNoneOpen((v) => !v)} aria-expanded={noneOpen}>
+          <button className="ez-card ez-card--none" onClick={() => setNoneOpen(true)} aria-haspopup="dialog">
             <span className="ez-card__name">Нічого з цього немає вдома</span>
             <span className="ez-card__portion">Підкажемо, що робити</span>
           </button>
         )}
         {picked && picked.label !== OTHER_SWEET && EXTRA_HINTS[picked.label] && <Tip hint={{ text: EXTRA_HINTS[picked.label] }} className="pop-in" />}
-        {noneOpen && (
-          <Tip hint={{ text: `${idx > 0 ? 'Спробуйте повернутися на крок назад і обрати іншу основу чи гарнір — разом з ними зміниться й список. ' : ''}Перевірте, що є вдома, складіть список покупок і почніть завтра — так буде з чого збирати тарілки. Зверніть увагу на білково-жирові продукти, що швидко псуються, і на овочі: їх зазвичай немає в запасі.`, lesson: 'Гайд · Список здорових продуктів' }} />
-        )}
       </div>
+
+      {noneOpen && (
+        <Sheet title="Нічого з цього немає вдома" onClose={() => setNoneOpen(false)}>
+          <Tip hint={{ text: `${idx > 0 ? 'Спробуйте повернутися на крок назад і обрати іншу основу чи гарнір — разом з ними зміниться й список. ' : ''}Перевірте, що є вдома, складіть список покупок і почніть завтра — так буде з чого збирати тарілки. Зверніть увагу на білково-жирові продукти, що швидко псуються, і на овочі: їх зазвичай немає в запасі.`, lesson: 'Гайд · Список здорових продуктів' }} />
+          <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setNoneOpen(false)}>Зрозуміло</button>
+        </Sheet>
+      )}
 
       {skipWarn && SKIP_WARNINGS[skipWarn] && (() => {
         const w = SKIP_WARNINGS[skipWarn];
