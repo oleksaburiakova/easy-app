@@ -13,7 +13,8 @@ export function plateTitle(meal: MealKey, s: Selection[]): string {
   const protein = name('protein');
   const parts: string[] = [];
   if (first) parts.push(first);
-  if (eggs && eggs.label !== 'без яєць') parts.push(eggs.label === 'яйце 1' ? 'яйце' : 'яйця');
+  const extraEgg = s.some((y) => y.stepKey === 'protein_snack' && /яйце/.test(y.label));
+  if (eggs && eggs.label !== 'без яєць') parts.push(eggs.label === 'яйце 1' && !extraEgg ? 'яйце' : 'яйця');
   if (protein) parts.push(protein.toLowerCase());
   if (!parts.length) return meal === 'breakfast' ? 'Сніданок' : meal === 'lunch' ? 'Обід' : 'Вечеря';
   // Відмінювання назв автоматично не робимо — назва-перелік через «·».

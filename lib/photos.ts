@@ -29,7 +29,7 @@ const RULES: [RegExp, string][] = [
   [/галет/i, 'galeta'],
   [/млинц/i, 'mlyntsi'],
   [/панкейк/i, 'pankeiky'],
-  [/^яйц|^яйце/i, 'yaitsia'],
+  [/^яйц|^яйце|яйце$/i, 'yaitsia'],
   // риба й морепродукти
   [/^лосось.*ікр|^ікра.*лосось/i, 'losos-ikra'],
   [/ікра/i, 'ikra'],

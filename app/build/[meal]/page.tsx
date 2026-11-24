@@ -8,7 +8,7 @@ import { Photo } from '@/components/Photo';
 import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
-import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, cheeseOptions, expandOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
+import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, PROTEIN_SNACK_NOTE, cheeseOptions, expandOptions, proteinSnackOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
@@ -29,7 +29,7 @@ export default function Build() {
   const node = profile && ['breakfast', 'lunch', 'dinner'].includes(meal) ? levelNode(meal, profile.level) : null;
 
   /** Кроки будуються з дерева Олени і залежать від вибору (основа, яйця). */
-  const steps: TreeStep[] = useMemo(() => arrange((() => {
+  const steps: TreeStep[] = useMemo(() => arrange(picks.eggs?.label, (() => {
     if (!node) return [];
     if (meal !== 'breakfast') return node.branches['default']?.steps ?? [];
     const out: TreeStep[] = [{ key: 'base', title: 'основа', options: node.bases ?? [] }];
@@ -198,6 +198,7 @@ export default function Build() {
         </ol>
       </div>
 
+      {step?.key === 'protein_snack' && <div className="step-tip"><Tip hint={PROTEIN_SNACK_NOTE} className="pop-in" /></div>}
       {hint && <div className="step-tip"><Tip hint={hint} key={`${step.key}-${idx}`} className="pop-in" /></div>}
 
       {groups.map(([g, opts]) => (
@@ -262,8 +263,8 @@ export default function Build() {
 }
 
 /** Порядок кроків: «Сир» — після «Овочі», щоб до салату можна було підказати фету (рішення 24.11). Варіанти «a \\ b \\ c» — окремими картками. */
-function arrange(steps: TreeStep[]): TreeStep[] {
-  const out = steps.map((s) => ({ ...s, options: cheeseOptions({ ...s, options: expandOptions(s.options) }) }));
+function arrange(eggs: string | undefined, steps: TreeStep[]): TreeStep[] {
+  const out = steps.map((s) => ({ ...s, options: proteinSnackOptions({ ...s, options: cheeseOptions({ ...s, options: expandOptions(s.options) }) }, eggs) }));
   const c = out.findIndex((s) => s.key === 'cheese');
   const v = out.findIndex((s) => s.key === 'veg');
   if (c >= 0 && v > c) out.splice(v, 0, out.splice(c, 1)[0]);

@@ -56,7 +56,7 @@ export const STEP_TITLES: Record<string, string> = {
   cheese: 'Сир',
   veg: 'Овочі',
   fruit: 'Фрукти',
-  protein_snack: 'Десерт',
+  protein_snack: 'Добір білка',
   chocolate: 'Десерт',
   addon: 'Доповнення',
 };
@@ -291,4 +291,29 @@ export function cheeseOptions(step: TreeStep): TreeOption[] {
   const cheeses: TreeOption[] = ['моцарела', 'едам', 'радамер'].map((n) => ({ label: `${n} ${g} г`, group: null }));
   const alts: TreeOption[] = altFor(g).map(([n, v]) => ({ label: `${n} ${v} г`, group: ALT_GROUP, ...(review ? { needs_review: review } : {}) }));
   return [...step.options.map((o) => ({ ...o, group: o.group ?? null })), ...cheeses, ...alts];
+}
+
+/* ---------- Добір білка на сніданок без яєць / з 1 яйцем (рішення 24.11) ---------- */
+
+/** Порада зверху кроку: білка мало — доберіть; можна пропустити, але це ризик. */
+export const PROTEIN_SNACK_NOTE = {
+  text: 'На цій тарілці мало білка — доберіть його: протеїновий йогурт, протеїновий батончик або ще одне яйце. Можна й не додавати, але постійний недобір білка — ризик для здоров\'я.',
+  lesson: 'Урок 2.3 · Білок',
+};
+
+/**
+ * «протеїновий йогурт з ягодами 100 г / протеїновий батончик 30 г» → дві окремі картки з тими самими грамовками;
+ * для гілки «1 яйце» — ще картка «ще 1 яйце» (разом 2 яйця).
+ */
+export function proteinSnackOptions(step: TreeStep, eggs?: string): TreeOption[] {
+  if (step.key !== 'protein_snack') return step.options;
+  const src = step.options.map((o) => o.label).join(' ');
+  const y = src.match(/йогурт[^\d]*(\d+)\s*г/i)?.[1];
+  const b = src.match(/батончик[^\d]*(\d+)\s*г/i)?.[1];
+  if (!y && !b) return step.options;
+  return [
+    ...(y ? [{ label: `протеїновий йогурт з ягодами ${y} г` }] : []),
+    ...(b ? [{ label: `протеїновий батончик ${b} г` }] : []),
+    ...(eggs === 'яйце 1' ? [{ label: 'ще 1 яйце' }] : []),
+  ];
 }
