@@ -35,6 +35,9 @@ export const LESSONS: Lesson[] = [
  * Обкладинка — public/guides/covers/<name>.webp: верх першої сторінки гайду (ширина 400 px), у списку — сіткою 2 колонки.
  */
 export interface Guide { title: string; file: string; pages: number; cover: string }
+/** Коротка назва гайду для адреси перегляду: /guide/<slug> (= ім'я PDF без .pdf). */
+export const guideSlug = (g: Guide) => g.file.split('/').pop()!.replace(/\.pdf$/, '');
+
 export const GUIDES: Guide[] = [
   { title: 'Як обрати свою калорійність', file: '/guides/kaloriinist.pdf', pages: 8, cover: '/guides/covers/kaloriinist.webp' },
   { title: 'Список здорових продуктів', file: '/guides/zdorovi-produkty.pdf', pages: 11, cover: '/guides/covers/zdorovi-produkty.webp' },
@@ -65,7 +68,7 @@ export function lessonLabel(ref: string): string {
 
 export function lessonHref(ref: string): string {
   const guide = ref.match(/^Гайд\s*·\s*(.+)$/);
-  if (guide) return GUIDES.find((g) => g.title === guide[1].trim())?.file ?? '/learn#guides';
+  if (guide) { const g = GUIDES.find((x) => x.title === guide[1].trim()); return g ? `/guide/${guideSlug(g)}` : '/learn#guides'; }
   const num = ref.match(/^Урок\s+([\d.]+)/);
   if (num && LESSONS.some((l) => l.id === num[1])) return `/learn#l-${num[1]}`;
   if (/^Вступ/.test(ref)) return '/learn#l-intro';

@@ -14,7 +14,7 @@ import { DAILY_TIPS, pick } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
 import { useDismissed } from '@/components/Install';
 import { useStartFlow } from '@/components/StartFlow';
-import { GUIDES } from '@/lib/lessons';
+import { GUIDES, guideSlug } from '@/lib/lessons';
 import { vocative } from '@/lib/names';
 
 function greeting(h: number, name?: string) {
@@ -75,7 +75,7 @@ export default function Home() {
                   <p className="home-card__title">З чого почати</p>
                   <p className="home-card__text">Перегляньте список здорових продуктів — і перевірте, що є вдома. Так буде з чого збирати тарілки. А перший урок пояснить, як працює конструктор.</p>
                   <div className="home-card__actions">
-                    {productsGuide && <a className="ez-btn ez-btn--primary ez-btn--sm" href={productsGuide.file} target="_blank" rel="noopener">Список продуктів</a>}
+                    {productsGuide && <Link className="ez-btn ez-btn--primary ez-btn--sm" href={`/guide/${guideSlug(productsGuide)}`}>Список продуктів</Link>}
                     <Link className="ez-btn ez-btn--soft ez-btn--sm" href="/learn#l-intro">Перший урок</Link>
                   </div>
                 </div>

@@ -501,3 +501,14 @@ a.pf-row:active, .pf-row--btn:active { transform: scale(.98); }
   background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--burgundy) 65%, white), var(--burgundy) 70%); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .4), 0 3px 8px -2px color-mix(in srgb, var(--burgundy) 60%, transparent); transition: var(--press); }
 .guide-card__dl:active { transform: scale(.9); }
 .guide-card__row .guide-card__meta { white-space: nowrap; padding: 0 8px; gap: 3px; }
+
+/* Перегляд гайду: скляна панель зверху, сторінки PDF зображеннями. */
+.guide-view__bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: var(--space-2); padding: calc(10px + env(safe-area-inset-top)) var(--space-3) 10px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, .85), rgba(255, 255, 255, .55)); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); box-shadow: 0 1px 0 rgba(28, 20, 22, .06); }
+.guide-view__bar .ez-nav__back { border: 0; cursor: pointer; font: inherit; font-weight: 600; flex: none; }
+.guide-view__title { flex: 1; min-width: 0; font-size: 14px; font-weight: 700; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.guide-view__dl { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border: 0; border-radius: var(--radius-pill); font: inherit; font-size: 14px; font-weight: 700; color: var(--white); cursor: pointer;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--burgundy) 82%, white) 0%, var(--burgundy) 55%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 6px 16px color-mix(in srgb, var(--burgundy) 28%, transparent); transition: var(--press); }
+.guide-view__dl:active { transform: scale(.95); }
+.guide-view__pages { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-3); }
+.guide-view__pages img { width: 100%; height: auto; display: block; border-radius: 14px; box-shadow: 0 10px 24px -10px rgba(97, 30, 45, .35), 0 0 0 .5px rgba(28, 20, 22, .08); }

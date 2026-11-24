@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { AwardWatcher } from '@/components/Awards';
 import { useEffect, useState } from 'react';
 import { TabBar } from '@/components/TabBar';
@@ -6,7 +7,7 @@ import { Icon } from '@/components/Icon';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { useRequireProfile } from '@/components/Guard';
 import { useLearn } from '@/lib/store';
-import { GUIDES, LESSON_BLOCKS, LESSONS, durationLabel, lessonThumb, vimeoEmbed } from '@/lib/lessons';
+import { GUIDES, LESSON_BLOCKS, LESSONS, guideSlug, durationLabel, lessonThumb, vimeoEmbed } from '@/lib/lessons';
 
 export default function Learn() {
   const { ready } = useRequireProfile();
@@ -68,9 +69,9 @@ export default function Learn() {
         <div className="guide-strip">
           {GUIDES.map((g) => (
             <div key={g.file} className="guide-card">
-              <a href={g.file} target="_blank" rel="noopener" onClick={() => markGuide(g.file)} className="guide-card__open" aria-label={`Відкрити: ${g.title}, PDF, ${g.pages} стор.`}>
+              <Link href={`/guide/${guideSlug(g)}`} onClick={() => markGuide(g.file)} className="guide-card__open" aria-label={`Відкрити: ${g.title}, ${g.pages} стор.`}>
                 <span className="guide-card__cover"><img src={g.cover} alt="" loading="lazy" /></span>
-              </a>
+              </Link>
               <span className="guide-card__row">
                 <span className="guide-card__meta"><Icon name="file" size={13} variant="fill" /> {g.pages} стор.</span>
                 {/* Завантажити PDF собі (на iPhone — у «Файли»). */}
