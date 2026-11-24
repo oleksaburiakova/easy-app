@@ -440,3 +440,17 @@ a.pf-row:active, .pf-row--btn:active { transform: scale(.98); }
 .ez-card--multi .ez-card__img { aspect-ratio: 16 / 10; }
 .ez-card--multi .ez-card__row { padding: 10px 12px 12px; }
 .ez-card:disabled { opacity: .45; cursor: default; transform: none; }
+
+/* Історія: трекер обраного дня. */
+.hs-trk { padding-bottom: var(--space-3); }
+.hs-trk__head { display: flex; align-items: baseline; justify-content: space-between; }
+.hs-trk__tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
+.hs-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 12px; border-radius: 16px; background: var(--vol-tint); box-shadow: var(--vol-edge); min-width: 0; }
+.hs-tile__icon { color: var(--burgundy); display: flex; }
+.hs-tile--ok .hs-tile__icon { color: var(--olive-ink); }
+.hs-tile__value { font-size: 14px; font-weight: 700; line-height: 18px; overflow-wrap: anywhere; }
+.hs-tile__label { font-size: 12px; color: var(--tertiary); }
+.hs-trk__feel { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: var(--space-3); font-size: 14px; color: var(--secondary); }
+.hs-feel { display: inline-flex; align-items: center; gap: 5px; }
+.hs-feel .ez-icon { color: var(--burgundy); }
+.hs-feel b { color: var(--ink); }
