@@ -10,7 +10,7 @@ import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO } from '@/lib/store';
 import { cookedHint, dishBase, display, mealTitle, oilChoices, splitOil, tidy } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
-import { plateTitle } from '@/lib/plate';
+import { plateTitle, sweetPaused, withoutSweet } from '@/lib/plate';
 
 export default function PlatePage() {
   const { id } = useParams<{ id: string }>();
@@ -111,7 +111,7 @@ export default function PlatePage() {
               </Link>
             ) : (
               // Тарілка з минулого дня: історію не редагуємо, але страву можна повторити сьогодні.
-              <button className="ez-btn ez-btn--soft" onClick={() => { const p = addPlate({ date: todayISO(), meal: plate.meal, level: plate.level, selections: plate.selections, status: 'eaten', favorite: false }); router.push(`/plate/${p.id}`); }}>
+              <button className="ez-btn ez-btn--soft" onClick={() => { const p = addPlate({ date: todayISO(), meal: plate.meal, level: plate.level, selections: withoutSweet(plate.selections, sweetPaused(plates, plate.meal)), status: 'eaten', favorite: false }); router.push(`/plate/${p.id}`); }}>
                 <span style={{ color: 'var(--burgundy)', display: 'flex' }}><Icon name="redo" size={18} /></span>
                 Повторити сьогодні
               </button>

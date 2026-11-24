@@ -12,7 +12,7 @@ import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
 import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, OTHER_SWEET, sweetGrams, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, proteinSnackNote, cheeseOptions, expandOptions, proteinSnackOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, dishRank, DISH_GROUP, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
-import { plateTitle } from '@/lib/plate';
+import { plateTitle, sweetPaused, withoutSweet, SWEET_STEP, SWEET_PAUSE_NOTE } from '@/lib/plate';
 
 type Picks = Record<string, TreeOption>;
 
@@ -34,7 +34,9 @@ export default function Build() {
   const node = profile && ['breakfast', 'lunch', 'dinner'].includes(meal) ? levelNode(meal, profile.level) : null;
 
   /** Кроки будуються з дерева Олени і залежать від вибору (основа, яйця). */
-  const steps: TreeStep[] = useMemo(() => arrange(meal as MealKey, picks.eggs?.label, (() => {
+  /** Солодке не частіше, ніж через день: учора було (або сьогодні вже є в іншому прийомі) — кроку «Десерт» немає. */
+  const paused = plReady && sweetPaused(plates, meal);
+  const rawSteps: TreeStep[] = useMemo(() => arrange(meal as MealKey, picks.eggs?.label, (() => {
     if (!node) return [];
     if (meal !== 'breakfast') return node.branches['default']?.steps ?? [];
     const out: TreeStep[] = [{ key: 'base', title: 'основа', options: node.bases ?? [] }];
@@ -45,6 +47,8 @@ export default function Build() {
     const eggs = picks.eggs;
     return eggs ? [...out, ...(node.branches[eggs.label]?.steps ?? [])] : out;
   })()), [node, meal, picks.base, picks.eggs]);
+  const sweetCut = paused && rawSteps.some((s) => s.key === SWEET_STEP);
+  const steps = useMemo(() => (sweetCut ? rawSteps.filter((s) => s.key !== SWEET_STEP) : rawSteps), [rawSteps, sweetCut]);
 
   /** Улюблені страви цього прийому їжі під поточну калорійність (з іншою калорійністю грамовки не ті). */
   const favs: Plate[] = useMemo(() => {
@@ -98,7 +102,7 @@ export default function Build() {
   };
 
   const repeat = (fav: Plate) => {
-    const plate = addPlate({ date: todayISO(), meal, level: fav.level, selections: fav.selections, status: 'eaten', favorite: false });
+    const plate = addPlate({ date: todayISO(), meal, level: fav.level, selections: withoutSweet(fav.selections, paused), status: 'eaten', favorite: false });
     router.push(`/plate/${plate.id}`);
   };
 
@@ -211,6 +215,7 @@ export default function Build() {
 
       {step?.key === 'protein_snack' && <div className="step-tip"><Tip hint={proteinSnackNote(picks.eggs?.label)} className="pop-in" /></div>}
       {hint && <div className="step-tip"><Tip hint={hint} key={`${step.key}-${idx}`} className="pop-in" /></div>}
+      {sweetCut && isLast && <div className="step-tip"><Tip hint={{ text: SWEET_PAUSE_NOTE }} className="pop-in" /></div>}
 
       {groups.map(([g, opts]) => (
         <section key={`${step.key}-${g ?? 'all'}`}>
