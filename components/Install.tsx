@@ -74,13 +74,14 @@ export function InstallSheet({ onClose }: { onClose: () => void }) {
   );
 }
 
-/** Покрокова підказка: iPhone — «Поділитися → На початковий екран → Додати»; інші — меню браузера. */
+/** Покрокова підказка: iPhone (Safari, iOS 26) — «☰ → Поділитися → На початковий екран → Додати»; інші — меню браузера. */
 export function InstallSteps() {
   const [ios, setIos] = useState(false);
   useEffect(() => setIos(isIOS()), []);
   return ios ? (
     <ol className="inst-steps">
-      <li><span className="inst-steps__ic"><ShareIcon /></span><span>Натисніть <b>«Поділитися»</b> внизу екрана Safari</span></li>
+      <li><span className="inst-steps__ic"><MenuIcon /></span><span>Натисніть <b>три рисочки</b> на панелі внизу екрана Safari</span></li>
+      <li><span className="inst-steps__ic"><ShareIcon /></span><span>Оберіть <b>«Поділитися»</b></span></li>
       <li><span className="inst-steps__ic"><Icon name="plus" size={20} strokeWidth={2.2} /></span><span>Прогорніть і оберіть <b>«На початковий екран»</b></span></li>
       <li><span className="inst-steps__ic"><Icon name="check" size={20} strokeWidth={2.4} /></span><span>Натисніть <b>«Додати»</b> угорі праворуч</span></li>
     </ol>
@@ -89,6 +90,15 @@ export function InstallSteps() {
       <li><span className="inst-steps__ic">⋮</span><span>Відкрийте меню браузера <b>⋮</b> угорі праворуч</span></li>
       <li><span className="inst-steps__ic"><Icon name="plus" size={20} strokeWidth={2.2} /></span><span>Оберіть <b>«Установити застосунок»</b> або <b>«Додати на головний екран»</b></span></li>
     </ol>
+  );
+}
+
+/** Три рисочки — кнопка меню на нижній панелі Safari (iOS 26). */
+function MenuIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+      <path d="M5 7h14M5 12h14M5 17h9" />
+    </svg>
   );
 }
 
