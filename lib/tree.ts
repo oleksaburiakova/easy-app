@@ -194,3 +194,46 @@ export const SKIP_WARNINGS: Record<string, { text: string; lesson: string }> = {
   protein_snack: { text: 'Можна з\'їсти пізніше або добрати білок в інший прийом їжі. Один день — нічого страшного, а постійний недобір білка — ризик для здоров\'я.', lesson: 'Урок 2.3 · Білок' },
 };
 export const isNoneOption = (label: string) => /^без\s/i.test(label);
+
+/* ---------- Кроки з вибором кількох (рішення 24.11) ---------- */
+
+/** Овочі — скільки завгодно (мінімум 150 г, можна більше); фрукти — до 3 зі списку Олени, разом у межах грамовки. */
+export const MULTI_STEPS: Record<string, { max: number }> = { veg: { max: 99 }, fruit: { max: 3 } };
+
+const VEG_ALIASES: Record<string, string> = { 'помідори': 'помідор' };
+const cleanItem = (s: string) => s.replace(/^\d+\s*г\s*/i, '').trim().toLowerCase();
+
+/**
+ * Окремі продукти з комбінацій дошки: «капуста, морква, помідор» → капуста · морква · помідор.
+ * Грамовка — на весь крок (овочі: amount_g; фрукти: діапазон з варіантів), окремі продукти без пересчёту.
+ */
+export function multiOptions(step: TreeStep): TreeOption[] {
+  const seen = new Set<string>();
+  const out: TreeOption[] = [];
+  for (const o of step.options) {
+    for (const raw of o.label.split(',')) {
+      let item = cleanItem(raw);
+      if (!item) continue;
+      item = VEG_ALIASES[item] ?? item;
+      if (seen.has(item)) continue;
+      seen.add(item);
+      out.push({ label: item, group: null });
+    }
+  }
+  return out;
+}
+
+/** Грамовка кроку з вибором кількох: «від 150 г» для овочів, «70–100 г» для фруктів (за калорійністю). */
+export function multiPortion(step: TreeStep): string {
+  if (step.key === 'veg') return `від ${String(step.amount_g ?? '150').split(/[-–]/)[0].trim()} г`;
+  const nums = step.options.map((o) => Number((o.label.match(/^(\d+)\s*г/) ?? [])[1])).filter(Boolean);
+  if (!nums.length) return '';
+  const lo = Math.min(...nums), hi = Math.max(...nums);
+  return lo === hi ? `${lo} г` : `${lo}–${hi} г`;
+}
+
+/** Додаткові варіанти до кроків (не з дошки): своя солодощ замість шоколаду. */
+export const EXTRA_OPTIONS: Record<string, TreeOption[]> = { chocolate: [{ label: 'інша солодощ' }] };
+export const EXTRA_HINTS: Record<string, string> = {
+  'інша солодощ': 'Своя солодощ — приблизно на 50–80 ккал, як 10 г чорного шоколаду (≈ 53 ккал). Подивіться калорійність на 100 г на упаковці й розрахуйте, скільки грамів узяти. Не частіше, ніж через день.',
+};

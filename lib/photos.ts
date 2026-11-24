@@ -68,7 +68,7 @@ const RULES: [RegExp, string][] = [
   [/^салат/i, 'ovochi-salat'],
   [/^капуст/i, 'ovochi-kapusta'],
   [/^огірок/i, 'ovochi-ohirok'],
-  [/помідор.*перець|^редис/i, 'ovochi-pomidor-perets'],
+  [/помідор.*перець|^редис|^помідор|^перець/i, 'ovochi-pomidor-perets'],
   // фрукти
   [/лохин|грейпфрут/i, 'frukty-lokhyna'],
   [/ківі|манго/i, 'frukty-kivi'],

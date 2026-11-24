@@ -8,7 +8,7 @@ import { Photo } from '@/components/Photo';
 import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
-import { EGG_BRANCHES, GROUP_TITLES, SKIP_OPTIONS, SKIP_WARNINGS, expandOptions, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
+import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, expandOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
@@ -21,6 +21,8 @@ export default function Build() {
   const { profile, ready } = useRequireProfile();
   const { plates, addPlate, ready: plReady } = usePlates();
   const [picks, setPicks] = useState<Picks>({});
+  /** Кроки з вибором кількох (овочі, фрукти): обрані продукти по ключу кроку. */
+  const [multi, setMulti] = useState<Record<string, string[]>>({});
   const [idx, setIdx] = useState(0);
   const [noneOpen, setNoneOpen] = useState(false);
 
@@ -60,7 +62,9 @@ export default function Build() {
 
   const step = steps[idx];
   const total = meal === 'breakfast' && steps.length < 4 ? 6 : steps.length;
-  const picked = step ? picks[step.key] : undefined;
+  const multiCfg = step ? MULTI_STEPS[step.key] : undefined;
+  const multiSel = step && multiCfg ? multi[step.key] ?? [] : [];
+  const picked = step ? (multiCfg ? (multiSel.length ? { label: multiSel.join(', ') } : undefined) : picks[step.key]) : undefined;
   const isLast = idx === steps.length - 1 && steps.length >= 3;
 
   const choose = (opt: TreeOption) => {
@@ -71,8 +75,18 @@ export default function Build() {
       if (step.key === 'base' || step.key === 'eggs') {
         const keep = step.key === 'base' ? ['base'] : ['base', 'eggs'];
         for (const k of Object.keys(next)) if (!keep.includes(k)) delete next[k];
+        setMulti({});
       }
       return next;
+    });
+  };
+  const toggleMulti = (item: string) => {
+    if (!step || !multiCfg) return;
+    setNoneOpen(false);
+    setMulti((m) => {
+      const cur = m[step.key] ?? [];
+      const nextList = cur.includes(item) ? cur.filter((x) => x !== item) : cur.length >= multiCfg.max ? cur : [...cur, item];
+      return { ...m, [step.key]: nextList };
     });
   };
 
@@ -84,10 +98,12 @@ export default function Build() {
   const finish = () => {
     // «Без шоколаду» тощо в тарілку не потрапляє; «без яєць» лишається — від нього залежить гілка.
     const selections: Selection[] = steps.filter((s) => !(SKIP_OPTIONS[s.key] && picks[s.key]?.label === SKIP_OPTIONS[s.key])).map((s) => {
+      if (MULTI_STEPS[s.key]) {
+        // Овочі / фрукти: перелік обраного, грамовка на весь крок («від 150 г», «70–100 г»).
+        return { stepKey: s.key, stepTitle: STEP_TITLES[s.key] ?? s.title, label: (multi[s.key] ?? []).join(', '), portion: multiPortion(s), group: null };
+      }
       const o = picks[s.key];
-      const sel: Selection = { stepKey: s.key, stepTitle: STEP_TITLES[s.key] ?? s.title, label: o.label, group: o.group ?? null };
-      if (s.key === 'veg') sel.portion = `${s.amount_g} г`;
-      return sel;
+      return { stepKey: s.key, stepTitle: STEP_TITLES[s.key] ?? s.title, label: o.label, group: o.group ?? null };
     });
     const plate = addPlate({ date: todayISO(), meal, level: profile.level, selections, status: 'eaten', favorite: false });
     router.push(`/plate/${plate.id}`);
@@ -109,7 +125,8 @@ export default function Build() {
   // Групи (крупи / макарони / …) показуємо підзаголовками.
   const byGroup = new Map<string | null, TreeOption[]>();
   const skip = step && SKIP_OPTIONS[step.key];
-  for (const o of [...(step?.options ?? []), ...(skip ? [{ label: skip }] : [])]) {
+  const stepOptions = step ? (multiCfg ? multiOptions(step) : [...step.options, ...(EXTRA_OPTIONS[step.key] ?? [])]) : [];
+  for (const o of [...stepOptions, ...(skip ? [{ label: skip }] : [])]) {
     const g = optionGroup(o);
     byGroup.set(g, [...(byGroup.get(g) ?? []), o]);
   }
@@ -156,7 +173,13 @@ export default function Build() {
 
       <div className="ez-stepcard">
         <span className="ez-caption" style={{ color: 'var(--secondary)' }}>Крок {idx + 1} з {total}</span>
-        <span className="ez-headline">{stepTitle}{step?.key === 'veg' ? ` · ${step.amount_g} г` : ''}</span>
+        <span className="ez-headline">{stepTitle}{step && multiCfg ? ` · ${multiPortion(step)}` : ''}</span>
+        {step && multiCfg && (
+          <span className="ez-caption">
+            {step.key === 'veg' ? 'Оберіть скільки завгодно — мінімум 150 г, можна більше' : `Оберіть до ${multiCfg.max} — разом ${multiPortion(step)}`}
+            {multiSel.length > 0 && ` · обрано ${multiSel.length}${multiCfg.max < 99 ? ` з ${multiCfg.max}` : ''}`}
+          </span>
+        )}
         {step?.key === 'protein' && meal !== 'breakfast' && <span className="ez-caption">Вага м'яса й риби — в сирому вигляді</span>}
         <ol className="ez-steps" aria-label={`Кроки: ${mealTitle(meal)}`}>
           {Array.from({ length: total }).map((_, i) => (
@@ -184,12 +207,13 @@ export default function Build() {
             {opts.map((o) => {
               const none = isNoneOption(o.label);
               const d = step.key === 'eggs' || none ? { name: o.label.charAt(0).toUpperCase() + o.label.slice(1), portion: '' } : display(o);
-              const portion = none ? '' : step.key === 'veg' ? `${step.amount_g} г` : d.portion;
+              const portion = none || multiCfg ? '' : d.portion;
               const cooked = cookedHint(o);
               const note = optionNote(o);
-              const sel = picked?.label === o.label;
+              const sel = multiCfg ? multiSel.includes(o.label) : picked?.label === o.label;
+              const full = !!multiCfg && !sel && multiSel.length >= multiCfg.max;
               return (
-                <button key={o.label} className={`ez-card${none ? ' ez-card--skip' : ''}`} aria-pressed={sel} onClick={() => choose(o)}>
+                <button key={o.label} className={`ez-card${none ? ' ez-card--skip' : ''}${multiCfg ? ' ez-card--multi' : ''}`} aria-pressed={sel} disabled={full} onClick={() => (multiCfg ? toggleMulti(o.label) : choose(o))}>
                   {(() => {
                     const src = none ? nonePhoto(o.label) : productPhoto(dishBase(o.label) ? o.label : d.name);
                     return src
@@ -218,6 +242,7 @@ export default function Build() {
             <span className="ez-card__portion">Підкажемо, що робити</span>
           </button>
         )}
+        {picked && EXTRA_HINTS[picked.label] && <Tip hint={{ text: EXTRA_HINTS[picked.label] }} className="pop-in" />}
         {step && SKIP_WARNINGS[step.key] && picked?.label === SKIP_OPTIONS[step.key] && (
           <Tip hint={SKIP_WARNINGS[step.key]} className="pop-in" />
         )}

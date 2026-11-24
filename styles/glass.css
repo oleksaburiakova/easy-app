@@ -435,3 +435,8 @@ a.pf-row:active, .pf-row--btn:active { transform: scale(.98); }
   .ez-plan .ez-title { font-size: 19px !important; line-height: 24px !important; }
   .ez-plan__body { padding-left: var(--space-4); }
 }
+
+/* Вибір кількох (овочі, фрукти): компактніші картки; коли ліміт вичерпано — інші приглушені. */
+.ez-card--multi .ez-card__img { aspect-ratio: 16 / 10; }
+.ez-card--multi .ez-card__row { padding: 10px 12px 12px; }
+.ez-card:disabled { opacity: .45; cursor: default; transform: none; }
