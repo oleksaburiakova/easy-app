@@ -98,6 +98,7 @@ export function tidy(s: string): string {
     .replace(/\bоліі\b/g, 'олії')
     // Усі грамовки — у сирому вигляді, тож «картопля ( соло) 200г сирої», «картопля сира» → просто «картопля» (Олександра, 24.11).
     .replace(/\(\s*соло\s*\)\s*/gi, '')
+    .replace(/свиняча\s*\/\s*теляча/gi, 'свиняча')
     .replace(/\s*сирої(?![а-яіїєґ])/gi, '')
     .replace(/картопля\s+сира(?![а-яіїєґ])/gi, 'картопля')
     .replace(/\s+/g, ' ')
@@ -174,7 +175,17 @@ export const dishRank = (label: string) => { const i = DISH_ORDER.findIndex((re)
  * Текст дошки не змінюємо: кожна картка — частина того самого label з тією ж грамовкою.
  */
 export function expandOptions(opts: TreeOption[]): TreeOption[] {
-  return opts.flatMap((o) => (o.label.includes('\\') ? o.label.split('\\').map((part) => ({ ...o, label: part.trim() })) : splitRoe(o)));
+  return opts.flatMap((o) => (o.label.includes('\\') ? o.label.split('\\').map((part) => ({ ...o, label: part.trim() })) : splitRoe(o))).map(renameOption);
+}
+
+/** Перейменування для показу (дошку не змінюємо): «свиняча/теляча вирізка» → «свиняча вирізка» (Олександра, 24.11). */
+const RENAMES: [RegExp, string][] = [[/^свиняча\s*\/\s*теляча вирізка/i, 'свиняча вирізка']];
+function renameOption(o: TreeOption): TreeOption {
+  const r = RENAMES.find(([re]) => re.test(o.label));
+  if (!r) return o;
+  const label = o.label.replace(r[0], r[1]);
+  const g = Number(label.match(/(\d+)\s*г/)?.[1]);
+  return { ...o, label, name: r[1], composite: false, ...(g ? { amount: g, unit: 'g' } : {}) };
 }
 
 /**
