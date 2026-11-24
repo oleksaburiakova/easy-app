@@ -31,7 +31,12 @@ function cooked(o) {
 const errors = [];
 const AFTER = ['fruit', 'protein_snack', 'chocolate'];
 const LV = tree.levels.map((l) => l.replace('-', '–'));
+/** pattern — регулярний вираз або масив у порядку переваги: береться перший, що знаходить варіант. */
 function pickOne(options, pattern, where) {
+  if (Array.isArray(pattern)) {
+    const p = pattern.find((x) => options.some((o) => new RegExp(x, 'i').test(o.label.trim()))) ?? pattern[0];
+    return pickOne(options, p, where);
+  }
   const re = new RegExp(pattern, 'i');
   const found = options.filter((o) => re.test(o.label.trim()));
   if (found.length !== 1) {
@@ -50,8 +55,13 @@ function resolve(r, lvl) {
   if (r.meal === 'breakfast') {
     const base = pickOne(node.bases, r.base, `${where} основа`);
     rows.push(['base', base ? tidy(base.label) + cooked(base) : '—']);
-    rows.push(['eggs', r.eggs === 'яйця 2 шт' ? '2 шт' : r.eggs === 'яйце 1' ? '1 шт' : 'без яєць']);
-    branch = node.branches[r.eggs];
+    if (base?.kind === 'pancake_type') {
+      // Млинці / панкейки / галета — своя гілка без кроку «яйця».
+      branch = node.branches[`base:${base.label}`];
+    } else {
+      rows.push(['eggs', r.eggs === 'яйця 2 шт' ? '2 шт' : r.eggs === 'яйце 1' ? '1 шт' : 'без яєць']);
+      branch = node.branches[r.eggs];
+    }
   }
   if (!branch) { errors.push(`${where}: немає гілки ${r.eggs ?? 'default'}`); return rows; }
   for (const s of branch.steps) {
@@ -71,7 +81,7 @@ function resolve(r, lvl) {
 }
 
 const out = [];
-out.push('# Рецепти Easy — 15 на кожен прийом їжі');
+out.push('# Рецепти Easy');
 out.push('');
 out.push('> Згенеровано `npm run recipes` з `data/recipes.json`. **Грамовки не вписані вручну** — скрипт бере їх із дерева Олени (`data/easy-tree.json`) за шляхом рецепта в конструкторі, тож вони завжди збігаються з таблицею. Правити тексти — у `data/recipes.json`, потім перезапустити скрипт. Усе — на перевірку Олені.');
 out.push('');
@@ -83,7 +93,7 @@ out.push('- Овочі не рахуємо: склад — приклад, го�
 out.push('- Без обмежень: спеції, зелень, часник, лимонний сік, вода. Без майонезу, фритюру й цукру.');
 out.push('- Риба — до 160 °C, м\'ясо — до 170 °C; крупи промити й замочити на 30+ хвилин; картоплю після варіння можна остудити.');
 out.push('- Червоне м\'ясо — до 3–4 разів на тиждень, риба — 3–4, тунець — до 2, субпродукти — 1 раз.');
-out.push('- Млинці, панкейки й галету не брали: для них потрібні рецепти Олени.');
+out.push('- Млинці, панкейки й галета: порція з дерева, а склад тіста — **чернетка**, поки Олена не дасть свої рецепти.');
 out.push('');
 
 for (const meal of Object.keys(MEALS)) {
@@ -113,8 +123,12 @@ for (const meal of Object.keys(MEALS)) {
       out.push(`**${STEP[k]}:** ${text}.`);
       out.push('');
     }
-    out.push(`**Овочі:** ${r.veg}.`);
-    out.push('');
+    if (r.dough) {
+      out.push(`**${r.dough.title}** *(чернетка — грамовки підтверджує Олена)*: ${r.dough.items}.`);
+      if (r.dough.note) out.push(`${r.dough.note}`);
+      out.push('');
+    }
+    if (r.veg) { out.push(`**Овочі:** ${r.veg}.`); out.push(''); }
     out.push('**Приготування**');
     r.steps.forEach((s, n) => out.push(`${n + 1}. ${s}`));
     if (r.tip) { out.push(''); out.push(`> ${r.tip}`); }
