@@ -215,12 +215,13 @@ export const oilChoices = (ml: number) => [`олія ${ml} мл`, `вершко�
 /* ---------- Кроки, які можна пропустити ---------- */
 
 /** Крок → варіант «без»: додається останнім у сітку, у тарілку не потрапляє. */
-export const SKIP_OPTIONS: Record<string, string> = { chocolate: 'без шоколаду', protein_snack: 'без перекусу' };
+export const SKIP_OPTIONS: Record<string, string> = { chocolate: 'без шоколаду', protein_snack: 'не додавати' };
 /** Попередження, коли пропускають білковий перекус (рішення 24.11): можна, але білок треба добрати. */
-export const SKIP_WARNINGS: Record<string, { text: string; lesson: string }> = {
-  protein_snack: { text: 'Можна з\'їсти пізніше або добрати білок в інший прийом їжі. Один день — нічого страшного, а постійний недобір білка — ризик для здоров\'я.', lesson: 'Урок 2.3 · Білок' },
+/** Попередження, якщо крок пропускають: спливаюче вікно (рішення 24.11). */
+export const SKIP_WARNINGS: Record<string, { title: string; text: string; lesson: string }> = {
+  protein_snack: { title: 'Білок можна добрати пізніше', text: 'Можна з\'їсти пізніше або добрати білок в інший прийом їжі. Один день — нічого страшного, а постійний недобір білка — ризик для здоров\'я.', lesson: 'Урок 2.3 · Білок' },
 };
-export const isNoneOption = (label: string) => /^без\s/i.test(label);
+export const isNoneOption = (label: string) => /^(без\s|не додавати$)/i.test(label);
 
 /* ---------- Кроки з вибором кількох (рішення 24.11) ---------- */
 

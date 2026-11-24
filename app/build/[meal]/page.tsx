@@ -6,6 +6,7 @@ import { Icon } from '@/components/Icon';
 import { buildHero, nonePhoto, platePhoto, productPhoto } from '@/lib/photos';
 import { Photo } from '@/components/Photo';
 import { Tip } from '@/components/Tip';
+import { Sheet } from '@/components/Sheet';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
 import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, PROTEIN_SNACK_NOTE, cheeseOptions, expandOptions, proteinSnackOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
@@ -25,6 +26,7 @@ export default function Build() {
   const [multi, setMulti] = useState<Record<string, string[]>>({});
   const [idx, setIdx] = useState(0);
   const [noneOpen, setNoneOpen] = useState(false);
+  const [skipWarn, setSkipWarn] = useState<string | null>(null);
 
   const node = profile && ['breakfast', 'lunch', 'dinner'].includes(meal) ? levelNode(meal, profile.level) : null;
 
@@ -69,6 +71,8 @@ export default function Build() {
 
   const choose = (opt: TreeOption) => {
     setNoneOpen(false);
+    // Пропуск кроку з попередженням (добір білка) — порада спливаючим вікном.
+    if (SKIP_WARNINGS[step.key] && opt.label === SKIP_OPTIONS[step.key] && picks[step.key]?.label !== opt.label) setSkipWarn(step.key);
     setPicks((p) => {
       const next: Picks = { ...p, [step.key]: opt };
       // Зміна основи чи яєць змінює гілку — наступні вибори скидаємо.
@@ -244,13 +248,21 @@ export default function Build() {
           </button>
         )}
         {picked && EXTRA_HINTS[picked.label] && <Tip hint={{ text: EXTRA_HINTS[picked.label] }} className="pop-in" />}
-        {step && SKIP_WARNINGS[step.key] && picked?.label === SKIP_OPTIONS[step.key] && (
-          <Tip hint={SKIP_WARNINGS[step.key]} className="pop-in" />
-        )}
         {noneOpen && (
           <Tip hint={{ text: `${idx > 0 ? 'Спробуйте повернутися на крок назад і обрати іншу основу чи гарнір — разом з ними зміниться й список. ' : ''}Перевірте, що є вдома, складіть список покупок і почніть завтра — так буде з чого збирати тарілки. Зверніть увагу на білково-жирові продукти, що швидко псуються, і на овочі: їх зазвичай немає в запасі.`, lesson: 'Гайд · Список здорових продуктів' }} />
         )}
       </div>
+
+      {skipWarn && SKIP_WARNINGS[skipWarn] && (() => {
+        const w = SKIP_WARNINGS[skipWarn];
+        return (
+          <Sheet title={w.title} onClose={() => setSkipWarn(null)}>
+            <Tip hint={w} />
+            <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setSkipWarn(null)}>Зрозуміло</button>
+            <button className="ez-btn ez-btn--back ez-btn--block" onClick={() => { setPicks((p) => { const n = { ...p }; delete n[skipWarn]; return n; }); setSkipWarn(null); }}>Все ж додати білок</button>
+          </Sheet>
+        );
+      })()}
 
       <div className="bottom-bar">
         <div className="bottom-bar__inner ez-pair">
