@@ -114,7 +114,7 @@ body.open-only .task.done{display:none}
   <div class="hero__label">Общий прогресс</div>
   <div class="hero__num">${allDone} <small>из ${allTotal} задач</small></div>
   <div class="bar"><span style="width:${pct(allDone, allTotal)}%"></span></div>
-  <p class="hero__meta">По созвону 20.11: ${sections[0]?.done ?? 0} из ${sections[0]?.total ?? 0} · обновлено ${updated}</p>
+  <p class="hero__meta">${sections.filter((x) => /созвон|правки MVP/i.test(x.title)).map((x) => `${/24\.11/.test(x.title) ? 'Созвон 24.11' : 'Созвон 20.11'}: ${x.done} из ${x.total}`).join(' · ')} · обновлено ${updated}</p>
 </section>
 
 <div class="filter" role="group" aria-label="Показать">
