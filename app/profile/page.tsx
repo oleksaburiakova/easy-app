@@ -1,11 +1,12 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { TabBar } from '@/components/TabBar';
 import { Icon, type IconName } from '@/components/Icon';
 import { Disclaimer } from '@/components/Tip';
 import { Sheet } from '@/components/Sheet';
+import { InstallSheet, useInstalled } from '@/components/Install';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, useProfile, useTracker, todayISO } from '@/lib/store';
 import { ACTIVITY_LABEL, LEVEL_LABEL } from '@/lib/calories';
@@ -25,10 +26,7 @@ export default function Profile() {
   const [sheet, setSheet] = useState<null | 'schedule' | 'install' | 'photo' | 'name'>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [photoErr, setPhotoErr] = useState('');
-  const [installed, setInstalled] = useState(false);
-  useEffect(() => {
-    setInstalled(window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true);
-  }, []);
+  const installed = useInstalled();
   if (!ready || !profile) return null;
 
   const today = todayISO();
@@ -122,16 +120,7 @@ export default function Profile() {
         </Sheet>
       )}
       {sheet === 'name' && <NameSheet name={profile.name ?? ''} onClose={() => setSheet(null)} onSave={(n) => { saveProfile({ ...profile, name: n || undefined }); setSheet(null); }} />}
-      {sheet === 'install' && (
-        <Sheet title="Встановити Easy" onClose={() => setSheet(null)}>
-          <p className="ez-subhead" style={{ margin: 0 }}>Так Easy відкривається як звичайний застосунок — на весь екран, з іконкою. І так зможуть приходити нагадування.</p>
-          <ol className="pf-steps">
-            <li><b>iPhone (Safari):</b> натисніть «Поділитися» <span aria-hidden="true">⬆︎</span> внизу екрана → «На початковий екран» → «Додати».</li>
-            <li><b>Android (Chrome):</b> меню ⋮ угорі праворуч → «Додати на головний екран» або «Установити застосунок».</li>
-          </ol>
-          <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setSheet(null)}>Зрозуміло</button>
-        </Sheet>
-      )}
+      {sheet === 'install' && <InstallSheet onClose={() => setSheet(null)} />}
     </>
   );
 }

@@ -154,7 +154,7 @@ export function selectionPhoto(s: { stepKey: string; label: string }): string | 
 }
 
 /** Варіант «без …» (без яєць, без шоколаду): фото продукту, яке картка показує приглушеним і перекресленим. */
-const NONE_PHOTO: Record<string, string> = { 'без яєць': 'yaitsia', 'без шоколаду': 'shokolad' };
+const NONE_PHOTO: Record<string, string> = { 'без яєць': 'yaitsia', 'без шоколаду': 'shokolad', 'без перекусу': 'protein-yogurt' };
 export const nonePhoto = (label: string): string | null => {
   const slug = NONE_PHOTO[label.toLowerCase()];
   return slug && AVAILABLE.has(slug) ? `/products/${slug}.webp` : null;

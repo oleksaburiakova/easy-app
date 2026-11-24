@@ -11,6 +11,9 @@ import { MEALS } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { DAILY_TIPS, pick } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
+import { useState } from 'react';
+import { InstallSheet, useDismissed, useInstalled } from '@/components/Install';
+import { GUIDES } from '@/lib/lessons';
 import { vocative } from '@/lib/names';
 
 function greeting(h: number, name?: string) {
@@ -21,7 +24,12 @@ function greeting(h: number, name?: string) {
 export default function Home() {
   const { profile, ready } = useRequireProfile();
   const { plates } = usePlates();
+  const installed = useInstalled();
+  const [firstSeen, dismissFirst] = useDismissed('easy.hint.first-steps');
+  const [installSeen, dismissInstall] = useDismissed('easy.hint.install');
+  const [installOpen, setInstallOpen] = useState(false);
   if (!ready || !profile) return null;
+  const productsGuide = GUIDES.find((g) => g.file.includes('zdorovi'));
   const now = new Date();
   const today = todayISO(now);
   const todays = plates.filter((p) => p.date === today);
@@ -58,6 +66,38 @@ export default function Home() {
             </div>
           </Link>
         </div>
+
+        {(!firstSeen && plates.length === 0) || (!installSeen && !installed) ? (
+          <div className="ez-stack" style={{ paddingTop: 0 }}>
+            {!firstSeen && plates.length === 0 && (
+              <section className="home-card" aria-label="З чого почати">
+                <span className="home-card__icon"><Icon name="leaf" size={22} variant="fill" /></span>
+                <div className="home-card__body">
+                  <p className="home-card__title">З чого почати</p>
+                  <p className="home-card__text">Перегляньте список здорових продуктів — і перевірте, що є вдома. Так буде з чого збирати тарілки. А перший урок пояснить, як працює конструктор.</p>
+                  <div className="home-card__actions">
+                    {productsGuide && <a className="ez-btn ez-btn--primary ez-btn--sm" href={productsGuide.file} target="_blank" rel="noopener">Список продуктів</a>}
+                    <Link className="ez-btn ez-btn--soft ez-btn--sm" href="/learn#l-intro">Перший урок</Link>
+                  </div>
+                </div>
+                <button className="home-card__close" onClick={dismissFirst} aria-label="Сховати"><Icon name="plus" size={16} style={{ transform: 'rotate(45deg)' }} /></button>
+              </section>
+            )}
+            {!installSeen && !installed && (
+              <section className="home-card" aria-label="Встановити Easy">
+                <span className="home-card__icon"><Icon name="home" size={22} variant="fill" /></span>
+                <div className="home-card__body">
+                  <p className="home-card__title">Встановіть Easy на телефон</p>
+                  <p className="home-card__text">Відкривається як застосунок — з іконкою, на весь екран.</p>
+                  <div className="home-card__actions">
+                    <button className="ez-btn ez-btn--soft ez-btn--sm" onClick={() => setInstallOpen(true)}>Як додати</button>
+                  </div>
+                </div>
+                <button className="home-card__close" onClick={dismissInstall} aria-label="Сховати"><Icon name="plus" size={16} style={{ transform: 'rotate(45deg)' }} /></button>
+              </section>
+            )}
+          </div>
+        ) : null}
 
         <div className="ez-stack" style={{ paddingTop: 0 }}>
           {MEALS.map((m) => {
@@ -106,6 +146,7 @@ export default function Home() {
         <div className="ez-pad"><Tip hint={pick(DAILY_TIPS)} /></div>
       </main>
       <TabBar />
+      {installOpen && <InstallSheet onClose={() => setInstallOpen(false)} />}
     </>
   );
 }

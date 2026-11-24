@@ -148,7 +148,17 @@ export const DISH_GROUP = 'основи страв';
 export const dishBase = (label: string): DishBase | null => DISH_BASES.find(([re]) => re.test(label))?.[1] ?? null;
 
 /** Група для підзаголовка в конструкторі: основи страв — окремою групою. */
-export const optionGroup = (opt: TreeOption): string | null => (dishBase(opt.label) ? DISH_GROUP : opt.group ?? null);
+/** Комбінації «картопля + квасоля / нут» — теж основи страв (без перейменування), рішення 24.11. */
+const DISH_COMBO = /картопл.*\+.*(квасол|нут)/i;
+export const optionGroup = (opt: TreeOption): string | null => (dishBase(opt.label) || DISH_COMBO.test(opt.label) ? DISH_GROUP : opt.group ?? null);
+
+/**
+ * Варіанти «оселедець 130г \скумбрія 130г\тюлька 150 г» — окремими картками (рішення 24.11).
+ * Текст дошки не змінюємо: кожна картка — частина того самого label з тією ж грамовкою.
+ */
+export function expandOptions(opts: TreeOption[]): TreeOption[] {
+  return opts.flatMap((o) => (o.label.includes('\\') ? o.label.split('\\').map((part) => ({ ...o, label: part.trim() })) : [o]));
+}
 
 /** Склад основи страви без позначки «(плов)»: «рис 40 г + нут варений 40». */
 export const dishBasePortion = (label: string) => tidy(label.replace(/\(\s*(плов|шаурма|суп[^)]*)\)/i, ''));
@@ -178,5 +188,9 @@ export const oilChoices = (ml: number) => [`олія ${ml} мл`, `вершко�
 /* ---------- Кроки, які можна пропустити ---------- */
 
 /** Крок → варіант «без»: додається останнім у сітку, у тарілку не потрапляє. */
-export const SKIP_OPTIONS: Record<string, string> = { chocolate: 'без шоколаду' };
+export const SKIP_OPTIONS: Record<string, string> = { chocolate: 'без шоколаду', protein_snack: 'без перекусу' };
+/** Попередження, коли пропускають білковий перекус (рішення 24.11): можна, але білок треба добрати. */
+export const SKIP_WARNINGS: Record<string, { text: string; lesson: string }> = {
+  protein_snack: { text: 'Можна з\'їсти пізніше або добрати білок в інший прийом їжі. Один день — нічого страшного, а постійний недобір білка — ризик для здоров\'я.', lesson: 'Урок 2.3 · Білок' },
+};
 export const isNoneOption = (label: string) => /^без\s/i.test(label);

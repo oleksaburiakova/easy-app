@@ -5,7 +5,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { Icon } from '@/components/Icon';
-import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO } from '@/lib/store';
 import { cookedHint, dishBase, display, mealTitle, oilChoices, splitOil, tidy } from '@/lib/tree';
@@ -30,6 +29,7 @@ export default function PlatePage() {
     const c = cookedHint({ label: s.label, ...parseAmount(s.label) });
     if (c) notes.push(`${display({ label: s.label }).name} — суха вага, після варіння ${c.replace(/ (готов\S+)$/, '')}.`);
   }
+  if (plate.meal !== 'breakfast' && plate.selections.some((x) => x.stepKey === 'protein')) notes.push("М'ясо й рибу важимо в сирому вигляді.");
   notes.push('Зелень — щонайменше 10 г до кожного прийому їжі.');
 
   const flash = (t: string) => { setToast(t); setTimeout(() => setToast(''), 1800); };
@@ -89,13 +89,6 @@ export default function PlatePage() {
           {notes.map((n) => <p className="ez-list__note" key={n}>{n}</p>)}
         </section>
         {isToday && <Link className="link" href={`/build/${plate.meal}`} style={{ padding: '0 4px' }}>Зібрати інакше ›</Link>}
-
-        <button className="ez-btn ez-btn--soft ez-btn--block" disabled aria-describedby="recipe-soon">
-          Підказати, що приготувати
-        </button>
-        <p id="recipe-soon" className="ez-caption center" style={{ marginTop: -4 }}>Рецепт за правилами Олени — незабаром, лише на ваш запит.</p>
-
-        <Tip hint={{ text: 'Створюйте страви, а не просто набір продуктів: рис + нут + м’ясо — плов, спагеті + фарш + томати — болоньєзе, картопля + квасоля + м’ясо — борщ.', lesson: 'Вступ' }} />
       </div>
 
       <div className="bottom-bar">

@@ -8,7 +8,7 @@ import { Photo } from '@/components/Photo';
 import { Tip } from '@/components/Tip';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
-import { EGG_BRANCHES, GROUP_TITLES, SKIP_OPTIONS, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
+import { EGG_BRANCHES, GROUP_TITLES, SKIP_OPTIONS, SKIP_WARNINGS, expandOptions, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
@@ -27,7 +27,7 @@ export default function Build() {
   const node = profile && ['breakfast', 'lunch', 'dinner'].includes(meal) ? levelNode(meal, profile.level) : null;
 
   /** Кроки будуються з дерева Олени і залежать від вибору (основа, яйця). */
-  const steps: TreeStep[] = useMemo(() => {
+  const steps: TreeStep[] = useMemo(() => arrange((() => {
     if (!node) return [];
     if (meal !== 'breakfast') return node.branches['default']?.steps ?? [];
     const out: TreeStep[] = [{ key: 'base', title: 'основа', options: node.bases ?? [] }];
@@ -37,7 +37,7 @@ export default function Build() {
     out.push({ key: 'eggs', title: 'яйця', options: EGG_BRANCHES.map((label) => ({ label })) });
     const eggs = picks.eggs;
     return eggs ? [...out, ...(node.branches[eggs.label]?.steps ?? [])] : out;
-  }, [node, meal, picks.base, picks.eggs]);
+  })()), [node, meal, picks.base, picks.eggs]);
 
   /** Улюблені страви цього прийому їжі під поточну калорійність (з іншою калорійністю грамовки не ті). */
   const favs: Plate[] = useMemo(() => {
@@ -157,13 +157,19 @@ export default function Build() {
       <div className="ez-stepcard">
         <span className="ez-caption" style={{ color: 'var(--secondary)' }}>Крок {idx + 1} з {total}</span>
         <span className="ez-headline">{stepTitle}{step?.key === 'veg' ? ` · ${step.amount_g} г` : ''}</span>
+        {step?.key === 'protein' && meal !== 'breakfast' && <span className="ez-caption">Вага м'яса й риби — в сирому вигляді</span>}
         <ol className="ez-steps" aria-label={`Кроки: ${mealTitle(meal)}`}>
           {Array.from({ length: total }).map((_, i) => (
             <li key={i} style={{ display: 'contents' }}>
               {i > 0 && <span className="ez-steps__line" aria-hidden="true" />}
-              <span className={`ez-step ${i < idx ? 'ez-step--done' : i === idx ? 'ez-step--current' : 'ez-step--todo'}`} aria-current={i === idx ? 'step' : undefined}>
-                {i < idx ? <Icon name="check" size={14} strokeWidth={3} /> : i + 1}
-              </span>
+              {i < idx ? (
+                // Пройдений крок — можна повернутися на нього одним натиском (рішення 24.11).
+                <button className="ez-step ez-step--done ez-step--link" onClick={() => { setIdx(i); setNoneOpen(false); window.scrollTo({ top: 0 }); }} aria-label={`Повернутися на крок ${i + 1}: ${STEP_TITLES[steps[i]?.key ?? ''] ?? steps[i]?.title ?? ''}`}>
+                  <Icon name="check" size={14} strokeWidth={3} />
+                </button>
+              ) : (
+                <span className={`ez-step ${i === idx ? 'ez-step--current' : 'ez-step--todo'}`} aria-current={i === idx ? 'step' : undefined}>{i + 1}</span>
+              )}
             </li>
           ))}
         </ol>
@@ -212,8 +218,11 @@ export default function Build() {
             <span className="ez-card__portion">Підкажемо, що робити</span>
           </button>
         )}
+        {step && SKIP_WARNINGS[step.key] && picked?.label === SKIP_OPTIONS[step.key] && (
+          <Tip hint={SKIP_WARNINGS[step.key]} className="pop-in" />
+        )}
         {noneOpen && (
-          <Tip hint={{ text: idx > 0 ? 'Поверніться на крок назад і оберіть іншу основу чи гарнір — разом з ними зміниться й список. А на майбутнє загляньте в «Список здорових продуктів»: що варто мати вдома.' : 'Загляньте в «Список здорових продуктів»: там те, що варто мати вдома для збалансованих тарілок.', lesson: 'Гайд · Список здорових продуктів' }} />
+          <Tip hint={{ text: `${idx > 0 ? 'Спробуйте повернутися на крок назад і обрати іншу основу чи гарнір — разом з ними зміниться й список. ' : ''}Перевірте, що є вдома, складіть список покупок і почніть завтра — так буде з чого збирати тарілки. Зверніть увагу на білково-жирові продукти, що швидко псуються, і на овочі: їх зазвичай немає в запасі.`, lesson: 'Гайд · Список здорових продуктів' }} />
         )}
       </div>
 
@@ -225,4 +234,13 @@ export default function Build() {
       </div>
     </main>
   );
+}
+
+/** Порядок кроків: «Сир» — після «Овочі», щоб до салату можна було підказати фету (рішення 24.11). Варіанти «a \\ b \\ c» — окремими картками. */
+function arrange(steps: TreeStep[]): TreeStep[] {
+  const out = steps.map((s) => ({ ...s, options: expandOptions(s.options) }));
+  const c = out.findIndex((s) => s.key === 'cheese');
+  const v = out.findIndex((s) => s.key === 'veg');
+  if (c >= 0 && v > c) out.splice(v, 0, out.splice(c, 1)[0]);
+  return out;
 }

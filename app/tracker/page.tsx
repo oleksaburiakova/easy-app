@@ -8,7 +8,7 @@ import { Sheet } from '@/components/Sheet';
 import { useRequireProfile } from '@/components/Guard';
 import { useTracker, todayISO } from '@/lib/store';
 import {
-  CHALLENGE_DAYS, CHALLENGE_STEPS, GLASS_ML, SCALES, WEEKDAYS,
+  CHALLENGE_DAYS, CHALLENGE_STEPS, GLASS_ML, SCALES, WATER_NOTE, WEEKDAYS,
   WORKOUT_MINUTES, WORKOUT_TYPES, challengeProgress, dayComplete, dayProgress, fmt, fromIso, goalsFor, recalcHint, recommendedGoals, stepRange, weekCount, weekOf, workoutLabel,
   type TrackerDay, type TrackerGoals, type WorkoutType,
 } from '@/lib/tracker';
@@ -58,7 +58,7 @@ export default function Tracker() {
             <p className="trk-goal__title">Більше руху: {CHALLENGE_DAYS} днів щонайменше {fmt(CHALLENGE_STEPS)} кроків</p>
             <div className="trk-goal__bar" aria-hidden="true"><span style={{ width: `${(ch.done / CHALLENGE_DAYS) * 100}%` }} /></div>
             <p className="trk-goal__meta">{ch.finished ? `Готово: ${ch.done} з ${CHALLENGE_DAYS} днів` : `День ${ch.dayN} з ${CHALLENGE_DAYS} · виконано ${ch.done}`}</p>
-            <p className="trk-goal__text">Порції розраховані як для базової активності. Щоб вони працювали, поступово додавайте рух.</p>
+            <p className="trk-goal__text">Порції розраховані як для базової активності. Щоб вони працювали, поступово додавайте рух. Якщо не дійти до базової активності, ця калорійність працює на підтримку ваги, а не на схуднення.</p>
           </section>
         )}
 
@@ -120,17 +120,7 @@ export default function Tracker() {
 
           <section className="ez-list trk-feel" aria-label="Самопочуття">
             <p className="ez-list__title">{isToday ? 'Як ви сьогодні?' : 'Як ви були цього дня?'}</p>
-            {SCALES.map((s) => (
-              <div className="trk-scale" key={s.key} role="radiogroup" aria-label={s.title}>
-                <span className="trk-scale__head"><span className="trk-scale__icon"><Icon name={s.icon} size={27} variant="fill" /></span><span className="trk-scale__title">{s.title}</span></span>
-                <div className="trk-scale__row">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <button key={n} role="radio" aria-checked={d[s.key] === n} className="trk-pill" onClick={() => updateDay(day, { [s.key]: d[s.key] === n ? undefined : n })}>{n}</button>
-                  ))}
-                </div>
-                <div className="trk-scale__ends"><span>{s.low}</span><span>{s.high}</span></div>
-              </div>
-            ))}
+            <FeelScales key={day} day={d} onSave={(v) => updateDay(day, v)} />
           </section>
 
           <Tip hint={{ text: 'Не урізайте їжу — додайте рух. Кроки й 1–2 тренування на тиждень уже працюють.', lesson: 'Урок 3.2 · Активність' }} />
@@ -141,6 +131,7 @@ export default function Tracker() {
       {sheet === 'water' && (
         <Sheet title="Вода" onClose={() => setSheet(null)}>
           <p className="trk-sheet__big">{fmt(d.water ?? 0)} <small>/ {fmt(g.water)} мл</small></p>
+          <p className="trk-sheet__rec">{WATER_NOTE}</p>
           <div className="trk-quick">
             {[GLASS_ML, 500].map((ml) => <button key={ml} className="ez-btn ez-btn--soft" onClick={() => updateDay(day, { water: (d.water ?? 0) + ml })}>+{ml} мл</button>)}
             <button className="ez-btn ez-btn--back" onClick={() => updateDay(day, { water: Math.max(0, (d.water ?? 0) - GLASS_ML) })} aria-label={`Мінус ${GLASS_ML} мл`}><Icon name="minus" size={18} /> {GLASS_ML}</button>
@@ -254,5 +245,36 @@ function WorkoutSheet({ day, isToday, onSave, onRemove, onClose }: { day: Tracke
       <button className="ez-btn ez-btn--primary ez-btn--block" disabled={!type || !otherOk} onClick={() => type && otherOk && onSave(type, min, other.trim())}>Зберегти</button>
       {day.workout && <button className="ez-btn ez-btn--back ez-btn--block" onClick={onRemove}>Тренування не було</button>}
     </Sheet>
+  );
+}
+
+/**
+ * Настрій, енергія, ситість: вибір — чернетка, «Зберегти» записує (рішення 24.11: без кнопки було незрозуміло, чи збереглося).
+ * Перевибрати можна будь-коли за день — напр., уранці 5, увечері 2.
+ */
+function FeelScales({ day, onSave }: { day: TrackerDay; onSave: (v: Pick<TrackerDay, 'mood' | 'energy' | 'satiety'>) => void }) {
+  const saved = { mood: day.mood, energy: day.energy, satiety: day.satiety };
+  const [draft, setDraft] = useState(saved);
+  const [flash, setFlash] = useState(false);
+  const changed = SCALES.some((s) => draft[s.key] !== saved[s.key]);
+  const hasAny = SCALES.some((s) => saved[s.key] !== undefined);
+  return (
+    <>
+      {SCALES.map((s) => (
+        <div className="trk-scale" key={s.key} role="radiogroup" aria-label={s.title}>
+          <span className="trk-scale__head"><span className="trk-scale__icon"><Icon name={s.icon} size={27} variant="fill" /></span><span className="trk-scale__title">{s.title}</span></span>
+          <div className="trk-scale__row">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} role="radio" aria-checked={draft[s.key] === n} className="trk-pill" onClick={() => setDraft({ ...draft, [s.key]: draft[s.key] === n ? undefined : n })}>{n}</button>
+            ))}
+          </div>
+          <div className="trk-scale__ends"><span>{s.low}</span><span>{s.high}</span></div>
+        </div>
+      ))}
+      <button className="ez-btn ez-btn--primary ez-btn--block" style={{ margin: '8px 0 4px' }} disabled={!changed} onClick={() => { onSave(draft); setFlash(true); setTimeout(() => setFlash(false), 1600); }}>
+        {flash ? 'Збережено ✓' : changed ? 'Зберегти' : hasAny ? 'Збережено' : 'Зберегти'}
+      </button>
+      {hasAny && !changed && <p className="ez-hint center" style={{ margin: '0 0 6px' }}>Можна змінити будь-коли за день.</p>}
+    </>
   );
 }
