@@ -1,4 +1,5 @@
 'use client';
+import { AwardWatcher } from '@/components/Awards';
 import { Photo } from '@/components/Photo';
 import { plateCollage, selectionPhoto } from '@/lib/photos';
 import { useState } from 'react';
@@ -115,6 +116,7 @@ export default function PlatePage() {
         </div>
       </div>
       {toast && <div className="toast" role="status">{toast}</div>}
+      <AwardWatcher />
     </main>
   );
 }

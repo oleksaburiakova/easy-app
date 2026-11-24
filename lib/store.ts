@@ -40,7 +40,7 @@ export interface Plate {
   createdAt: string;
 }
 
-const KEYS = { profile: 'easy.profile.v1', plates: 'easy.plates.v1', tracker: 'easy.tracker.v1' } as const;
+const KEYS = { profile: 'easy.profile.v1', plates: 'easy.plates.v1', tracker: 'easy.tracker.v1', learn: 'easy.learn.v1', awards: 'easy.awards.seen.v1' } as const;
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -97,12 +97,33 @@ export function usePlates() {
   const clearAll = () => {
     write(KEYS.plates, []);
     write(KEYS.tracker, { days: {} });
+    write(KEYS.learn, { lessons: [], guides: [] });
+    write(KEYS.awards, []);
     write(KEYS.profile, null);
   };
   return { plates, addPlate, updatePlate, clearAll, ready };
 }
 
 const EMPTY_TRACKER: TrackerData = { days: {} };
+
+/** Що людина відкривала в «Навчанні» — для нагород «Перший урок», «Весь курс», «Читачка гайдів». */
+export interface LearnProgress { lessons: string[]; guides: string[] }
+const EMPTY_LEARN: LearnProgress = { lessons: [], guides: [] };
+export function useLearn() {
+  const [data, save, ready] = useStored<LearnProgress>(KEYS.learn, EMPTY_LEARN);
+  const mark = (kind: 'lessons' | 'guides', id: string) => {
+    const d = read<LearnProgress>(KEYS.learn, EMPTY_LEARN);
+    if (!d[kind].includes(id)) save({ ...d, [kind]: [...d[kind], id] });
+  };
+  return { learn: data, ready, markLesson: (id: string) => mark('lessons', id), markGuide: (file: string) => mark('guides', file) };
+}
+
+/** Нагороди, про які людині вже показали аркуш «Нова нагорода». */
+export function useAwardsSeen() {
+  const [seen, save, ready] = useStored<string[]>(KEYS.awards, []);
+  const markSeen = (ids: string[]) => save([...new Set([...read<string[]>(KEYS.awards, []), ...ids])]);
+  return { seen, ready, markSeen };
+}
 
 /** Трекер (вода, кроки, тренування, самопочуття). Етап 1 — localStorage, етап 2 — Supabase. */
 export function useTracker() {

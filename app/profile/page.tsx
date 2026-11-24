@@ -7,6 +7,7 @@ import { Icon, type IconName } from '@/components/Icon';
 import { Disclaimer } from '@/components/Tip';
 import { Sheet } from '@/components/Sheet';
 import { InstallSheet, useInstalled } from '@/components/Install';
+import { Medal, useAwards } from '@/components/Awards';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, useProfile, useTracker, todayISO } from '@/lib/store';
 import { ACTIVITY_LABEL, LEVEL_LABEL } from '@/lib/calories';
@@ -27,6 +28,7 @@ export default function Profile() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [photoErr, setPhotoErr] = useState('');
   const installed = useInstalled();
+  const { earned, list: awardList } = useAwards();
   if (!ready || !profile) return null;
 
   const today = todayISO();
@@ -64,6 +66,22 @@ export default function Profile() {
               <p>Можна перерахувати калорійність — за правилом Олени, коли активність змінилась стабільно 3–4 тижні.</p>
             </aside>
           )}
+
+          <section className="ez-list" aria-label="Мої досягнення">
+            <div className="hs-trk__head">
+              <p className="ez-list__title">Мої досягнення</p>
+              <Link className="link" href="/achievements" style={{ fontSize: 14 }}>{earned.size} з {awardList.length} ›</Link>
+            </div>
+            <div className="pf-awards">
+              {(earned.size ? awardList.filter((a) => earned.has(a.id)) : awardList.slice(0, 4)).slice(0, 8).map((a) => (
+                <Link key={a.id} href="/achievements" className="pf-award">
+                  <Medal award={a} earned={earned.has(a.id)} size={52} />
+                  {a.title}
+                </Link>
+              ))}
+            </div>
+            {!earned.size && <p className="ez-list__note" style={{ paddingTop: 0 }}>Перші нагороди — за першу тарілку й перший урок.</p>}
+          </section>
 
           <section className="ez-list" aria-label="Мій план">
             <p className="ez-list__title">Мій план</p>

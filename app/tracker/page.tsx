@@ -1,4 +1,5 @@
 'use client';
+import { AwardWatcher } from '@/components/Awards';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { TabBar } from '@/components/TabBar';
@@ -126,6 +127,7 @@ export default function Tracker() {
           <Tip hint={{ text: 'Не урізайте їжу — додайте рух. Кроки й 1–2 тренування на тиждень уже працюють.', lesson: 'Урок 3.2 · Активність' }} />
         </div>
       </main>
+      <AwardWatcher />
       <TabBar />
 
       {sheet === 'water' && (

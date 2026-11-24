@@ -1,4 +1,5 @@
 'use client';
+import { AwardWatcher } from '@/components/Awards';
 import { Photo } from '@/components/Photo';
 import { platePhoto } from '@/lib/photos';
 import Link from 'next/link';
@@ -145,6 +146,7 @@ export default function Home() {
 
         <div className="ez-pad"><Tip hint={pick(DAILY_TIPS)} /></div>
       </main>
+      <AwardWatcher />
       <TabBar />
       {installOpen && <InstallSheet onClose={() => setInstallOpen(false)} />}
     </>

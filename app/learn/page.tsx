@@ -1,14 +1,18 @@
 'use client';
+import { AwardWatcher } from '@/components/Awards';
 import { useEffect, useState } from 'react';
 import { TabBar } from '@/components/TabBar';
 import { Icon } from '@/components/Icon';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { useRequireProfile } from '@/components/Guard';
+import { useLearn } from '@/lib/store';
 import { GUIDES, LESSON_BLOCKS, LESSONS, durationLabel, lessonThumb, vimeoEmbed } from '@/lib/lessons';
 
 export default function Learn() {
   const { ready } = useRequireProfile();
   const [open, setOpen] = useState<string | null>(null);
+  const { markLesson, markGuide } = useLearn();
+  useEffect(() => { if (open) markLesson(open); }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
   // Посилання з порад: /learn#l-2.4 — відкриваємо й прокручуємо до потрібного уроку.
   useEffect(() => {
     if (!ready) return;
@@ -63,13 +67,14 @@ export default function Learn() {
         {/* Гайди — компактним рядком обкладинок, що гортається вбік: головне в «Навчанні» — відео. */}
         <div className="guide-strip">
           {GUIDES.map((g) => (
-            <a key={g.file} href={g.file} target="_blank" rel="noopener" className="guide-card" aria-label={`${g.title}, PDF, ${g.pages} стор.`}>
+            <a key={g.file} href={g.file} target="_blank" rel="noopener" onClick={() => markGuide(g.file)} className="guide-card" aria-label={`${g.title}, PDF, ${g.pages} стор.`}>
               <span className="guide-card__cover"><img src={g.cover} alt="" loading="lazy" /></span>
               <span className="guide-card__meta"><Icon name="file" size={13} variant="fill" /> {g.pages} стор.</span>
             </a>
           ))}
         </div>
       </main>
+      <AwardWatcher />
       <TabBar />
     </>
   );
