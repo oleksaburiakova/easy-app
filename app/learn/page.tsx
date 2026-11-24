@@ -67,10 +67,18 @@ export default function Learn() {
         {/* Гайди — компактним рядком обкладинок, що гортається вбік: головне в «Навчанні» — відео. */}
         <div className="guide-strip">
           {GUIDES.map((g) => (
-            <a key={g.file} href={g.file} target="_blank" rel="noopener" onClick={() => markGuide(g.file)} className="guide-card" aria-label={`${g.title}, PDF, ${g.pages} стор.`}>
-              <span className="guide-card__cover"><img src={g.cover} alt="" loading="lazy" /></span>
-              <span className="guide-card__meta"><Icon name="file" size={13} variant="fill" /> {g.pages} стор.</span>
-            </a>
+            <div key={g.file} className="guide-card">
+              <a href={g.file} target="_blank" rel="noopener" onClick={() => markGuide(g.file)} className="guide-card__open" aria-label={`Відкрити: ${g.title}, PDF, ${g.pages} стор.`}>
+                <span className="guide-card__cover"><img src={g.cover} alt="" loading="lazy" /></span>
+              </a>
+              <span className="guide-card__row">
+                <span className="guide-card__meta"><Icon name="file" size={13} variant="fill" /> {g.pages} стор.</span>
+                {/* Завантажити PDF собі (на iPhone — у «Файли»). */}
+                <a href={g.file} download={`Easy-${g.file.split('/').pop()}`} onClick={() => markGuide(g.file)} className="guide-card__dl" aria-label={`Завантажити: ${g.title}`}>
+                  <Icon name="download" size={15} strokeWidth={2.4} />
+                </a>
+              </span>
+            </div>
           ))}
         </div>
       </main>

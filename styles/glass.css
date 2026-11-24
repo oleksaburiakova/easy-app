@@ -491,3 +491,13 @@ a.pf-row:active, .pf-row--btn:active { transform: scale(.98); }
 .flow-hero { display: flex; justify-content: center; margin: 4px 0 2px; }
 .flow-hero img { width: 84px; height: 84px; border-radius: 20px; box-shadow: 0 10px 24px -8px rgba(97, 30, 45, .35), 0 0 0 .5px rgba(28, 20, 22, .08); }
 .flow-bell { width: 84px; height: 84px; border-radius: 26px; display: flex; align-items: center; justify-content: center; color: var(--burgundy); background: var(--vol-tint); box-shadow: var(--vol-edge), 0 10px 24px -8px rgba(97, 30, 45, .3); }
+
+/* Гайд: обкладинка відкриває PDF, кнопка поруч — завантажує. */
+.guide-card { width: 112px; }
+.guide-card__open { display: block; color: inherit; text-decoration: none; }
+.guide-card__row { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; }
+.guide-card__row .guide-card__meta { padding: 0 8px; }
+.guide-card__dl { width: 28px; height: 28px; flex: none; border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--burgundy) 65%, white), var(--burgundy) 70%); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .4), 0 3px 8px -2px color-mix(in srgb, var(--burgundy) 60%, transparent); transition: var(--press); }
+.guide-card__dl:active { transform: scale(.9); }
+.guide-card__row .guide-card__meta { white-space: nowrap; padding: 0 8px; gap: 3px; }
