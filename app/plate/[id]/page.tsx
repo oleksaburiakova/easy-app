@@ -1,7 +1,7 @@
 'use client';
 import { AwardWatcher } from '@/components/Awards';
 import { Photo } from '@/components/Photo';
-import { plateCollage, selectionPhoto } from '@/lib/photos';
+import { GREENS_PHOTO, OIL_PHOTO, plateCollage, selectionPhoto } from '@/lib/photos';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -35,7 +35,7 @@ export default function PlatePage() {
   const hasVeg = plate.selections.some((x) => x.stepKey === 'veg');
   const greens = (
     <div className="ez-irow" key="greens">
-      <span className="ez-irow__thumb ph" aria-hidden="true" style={{ fontSize: 18 }}>З</span>
+      <Photo className="ez-irow__thumb" src={GREENS_PHOTO} letter="З" style={{ fontSize: 18 }} />
       <span className="ez-irow__name">Зелень</span>
       <span className="ez-irow__grams">10 г</span>
     </div>
@@ -85,7 +85,7 @@ export default function PlatePage() {
                 </div>
                 {oilMl && (
                   <div className="ez-irow">
-                    <span className="ez-irow__thumb ph" aria-hidden="true" style={{ fontSize: 18 }}>Ж</span>
+                    <Photo className="ez-irow__thumb" src={OIL_PHOTO} letter="Ж" style={{ fontSize: 18 }} />
                     <span className="ez-irow__name" style={{ display: 'flex', flexDirection: 'column' }}>
                       <span className="ez-footnote" style={{ fontWeight: 600 }}>Жир · на вибір одне</span>
                       {oilChoices(oilMl).join(' або ')}
