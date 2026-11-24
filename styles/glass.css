@@ -486,3 +486,8 @@ a.pf-row:active, .pf-row--btn:active { transform: scale(.98); }
 .inst-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
 .inst-steps li { display: flex; align-items: center; gap: var(--space-3); padding: 10px 12px; border-radius: 16px; background: var(--vol-tint); box-shadow: var(--vol-edge); font-size: 15px; line-height: 21px; }
 .inst-steps__ic { width: 38px; height: 38px; flex: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0a7aff; background: var(--white); box-shadow: 0 1px 3px rgba(28, 20, 22, .15); font-size: 20px; font-weight: 800; }
+
+/* Вікна першого входу: іконка застосунку / дзвіночок по центру. */
+.flow-hero { display: flex; justify-content: center; margin: 4px 0 2px; }
+.flow-hero img { width: 84px; height: 84px; border-radius: 20px; box-shadow: 0 10px 24px -8px rgba(97, 30, 45, .35), 0 0 0 .5px rgba(28, 20, 22, .08); }
+.flow-bell { width: 84px; height: 84px; border-radius: 26px; display: flex; align-items: center; justify-content: center; color: var(--burgundy); background: var(--vol-tint); box-shadow: var(--vol-edge), 0 10px 24px -8px rgba(97, 30, 45, .3); }

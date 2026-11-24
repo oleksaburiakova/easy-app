@@ -59,8 +59,6 @@ export function useInstalled() {
 /** «Встановити Easy»: Android — кнопка в один дотик; iPhone — покрокова підказка «Поділитися → На початковий екран». */
 export function InstallSheet({ onClose }: { onClose: () => void }) {
   const { canPrompt, prompt, justInstalled } = useInstallPrompt();
-  const [ios, setIos] = useState(false);
-  useEffect(() => setIos(isIOS()), []);
   return (
     <Sheet title="Встановити Easy" onClose={onClose}>
       <p className="ez-subhead" style={{ margin: 0 }}>Так Easy відкривається як звичайний застосунок — на весь екран, з іконкою. І так зможуть приходити нагадування.</p>
@@ -68,20 +66,29 @@ export function InstallSheet({ onClose }: { onClose: () => void }) {
         <p className="trk-sheet__rec">Готово! Easy з'явиться на головному екрані.</p>
       ) : canPrompt ? (
         <button className="ez-btn ez-btn--primary ez-btn--block" onClick={async () => { if (await prompt()) onClose(); }}>Встановити</button>
-      ) : ios ? (
-        <ol className="inst-steps">
-          <li><span className="inst-steps__ic"><ShareIcon /></span><span>Натисніть <b>«Поділитися»</b> внизу екрана Safari</span></li>
-          <li><span className="inst-steps__ic"><Icon name="plus" size={20} strokeWidth={2.2} /></span><span>Прогорніть і оберіть <b>«На початковий екран»</b></span></li>
-          <li><span className="inst-steps__ic"><Icon name="check" size={20} strokeWidth={2.4} /></span><span>Натисніть <b>«Додати»</b> угорі праворуч</span></li>
-        </ol>
       ) : (
-        <ol className="inst-steps">
-          <li><span className="inst-steps__ic">⋮</span><span>Відкрийте меню браузера <b>⋮</b> угорі праворуч</span></li>
-          <li><span className="inst-steps__ic"><Icon name="plus" size={20} strokeWidth={2.2} /></span><span>Оберіть <b>«Установити застосунок»</b> або <b>«Додати на головний екран»</b></span></li>
-        </ol>
+        <InstallSteps />
       )}
       {!canPrompt && <button className="ez-btn ez-btn--back ez-btn--block" onClick={onClose}>Зрозуміло</button>}
     </Sheet>
+  );
+}
+
+/** Покрокова підказка: iPhone — «Поділитися → На початковий екран → Додати»; інші — меню браузера. */
+export function InstallSteps() {
+  const [ios, setIos] = useState(false);
+  useEffect(() => setIos(isIOS()), []);
+  return ios ? (
+    <ol className="inst-steps">
+      <li><span className="inst-steps__ic"><ShareIcon /></span><span>Натисніть <b>«Поділитися»</b> внизу екрана Safari</span></li>
+      <li><span className="inst-steps__ic"><Icon name="plus" size={20} strokeWidth={2.2} /></span><span>Прогорніть і оберіть <b>«На початковий екран»</b></span></li>
+      <li><span className="inst-steps__ic"><Icon name="check" size={20} strokeWidth={2.4} /></span><span>Натисніть <b>«Додати»</b> угорі праворуч</span></li>
+    </ol>
+  ) : (
+    <ol className="inst-steps">
+      <li><span className="inst-steps__ic">⋮</span><span>Відкрийте меню браузера <b>⋮</b> угорі праворуч</span></li>
+      <li><span className="inst-steps__ic"><Icon name="plus" size={20} strokeWidth={2.2} /></span><span>Оберіть <b>«Установити застосунок»</b> або <b>«Додати на головний екран»</b></span></li>
+    </ol>
   );
 }
 
