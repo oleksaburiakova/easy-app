@@ -163,7 +163,28 @@ export const optionGroup = (opt: TreeOption): string | null => (dishBase(opt.lab
  * Текст дошки не змінюємо: кожна картка — частина того самого label з тією ж грамовкою.
  */
 export function expandOptions(opts: TreeOption[]): TreeOption[] {
-  return opts.flatMap((o) => (o.label.includes('\\') ? o.label.split('\\').map((part) => ({ ...o, label: part.trim() })) : [o]));
+  return opts.flatMap((o) => (o.label.includes('\\') ? o.label.split('\\').map((part) => ({ ...o, label: part.trim() })) : splitRoe(o)));
+}
+
+/**
+ * «ікра тріски 70/ минтая 60 г+ 5 мл олії» → дві картки зі своєю грамовкою:
+ * «ікра тріски 70 г + 5 мл олії» і «ікра минтая 60 г + 5 мл олії» (так само з «+ лосось 40г»).
+ * Варіанти зі спільною грамовкою («ікра тріски/минтая 25+ лосось 25г») не чіпаємо.
+ */
+const ROE_RE = /^\s*ікра\s+тріски\s*(\d+)\s*\/\s*минтая\s*(\d+)\s*г\s*\+\s*(.+)$/i;
+function splitRoe(o: TreeOption): TreeOption[] {
+  const m = o.label.match(ROE_RE);
+  if (!m) return [o];
+  const rest = tidy(m[3]);
+  const withSalmon = !o.oil_ml;
+  return ([['тріски', m[1]], ['минтая', m[2]]] as const).map(([fish, g]) => ({
+    ...o,
+    label: `ікра ${fish} ${g} г + ${rest}`,
+    name: `ікра ${fish}`,
+    amount: Number(g),
+    unit: 'g',
+    composite: withSalmon,
+  }));
 }
 
 /** Склад основи страви без позначки «(плов)»: «рис 40 г + нут варений 40». */
