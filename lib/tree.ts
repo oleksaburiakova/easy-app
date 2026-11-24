@@ -282,15 +282,32 @@ const ALT_TABLE: Record<number, [string, number][]> = {
 const altFor = (g: number): [string, number][] =>
   ALT_TABLE[g] ?? ALT_TABLE[30].map(([n, v]) => [n, Math.round((v / 30) * g / 5) * 5]);
 
-export function cheeseOptions(step: TreeStep): TreeOption[] {
+/** Підказка до йогурту на обіді: там він — заправка для салату (созвон 24.11). */
+export const YOGURT_DRESSING_NOTE = 'Як заправка для салату';
+
+/**
+ * Обід: «пармезан/ Гауда 15г» з дошки → дві картки «пармезан 15 г» і «гауда 15 г» (лише показ, JSON не змінюємо);
+ * йогурт — з підказкою, що це заправка для салату.
+ */
+function lunchCheese(opts: TreeOption[]): TreeOption[] {
+  return opts.flatMap((o) => {
+    const m = o.label.match(/^\s*пармезан\s*\/\s*гауда\s*(\d+)\s*г/i);
+    if (m) return ['пармезан', 'гауда'].map((n) => ({ ...o, label: `${n} ${m[1]} г`, name: n, composite: false }));
+    if (/йогурт/i.test(o.label)) return [{ ...o, note: o.note ?? YOGURT_DRESSING_NOTE }];
+    return [o];
+  });
+}
+
+export function cheeseOptions(step: TreeStep, meal?: MealKey): TreeOption[] {
   if (step.key !== 'cheese') return step.options;
-  const gauda = step.options.find((o) => /гауда/i.test(o.label));
+  const options = meal === 'lunch' ? lunchCheese(step.options) : step.options;
+  const gauda = options.find((o) => /гауда/i.test(o.label));
   const g = Number(gauda?.label.match(/гауда\s*(\d+)/i)?.[1]);
-  if (!g) return step.options;
+  if (!g) return options;
   const review = ALT_TABLE[g] ? undefined : `Грамовку пораховано пропорційно до гауди ${g} г — погоджує Олена.`;
   const cheeses: TreeOption[] = ['моцарела', 'едам', 'радамер'].map((n) => ({ label: `${n} ${g} г`, group: null }));
   const alts: TreeOption[] = altFor(g).map(([n, v]) => ({ label: `${n} ${v} г`, group: ALT_GROUP, ...(review ? { needs_review: review } : {}) }));
-  return [...step.options.map((o) => ({ ...o, group: o.group ?? null })), ...cheeses, ...alts];
+  return [...options.map((o) => ({ ...o, group: o.group ?? null })), ...cheeses, ...alts];
 }
 
 /* ---------- Добір білка на сніданок без яєць / з 1 яйцем (рішення 24.11) ---------- */

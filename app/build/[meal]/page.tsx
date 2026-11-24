@@ -29,7 +29,7 @@ export default function Build() {
   const node = profile && ['breakfast', 'lunch', 'dinner'].includes(meal) ? levelNode(meal, profile.level) : null;
 
   /** Кроки будуються з дерева Олени і залежать від вибору (основа, яйця). */
-  const steps: TreeStep[] = useMemo(() => arrange(picks.eggs?.label, (() => {
+  const steps: TreeStep[] = useMemo(() => arrange(meal as MealKey, picks.eggs?.label, (() => {
     if (!node) return [];
     if (meal !== 'breakfast') return node.branches['default']?.steps ?? [];
     const out: TreeStep[] = [{ key: 'base', title: 'основа', options: node.bases ?? [] }];
@@ -262,9 +262,9 @@ export default function Build() {
   );
 }
 
-/** Порядок кроків: «Сир» — після «Овочі», щоб до салату можна було підказати фету (рішення 24.11). Варіанти «a \\ b \\ c» — окремими картками. */
-function arrange(eggs: string | undefined, steps: TreeStep[]): TreeStep[] {
-  const out = steps.map((s) => ({ ...s, options: proteinSnackOptions({ ...s, options: cheeseOptions({ ...s, options: expandOptions(s.options) }) }, eggs) }));
+/** На обіді крок «Сир»: пармезан і гауда — окремо, йогурт — заправка для салату (`cheeseOptions`). Порядок кроків: «Сир» — після «Овочі», щоб до салату можна було підказати фету (рішення 24.11). Варіанти «a \\ b \\ c» — окремими картками. */
+function arrange(meal: MealKey, eggs: string | undefined, steps: TreeStep[]): TreeStep[] {
+  const out = steps.map((s) => ({ ...s, options: proteinSnackOptions({ ...s, options: cheeseOptions({ ...s, options: expandOptions(s.options) }, meal) }, eggs) }));
   const c = out.findIndex((s) => s.key === 'cheese');
   const v = out.findIndex((s) => s.key === 'veg');
   if (c >= 0 && v > c) out.splice(v, 0, out.splice(c, 1)[0]);
