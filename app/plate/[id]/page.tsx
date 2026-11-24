@@ -89,7 +89,6 @@ export default function PlatePage() {
           })}
           {notes.map((n) => <p className="ez-list__note" key={n}>{n}</p>)}
         </section>
-        {isToday && <Link className="link" href={`/build/${plate.meal}`} style={{ padding: '0 4px' }}>Зібрати інакше ›</Link>}
       </div>
 
       <div className="bottom-bar">
