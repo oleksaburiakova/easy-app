@@ -101,6 +101,11 @@ export function tidy(s: string): string {
     .replace(/свиняча\s*\/\s*теляча/gi, 'свиняча')
     .replace(/\s*сирої(?![а-яіїєґ])/gi, '')
     .replace(/картопля\s+сира(?![а-яіїєґ])/gi, 'картопля')
+    // Жир — однаково скрізь: «+ олія 5 мл», «5 мл олія», «+ 5 мл» → «+ 5 мл олії»; число без одиниці перед «+» — це грами.
+    .replace(/\+\s*олія\s*(\d+)\s*мл/gi, '+ $1 мл олії')
+    .replace(/(\d+)\s*мл\s+олія(?![а-яіїєґ])/gi, '$1 мл олії')
+    .replace(/(\d+)\s*мл(?!\s*олі)/gi, '$1 мл олії')
+    .replace(/(\d)(?=\s*\+)/g, '$1 г')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -242,7 +247,8 @@ const OIL_RE = /\s*\+\s*(?:олія\s*)?(\d+)\s*мл(?:\s*олі[їяі]|\s*ол
 /** Відділяє «+ N мл олії» від білка. Текст дошки не змінюється — лише показ. */
 export function splitOil(label: string): { rest: string; oilMl: number | null } {
   const m = label.match(OIL_RE);
-  return m ? { rest: label.slice(0, m.index).trim(), oilMl: Number(m[1]) } : { rest: label, oilMl: null };
+  // «хамон 60+олія 5мл» — число без одиниці перед жиром — це грами.
+  return m ? { rest: label.slice(0, m.index).trim().replace(/(\d)$/, '$1 г'), oilMl: Number(m[1]) } : { rest: label, oilMl: null };
 }
 
 /** Рівноцінні заміни олії (Олена, созвон 20.11): 5 мл олії = 5 г вершкового масла = 30 г авокадо. Горіхи — грамовку дасть Олена. */
