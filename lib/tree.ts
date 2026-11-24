@@ -175,7 +175,14 @@ export const dishRank = (label: string) => { const i = DISH_ORDER.findIndex((re)
  * Текст дошки не змінюємо: кожна картка — частина того самого label з тією ж грамовкою.
  */
 export function expandOptions(opts: TreeOption[]): TreeOption[] {
-  return opts.flatMap((o) => (o.label.includes('\\') ? o.label.split('\\').map((part) => ({ ...o, label: part.trim() })) : splitRoe(o))).map(renameOption);
+  return opts.flatMap((o) => (o.label.includes('\\') ? o.label.split('\\').map((part) => splitPart(o, part)) : splitRoe(o))).map(renameOption);
+}
+
+/** Частина «скумбрія 130г» — окремий продукт: назва й грамовка окремо, як в інших картках (не «складений» варіант). */
+function splitPart(o: TreeOption, part: string): TreeOption {
+  const label = part.trim();
+  const m = label.match(/^(.*?)\s*(\d+)\s*г/);
+  return m ? { ...o, label, name: m[1].trim(), amount: Number(m[2]), unit: 'g', composite: false } : { ...o, label };
 }
 
 /** Перейменування для показу (дошку не змінюємо): «свиняча/теляча вирізка» → «свиняча вирізка» (Олександра, 24.11). */
