@@ -512,3 +512,9 @@ a.pf-row:active, .pf-row--btn:active { transform: scale(.98); }
 .guide-view__dl:active { transform: scale(.95); }
 .guide-view__pages { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-3); }
 .guide-view__pages img { width: 100%; height: auto; display: block; border-radius: 14px; box-shadow: 0 10px 24px -10px rgba(97, 30, 45, .35), 0 0 0 .5px rgba(28, 20, 22, .08); }
+
+/* Гайд на всю ширину екрана, без полів і заокруглень по боках (рішення 24.11). */
+.guide-view .guide-view__pages { padding: 0; gap: 0; }
+.guide-view .guide-view__pages img { border-radius: 0; box-shadow: none; }
+/* На широкому екрані (планшет, комп'ютер) сторінки по центру, на телефоні — від краю до краю. */
+.guide-view .guide-view__pages img { max-width: 480px; margin: 0 auto; }
