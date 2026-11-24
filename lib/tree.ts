@@ -96,6 +96,11 @@ export function tidy(s: string): string {
     .replace(/\s+\/\s*|\s*\/\s+/g, ' / ')
     .replace(/([а-яіїєґa-z])(\d)/gi, '$1 $2')
     .replace(/\bоліі\b/g, 'олії')
+    // Усі грамовки — у сирому вигляді, тож «картопля ( соло) 200г сирої», «картопля сира» → просто «картопля» (Олександра, 24.11).
+    .replace(/\(\s*соло\s*\)\s*/gi, '')
+    .replace(/\s*сирої(?![а-яіїєґ])/gi, '')
+    .replace(/картопля\s+сира(?![а-яіїєґ])/gi, 'картопля')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -117,7 +122,8 @@ export function display(opt: TreeOption): { name: string; portion: string } {
 /* ---------- Суха / готова вага (коефіцієнти Олени) ---------- */
 
 const COEFF: [RegExp, number, string][] = [
-  [/гречан|соба/i, 0, ''],
+  // Соба: на упаковках різне — орієнтовно ×2,35 (70 г сухої ≈ 165 г готової; Олександра, 24.11).
+  [/гречан|соба/i, 2.35, 'готових'],
   [/гречк/i, 2.5, 'готової'],
   [/пшоно/i, 3, 'готового'],
   [/булгур/i, 2.5, 'готового'],
@@ -144,19 +150,24 @@ export function cookedHint(opt: TreeOption): string | null {
 /* ---------- Основи для страв (комбінації з дошки, що вже задумані як страва) ---------- */
 
 export interface DishBase { dish: string; title: string; note: string }
+const SOUP: DishBase = { dish: 'Суп', title: 'Основа для супу', note: 'Додайте овочі — вийде борщ чи суп-пюре, хліб — до супу' };
 const DISH_BASES: [RegExp, DishBase][] = [
   [/\(\s*плов\s*\)/i, { dish: 'Плов', title: 'Основа для плову', note: 'Без нуту теж можна: оберіть просто рис' }],
   [/\(\s*шаурма\s*\)/i, { dish: 'Шаурма', title: 'Основа для шаурми', note: 'Додайте білок і овочі — і загорніть у лаваш' }],
-  [/\(\s*суп/i, { dish: 'Суп', title: 'Основа для супу', note: 'Додайте овочі — вийде борщ чи суп-пюре, хліб — до супу' }],
+  [/\(\s*суп/i, SOUP],
+  // «Картопля + нут / квасоля» — теж основа для супу, з тією ж підказкою (рішення 24.11).
+  [/картопл.*\+.*(квасол|нут)/i, SOUP],
 ];
 export const DISH_GROUP = 'основи страв';
 
 export const dishBase = (label: string): DishBase | null => DISH_BASES.find(([re]) => re.test(label))?.[1] ?? null;
 
 /** Група для підзаголовка в конструкторі: основи страв — окремою групою. */
-/** Комбінації «картопля + квасоля / нут» — теж основи страв (без перейменування), рішення 24.11. */
-const DISH_COMBO = /картопл.*\+.*(квасол|нут)/i;
-export const optionGroup = (opt: TreeOption): string | null => (dishBase(opt.label) || DISH_COMBO.test(opt.label) ? DISH_GROUP : opt.group ?? null);
+export const optionGroup = (opt: TreeOption): string | null => (dishBase(opt.label) ? DISH_GROUP : opt.group ?? null);
+
+/** Порядок в «Основах для страв»: плов, шаурма, далі суп — картопля + хліб, + нут, + квасоля (рішення 24.11). */
+const DISH_ORDER = [/плов/i, /шаурм/i, /хліб/i, /нут/i, /квасол/i];
+export const dishRank = (label: string) => { const i = DISH_ORDER.findIndex((re) => re.test(label)); return i < 0 ? DISH_ORDER.length : i; };
 
 /**
  * Варіанти «оселедець 130г \скумбрія 130г\тюлька 150 г» — окремими картками (рішення 24.11).

@@ -9,7 +9,7 @@ import { Tip } from '@/components/Tip';
 import { Sheet } from '@/components/Sheet';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, todayISO, type Plate, type Selection } from '@/lib/store';
-import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, proteinSnackNote, cheeseOptions, expandOptions, proteinSnackOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
+import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, GROUP_TITLES, MULTI_STEPS, SKIP_OPTIONS, SKIP_WARNINGS, proteinSnackNote, cheeseOptions, expandOptions, proteinSnackOptions, multiOptions, multiPortion, STEP_TITLES, cookedHint, dishBase, dishRank, DISH_GROUP, display, isNoneOption, levelNode, mealTitle, optionGroup, optionNote, type MealKey, type TreeOption, type TreeStep } from '@/lib/tree';
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
@@ -134,6 +134,8 @@ export default function Build() {
     const g = optionGroup(o);
     byGroup.set(g, [...(byGroup.get(g) ?? []), o]);
   }
+  const dishes = byGroup.get(DISH_GROUP);
+  if (dishes) dishes.sort((x, y) => dishRank(x.label) - dishRank(y.label));
   const groups = [...byGroup.entries()];
   const hint = step ? stepHint(step.key, meal, idx) : null;
   const stepTitle = STEP_TITLES[step?.key ?? ''] ?? step?.title;
