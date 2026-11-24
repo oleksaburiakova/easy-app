@@ -6,7 +6,7 @@ import { TabBar } from '@/components/TabBar';
 import { Icon, type IconName } from '@/components/Icon';
 import { Disclaimer } from '@/components/Tip';
 import { Sheet } from '@/components/Sheet';
-import { InstallSheet, useInstalled } from '@/components/Install';
+import { InstallSheet, useInstallPrompt, useInstalled } from '@/components/Install';
 import { Medal, useAwards } from '@/components/Awards';
 import { useRequireProfile } from '@/components/Guard';
 import { usePlates, useProfile, useTracker, todayISO } from '@/lib/store';
@@ -28,6 +28,7 @@ export default function Profile() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [photoErr, setPhotoErr] = useState('');
   const installed = useInstalled();
+  const { canPrompt, prompt, justInstalled } = useInstallPrompt();
   const { earned, list: awardList } = useAwards();
   if (!ready || !profile) return null;
 
@@ -99,7 +100,7 @@ export default function Profile() {
 
           <section className="ez-list" aria-label="Допомога">
             <p className="ez-list__title">Допомога</p>
-            <Row icon="home" title="Встановити Easy" value={installed ? 'Встановлено' : 'Як додати'} good={installed} onClick={() => setSheet('install')} />
+            <Row icon="home" title="Встановити Easy" value={installed || justInstalled ? 'Встановлено' : canPrompt ? 'Встановити' : 'Як додати'} good={installed || justInstalled} onClick={() => (canPrompt ? prompt() : setSheet('install'))} />
             <Row icon="cap" title="Уроки й гайди Олени" href="/learn" />
           </section>
 

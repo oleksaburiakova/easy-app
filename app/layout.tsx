@@ -3,6 +3,7 @@ import '@/styles/tokens.css';
 import '@/styles/components.css';
 import '@/styles/app.css';
 import '@/styles/glass.css';
+import { InstallCapture } from '@/components/Install';
 
 export const metadata: Metadata = {
   title: 'Easy — конструктор здорового харчування',
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@300;400&family=Great+Vibes&display=swap" />
       </head>
       <body>
+        <InstallCapture />
         <div className="app">{children}</div>
       </body>
     </html>

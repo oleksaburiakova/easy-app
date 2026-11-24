@@ -481,3 +481,8 @@ a.pf-row:active, .pf-row--btn:active { transform: scale(.98); }
 .trk-goal__icon { width: 52px; height: 52px; flex: none; border-radius: 17px; display: flex; align-items: center; justify-content: center; color: var(--burgundy);
   background: radial-gradient(circle at 32% 28%, #fff6e3 0%, color-mix(in srgb, var(--gold) 70%, white) 35%, var(--gold) 75%, color-mix(in srgb, var(--gold) 75%, black) 100%);
   box-shadow: inset 0 1px 2px rgba(255, 255, 255, .8), inset 0 -3px 6px rgba(97, 30, 45, .2), 0 6px 14px -4px rgba(0, 0, 0, .35); }
+
+/* Покрокова підказка встановлення (iPhone / Android без кнопки). */
+.inst-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.inst-steps li { display: flex; align-items: center; gap: var(--space-3); padding: 10px 12px; border-radius: 16px; background: var(--vol-tint); box-shadow: var(--vol-edge); font-size: 15px; line-height: 21px; }
+.inst-steps__ic { width: 38px; height: 38px; flex: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0a7aff; background: var(--white); box-shadow: 0 1px 3px rgba(28, 20, 22, .15); font-size: 20px; font-weight: 800; }

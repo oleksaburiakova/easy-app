@@ -13,7 +13,7 @@ import { LEVEL_LABEL } from '@/lib/calories';
 import { DAILY_TIPS, pick } from '@/lib/hints';
 import { plateTitle } from '@/lib/plate';
 import { useState } from 'react';
-import { InstallSheet, useDismissed, useInstalled } from '@/components/Install';
+import { InstallSheet, useDismissed, useInstallPrompt, useInstalled } from '@/components/Install';
 import { GUIDES } from '@/lib/lessons';
 import { vocative } from '@/lib/names';
 
@@ -29,6 +29,7 @@ export default function Home() {
   const [firstSeen, dismissFirst] = useDismissed('easy.hint.first-steps');
   const [installSeen, dismissInstall] = useDismissed('easy.hint.install');
   const [installOpen, setInstallOpen] = useState(false);
+  const { canPrompt, prompt, justInstalled } = useInstallPrompt();
   if (!ready || !profile) return null;
   const productsGuide = GUIDES.find((g) => g.file.includes('zdorovi'));
   const now = new Date();
@@ -68,7 +69,7 @@ export default function Home() {
           </Link>
         </div>
 
-        {(!firstSeen && plates.length === 0) || (!installSeen && !installed) ? (
+        {(!firstSeen && plates.length === 0) || (!installSeen && !installed && !justInstalled) ? (
           <div className="ez-stack" style={{ paddingTop: 0 }}>
             {!firstSeen && plates.length === 0 && (
               <section className="home-card" aria-label="З чого почати">
@@ -84,14 +85,16 @@ export default function Home() {
                 <button className="home-card__close" onClick={dismissFirst} aria-label="Сховати"><Icon name="plus" size={16} style={{ transform: 'rotate(45deg)' }} /></button>
               </section>
             )}
-            {!installSeen && !installed && (
+            {!installSeen && !installed && !justInstalled && (
               <section className="home-card" aria-label="Встановити Easy">
                 <span className="home-card__icon"><Icon name="home" size={22} variant="fill" /></span>
                 <div className="home-card__body">
                   <p className="home-card__title">Встановіть Easy на телефон</p>
                   <p className="home-card__text">Відкривається як застосунок — з іконкою, на весь екран.</p>
                   <div className="home-card__actions">
-                    <button className="ez-btn ez-btn--soft ez-btn--sm" onClick={() => setInstallOpen(true)}>Як додати</button>
+                    {canPrompt
+                      ? <button className="ez-btn ez-btn--primary ez-btn--sm" onClick={() => prompt()}>Встановити</button>
+                      : <button className="ez-btn ez-btn--soft ez-btn--sm" onClick={() => setInstallOpen(true)}>Як додати</button>}
                   </div>
                 </div>
                 <button className="home-card__close" onClick={dismissInstall} aria-label="Сховати"><Icon name="plus" size={16} style={{ transform: 'rotate(45deg)' }} /></button>
