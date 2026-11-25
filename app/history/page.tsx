@@ -1,6 +1,6 @@
 'use client';
 import { Photo } from '@/components/Photo';
-import { PlateThumb } from '@/components/PlateArt';
+import { platePhoto } from '@/lib/photos';
 import { useState } from 'react';
 import Link from 'next/link';
 import { TabBar } from '@/components/TabBar';
@@ -54,7 +54,7 @@ export default function History() {
             const isToday = day === todayISO();
             const inner = (
               <>
-                {p ? <PlateThumb className="ez-hrow__img" size={92} meal={p.meal} selections={p.selections} /> : <Photo className="ez-hrow__img" src={null} letter={<Icon name={m.icon} size={36} variant="fill" />} style={{ fontSize: 26 }} />}
+                <Photo className="ez-hrow__img" src={p ? platePhoto(p.meal, p.selections) : null} letter={p ? plateTitle(p.meal, p.selections).charAt(0) : <Icon name={m.icon} size={36} variant="fill" />} style={{ fontSize: 26 }} />
                 <span className="ez-hrow__body">
                   <span className="ez-headline" style={{ fontSize: 16 }}>{m.title}</span>
                   <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{p ? plateTitle(p.meal, p.selections) : isToday ? 'Зібрати тарілку' : day < todayISO() ? 'Не за конструктором' : '—'}</span>
@@ -80,7 +80,7 @@ export default function History() {
                   Так, повторити
                 </button>
               </div>
-              <PlateThumb className="ez-repeat__img" size={96} meal={fav.meal} selections={fav.selections} />
+              <Photo className="ez-repeat__img" src={platePhoto(fav.meal, fav.selections)} letter={plateTitle(fav.meal, fav.selections).charAt(0)} />
             </section>
           )}
         </div>
