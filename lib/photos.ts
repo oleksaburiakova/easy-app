@@ -263,3 +263,22 @@ export function platePhoto(meal: string, selections: { stepKey: string; label: s
   for (const s of selections) { const src = selectionPhoto(s); if (src) return src; }
   return null;
 }
+
+/* ---------- Тарілка-схема (метод тарілки Олени): ½ овочі, ¼ білок, ¼ гарнір / основа ---------- */
+
+export interface PlateParts { veg: string[]; protein: string | null; carb: string | null; extras: string[] }
+
+/** Фото для секторів тарілки й маленьких кружечків поруч (сир, фрукти, десерт…). */
+export function plateParts(meal: string, selections: { stepKey: string; label: string }[]): PlateParts {
+  const by = (k: string) => selections.find((s) => s.stepKey === k);
+  const items = (k: string) => (by(k)?.label ?? '').split(/,\s*/).filter(Boolean).map((x) => productPhoto(x)).filter((x): x is string => !!x);
+  const one = (k: string) => { const s = by(k); return s ? selectionPhoto(s) : null; };
+  const eggs = by('eggs') && by('eggs')!.label !== 'без яєць' ? one('eggs') : null;
+  const protein = one('protein') ?? eggs;
+  const carb = meal === 'breakfast' ? one('base') : one('side');
+  const extras = [
+    ...(one('protein') && eggs ? [eggs] : []),
+    one('cheese'), one('protein_snack'), ...items('fruit').slice(0, 1), one('chocolate'), one('addon'),
+  ].filter((x): x is string => !!x);
+  return { veg: items('veg').slice(0, 2), protein, carb, extras: [...new Set(extras)].slice(0, 3) };
+}

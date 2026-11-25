@@ -140,3 +140,27 @@ button { font-family: inherit; }
   .mascot .mascot__video { display: none; }
   .mascot .mascot__still { display: block; }
 }
+
+/* ---------- Тарілка-схема (PlateArt): ½ овочі, ¼ білок, ¼ гарнір ---------- */
+.plate-art { position: relative; display: inline-block; width: var(--pa); height: var(--pa); flex: none; }
+.plate-art__plate { position: absolute; left: 0; top: 0; width: 86%; height: 86%; border-radius: 50%; background: var(--white);
+  padding: 6%; box-shadow: 0 6px 18px rgba(28, 20, 22, .14), inset 0 0 0 1px var(--line); }
+.plate-art__food { position: relative; display: block; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: var(--blush-100); }
+.plate-art__sector { position: absolute; overflow: hidden; background: var(--blush-200); }
+.plate-art__sector img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.7); display: block; }
+.plate-art__sector--left { left: 0; top: 0; width: 50%; height: 100%; }
+.plate-art__sector--left img { transform: scale(1.35); }
+.plate-art__sector--tl { left: 0; top: 0; width: 50%; height: 50%; }
+.plate-art__sector--bl { left: 0; top: 50%; width: 50%; height: 50%; }
+.plate-art__sector--tr { left: 50%; top: 0; width: 50%; height: 50%; }
+.plate-art__sector--br { left: 50%; top: 50%; width: 50%; height: 50%; }
+.plate-art__line { position: absolute; background: var(--white); }
+.plate-art__line--v { left: calc(50% - 1px); top: 0; width: 2px; height: 100%; }
+.plate-art__line--h { left: 50%; top: calc(50% - 1px); width: 50%; height: 2px; }
+.plate-art__line--hl { left: 0; top: calc(50% - 1px); width: 50%; height: 2px; }
+.plate-art__side { position: absolute; width: 30%; height: 30%; border-radius: 50%; overflow: hidden; background: var(--white);
+  border: 2px solid var(--white); box-shadow: 0 3px 10px rgba(28, 20, 22, .16); }
+.plate-art__side img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.45); display: block; }
+.plate-art__side--0 { right: 0; bottom: 0; }
+.plate-art__side--1 { right: 0; top: 34%; }
+.plate-art__side--2 { left: 34%; bottom: 0; }
