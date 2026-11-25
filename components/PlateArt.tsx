@@ -35,28 +35,15 @@ export function PlateThumb({ className, size, meal, selections }: { className: s
   return <span className={`${className} plate-thumb`}><PlateArt meal={meal} selections={selections} size={size} /></span>;
 }
 
-/** Варіант Б: порції-гірки на тарілці без розділювачів. */
-export function PlateMounds({ meal, selections, size = 120 }: { meal: string; selections: { stepKey: string; label: string }[]; size?: number }) {
-  const p = plateParts(meal, selections);
-  const blob = (src: string | null, cls: string) => src ? <span className={`plate-mound ${cls}`}><img src={src} alt="" loading="lazy" /></span> : null;
-  return (
-    <span className="plate-art plate-art--mounds" style={{ ['--pa' as string]: `${size}px` }} aria-hidden="true">
-      <span className="plate-mounds__plate" />
-      {blob(p.veg[0] ?? null, 'plate-mound--veg')}
-      {blob(p.veg[1] ?? null, 'plate-mound--veg2')}
-      {blob(p.carb, 'plate-mound--carb')}
-      {blob(p.protein, 'plate-mound--protein')}
-      {p.extras.map((src, i) => <span key={src} className={`plate-mound plate-mound--x${i}`}><img src={src} alt="" loading="lazy" /></span>)}
-    </span>
-  );
-}
-
-/** Варіант В: ланч-бокс — велике відділення овочів ліворуч, білок і гарнір праворуч, добавки смужкою знизу. */
-export function PlateBento({ meal, selections, size = 120 }: { meal: string; selections: { stepKey: string; label: string }[]; size?: number }) {
+/**
+ * Ланч-бокс — банер угорі сторінки тарілки (рішення Олександри 25.11): відділення овочів ліворуч, білок і гарнір посередині,
+ * добавки (сир, фрукт, десерт) — колонкою праворуч. `wide` — на всю ширину, висота `size`.
+ */
+export function PlateBento({ meal, selections, size = 120, wide }: { meal: string; selections: { stepKey: string; label: string }[]; size?: number; wide?: boolean }) {
   const p = plateParts(meal, selections);
   const cell = (src: string | null, cls: string) => <span className={`bento__cell ${cls}`}>{src ? <img src={src} alt="" loading="lazy" /> : null}</span>;
   return (
-    <span className="bento" style={{ ['--pa' as string]: `${size}px` }} aria-hidden="true">
+    <span className={`bento${wide ? ' bento--wide' : ''}`} style={{ ['--pa' as string]: `${size}px` }} aria-hidden="true">
       {p.veg.length > 1 ? <span className="bento__veg">{cell(p.veg[0], '')}{cell(p.veg[1], '')}</span> : cell(p.veg[0] ?? null, 'bento__veg')}
       {cell(p.protein, 'bento__protein')}
       {cell(p.carb, 'bento__carb')}

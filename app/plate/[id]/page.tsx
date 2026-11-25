@@ -2,7 +2,7 @@
 import { AwardWatcher } from '@/components/Awards';
 import { Photo } from '@/components/Photo';
 import { GREENS_PHOTO, OIL_PHOTO, selectionPhoto } from '@/lib/photos';
-import { PlateArt } from '@/components/PlateArt';
+import { PlateBento } from '@/components/PlateArt';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -49,9 +49,9 @@ export default function PlatePage() {
         <Link className="ez-nav__back" href="/"><Icon name="back" size={18} /> Головна</Link>
         <span className="ez-caption">{mealTitle(plate.meal)} · {LEVEL_LABEL[plate.level]}</span>
       </nav>
-      {/* Тарілка-схема за методом Олени: ½ овочі, ¼ білок, ¼ гарнір; сир, фрукти, десерт — поруч. */}
-      <div className="plate-hero">
-        <PlateArt meal={plate.meal} selections={plate.selections} size={248} />
+      {/* Банер-ланч-бокс: овочі, білок і гарнір, добавки колонкою праворуч (рішення 25.11). */}
+      <div className="plate-hero plate-hero--bento">
+        <PlateBento meal={plate.meal} selections={plate.selections} size={230} wide />
         <h1 className="plate-hero__title">{title}</h1>
       </div>
 
