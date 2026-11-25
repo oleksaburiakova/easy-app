@@ -3,7 +3,7 @@ import { AwardWatcher } from '@/components/Awards';
 import { Photo } from '@/components/Photo';
 import { GREENS_PHOTO, OIL_PHOTO, selectionPhoto } from '@/lib/photos';
 import { PlateBento } from '@/components/PlateArt';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { Icon } from '@/components/Icon';
@@ -19,6 +19,10 @@ export default function PlatePage() {
   const { plates, addPlate, updatePlate, ready: plReady } = usePlates();
   const router = useRouter();
   const [toast, setToast] = useState('');
+  // Відкрили з історії (?from=history) — повертаємось в історію, а не на головну. Читаємо після монтування, як і дані з localStorage.
+  const [fromHistory, setFromHistory] = useState(false);
+  useEffect(() => { setFromHistory(new URLSearchParams(window.location.search).get('from') === 'history'); }, []);
+  const back = fromHistory ? { href: '/history', nav: 'Історія', btn: 'До історії' } : { href: '/', nav: 'Головна', btn: 'На головну' };
   if (!ready || !plReady) return null;
   const plate = plates.find((p) => p.id === id);
   if (!plate) return <main className="app-main empty">Тарілку не знайдено. <Link className="link" href="/">На головну</Link></main>;
@@ -46,7 +50,7 @@ export default function PlatePage() {
   return (
     <main className="app-main fade-in" style={{ paddingBottom: 170 }}>
       <nav className="ez-nav" aria-label="Навігація">
-        <Link className="ez-nav__back" href="/"><Icon name="back" size={18} /> Головна</Link>
+        <Link className="ez-nav__back" href={back.href}><Icon name="back" size={18} /> {back.nav}</Link>
         <span className="ez-caption">{mealTitle(plate.meal)} · {LEVEL_LABEL[plate.level]}</span>
       </nav>
       {/* Банер-ланч-бокс: овочі, білок і гарнір, добавки колонкою праворуч (рішення 25.11). */}
@@ -116,7 +120,7 @@ export default function PlatePage() {
               {plate.favorite ? 'В улюблених' : 'В улюблені'}
             </button>
           </div>
-          <Link href="/" className="ez-btn ez-btn--primary ez-btn--block">На головну</Link>
+          <Link href={back.href} className="ez-btn ez-btn--primary ez-btn--block">{back.btn}</Link>
         </div>
       </div>
       {toast && <div className="toast" role="status">{toast}</div>}
