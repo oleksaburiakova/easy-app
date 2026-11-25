@@ -3,8 +3,8 @@ import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Icon } from '@/components/Icon';
-import { buildHero, nonePhoto, productPhoto } from '@/lib/photos';
-import { PlateThumb } from '@/components/PlateArt';
+import { buildHero, nonePhoto, platePhoto, productPhoto } from '@/lib/photos';
+import { Photo } from '@/components/Photo';
 import { Tip } from '@/components/Tip';
 import { Sheet } from '@/components/Sheet';
 import { useRequireProfile } from '@/components/Guard';
@@ -149,7 +149,7 @@ export default function Build() {
   const hint = step ? stepHint(step.key, meal, idx) : null;
   const stepTitle = STEP_TITLES[step?.key ?? ''] ?? step?.title;
   const hero = buildHero(meal);
-  // Улюблені — рядком зверху першого кроку (рішення Олександри 22.11: без окремого екрана вибору).
+  // Улюблені — рядком зверху першого кроку (рішення Олександри 22.11: без окремого екрана вибору), вигляд — як на головній (25.11).
   const showFavs = idx === 0 && favs.length > 0;
 
   return (
@@ -168,18 +168,17 @@ export default function Build() {
       </header>
 
       {showFavs && (
-        <section className="bf-favs" aria-label="Улюблені страви">
-          <div className="bf-favs__head">
-            <h2 className="ez-headline">Улюблені</h2>
-            <span className="ez-caption">Одним натиском — та сама тарілка</span>
-          </div>
-          <div className="bf-favs__row">
+        // Так само, як «Улюблені страви» на головній: одне головне фото й назва; натиск — «Повторити».
+        <section aria-label="Улюблені страви">
+          <div className="ez-section-head"><h2 className="ez-headline">Улюблені страви</h2><span className="ez-caption">Натисніть — повторимо</span></div>
+          <div className="ez-favs">
             {favs.map((f) => (
-              <button key={f.id} className="bf-fav" onClick={() => repeat(f)} aria-label={`Повторити: ${plateTitle(f.meal, f.selections)}`}>
-                <PlateThumb className="bf-fav__img" size={88} meal={f.meal} selections={f.selections} />
-                <span className="bf-fav__name">{plateTitle(f.meal, f.selections)}</span>
-                <span className="bf-fav__go"><Icon name="redo" size={14} /> Повторити</span>
-              </button>
+              <div className="ez-fav" key={f.id}>
+                <button onClick={() => repeat(f)} aria-label={`Повторити: ${plateTitle(f.meal, f.selections)}`}>
+                  <Photo className="ez-fav__img" src={platePhoto(f.meal, f.selections)} letter={plateTitle(f.meal, f.selections).charAt(0)} />
+                  <span className="ez-fav__name">{plateTitle(f.meal, f.selections)}</span>
+                </button>
+              </div>
             ))}
           </div>
           <p className="bf-favs__or">або зберіть нову тарілку</p>
