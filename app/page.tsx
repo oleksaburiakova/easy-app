@@ -1,6 +1,7 @@
 'use client';
 import { AwardWatcher } from '@/components/Awards';
-import { PlateThumb } from '@/components/PlateArt';
+import { Photo } from '@/components/Photo';
+import { platePhoto } from '@/lib/photos';
 import Link from 'next/link';
 import { TabBar } from '@/components/TabBar';
 import { Icon } from '@/components/Icon';
@@ -90,7 +91,7 @@ export default function Home() {
             if (p) {
               return (
                 <Link key={m.key} href={`/plate/${p.id}`} className="ez-meal ez-meal--photo" style={{ textDecoration: 'none' }}>
-                  <PlateThumb className="ez-meal__photo" size={112} meal={p.meal} selections={p.selections} />
+                  <Photo className="ez-meal__photo" src={platePhoto(p.meal, p.selections)} letter={plateTitle(p.meal, p.selections).charAt(0)} />
                   <span className="ez-meal__body">
                     <span className="ez-meal__tag"><span className="ez-meal__tagicon"><Icon name={m.icon} size={16} variant="fill" /></span>{m.title}</span>
                     <span className="ez-headline" style={{ marginTop: 6 }}>{plateTitle(p.meal, p.selections)}</span>
@@ -119,7 +120,7 @@ export default function Home() {
               {favs.map((p) => (
                 <div className="ez-fav" key={p.id}>
                   <Link href={`/plate/${p.id}`}>
-                    <PlateThumb className="ez-fav__img" size={104} meal={p.meal} selections={p.selections} />
+                    <Photo className="ez-fav__img" src={platePhoto(p.meal, p.selections)} letter={plateTitle(p.meal, p.selections).charAt(0)} />
                     <span className="ez-fav__name">{plateTitle(p.meal, p.selections)}</span>
                   </Link>
                 </div>

@@ -247,6 +247,18 @@ export const buildHero = (meal: string): string | null =>
   ['breakfast', 'lunch', 'dinner'].includes(meal) ? `/images/hero-${meal}.webp` : null;
 
 
+/** Головне фото тарілки (головна): сніданок — основа, обід і вечеря — білок, потім гарнір. */
+export function platePhoto(meal: string, selections: { stepKey: string; label: string }[]): string | null {
+  const order = meal === 'breakfast' ? ['base', 'protein', 'cheese'] : ['protein', 'side', 'veg'];
+  for (const key of order) {
+    const s = selections.find((x) => x.stepKey === key);
+    const src = s && selectionPhoto(s);
+    if (src) return src;
+  }
+  for (const s of selections) { const src = selectionPhoto(s); if (src) return src; }
+  return null;
+}
+
 /* ---------- Тарілка-схема (метод тарілки Олени): ½ овочі, ¼ білок, ¼ гарнір / основа ---------- */
 
 export interface PlateParts { veg: string[]; protein: string | null; carb: string | null; extras: string[] }
