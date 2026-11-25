@@ -161,9 +161,9 @@ button { font-family: inherit; }
 .plate-hero__title { margin: 0; font-size: 24px; line-height: 30px; font-weight: 700; color: var(--ink); text-align: center; text-wrap: balance; }
 
 /* ---------- Ланч-бокс (PlateBento) — у списках улюблених ---------- */
-.bento { display: grid; width: var(--pa); height: var(--pa); padding: calc(var(--pa) * .04); gap: calc(var(--pa) * .035); flex: none;
-  grid-template-columns: 1.15fr 1fr; grid-template-rows: 1fr 1fr auto; background: var(--white); border-radius: calc(var(--pa) * .14);
-  box-shadow: 0 6px 18px rgba(28, 20, 22, .14), inset 0 0 0 1px var(--line); }
+.bento { display: grid; width: var(--pa); height: var(--pa); gap: calc(var(--pa) * .035); flex: none;
+  grid-template-columns: 1.15fr 1fr; grid-template-rows: 1fr 1fr auto; }
+.bento__cell { box-shadow: 0 3px 10px rgba(28, 20, 22, .12); }
 .bento__cell { position: relative; overflow: hidden; border-radius: calc(var(--pa) * .08); background: var(--blush-100); min-height: 0; }
 .bento__cell img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.5); display: block; }
 .bento__veg { grid-column: 1; grid-row: 1 / 3; display: grid; gap: calc(var(--pa) * .035); grid-template-rows: 1fr 1fr; min-height: 0; }
@@ -175,4 +175,3 @@ button { font-family: inherit; }
 .bento--wide .bento__extras { grid-column: 3; grid-row: 1 / 3; grid-auto-flow: row; grid-auto-rows: 1fr; grid-auto-columns: auto; height: auto; }
 .bento--wide:not(:has(.bento__extras)) { grid-template-columns: 1.25fr 1fr; }
 .plate-hero--bento { background: none; padding: var(--space-2) var(--space-4) 0; }
-.plate-hero--bento .bento { border-radius: var(--radius-card, 24px); }
