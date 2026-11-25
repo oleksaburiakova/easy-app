@@ -159,3 +159,26 @@ button { font-family: inherit; }
 .plate-hero { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-4) var(--space-2);
   background: radial-gradient(circle at 50% 42%, var(--white) 0, var(--blush-50) 70%); }
 .plate-hero__title { margin: 0; font-size: 24px; line-height: 30px; font-weight: 700; color: var(--ink); text-align: center; text-wrap: balance; }
+
+/* ---------- Макет: варіант Б (порції-гірки) і В (ланч-бокс) ---------- */
+.plate-mounds__plate { position: absolute; left: 2%; top: 2%; width: 96%; height: 96%; border-radius: 50%; background: var(--white);
+  box-shadow: 0 6px 18px rgba(28, 20, 22, .14), inset 0 0 0 1px var(--line), inset 0 0 0 calc(var(--pa) * .06) var(--card); }
+.plate-mound { position: absolute; border-radius: 50%; overflow: hidden; box-shadow: 0 4px 10px rgba(28, 20, 22, .18); background: var(--blush-100); }
+.plate-mound img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.5); display: block; }
+.plate-mound--veg { left: 12%; top: 18%; width: 46%; height: 46%; }
+.plate-mound--veg2 { left: 16%; top: 56%; width: 30%; height: 30%; }
+.plate-mound--protein { left: 52%; top: 14%; width: 36%; height: 36%; }
+.plate-mound--carb { left: 50%; top: 48%; width: 36%; height: 36%; }
+.plate-mound--x0 { left: 40%; top: 70%; width: 20%; height: 20%; }
+.plate-mound--x1 { left: 76%; top: 40%; width: 18%; height: 18%; }
+.plate-mound--x2 { left: 36%; top: 6%; width: 18%; height: 18%; }
+.bento { display: grid; width: var(--pa); height: var(--pa); padding: calc(var(--pa) * .04); gap: calc(var(--pa) * .035); flex: none;
+  grid-template-columns: 1.15fr 1fr; grid-template-rows: 1fr 1fr auto; background: var(--white); border-radius: calc(var(--pa) * .14);
+  box-shadow: 0 6px 18px rgba(28, 20, 22, .14), inset 0 0 0 1px var(--line); }
+.bento__cell { position: relative; overflow: hidden; border-radius: calc(var(--pa) * .08); background: var(--blush-100); min-height: 0; }
+.bento__cell img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.5); display: block; }
+.bento__veg { grid-column: 1; grid-row: 1 / 3; display: grid; gap: calc(var(--pa) * .035); grid-template-rows: 1fr 1fr; min-height: 0; }
+.bento__veg:not(:has(.bento__cell)) { display: block; }
+.bento__protein { grid-column: 2; grid-row: 1; }
+.bento__carb { grid-column: 2; grid-row: 2; }
+.bento__extras { grid-column: 1 / 3; grid-row: 3; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: calc(var(--pa) * .035); height: calc(var(--pa) * .2); }
