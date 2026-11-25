@@ -26,8 +26,6 @@ export default function PlatePage() {
   const title = plateTitle(plate.meal, plate.selections);
   const notes: string[] = [];
   const isToday = plate.date === todayISO();
-  // Улюблену страву не перезбирають — її можна лише прибрати з улюблених (рішення Олександри 25.11).
-  const noRebuild = isToday && plate.favorite;
   for (const s of plate.selections) {
     const c = cookedHint({ label: s.label, ...parseAmount(s.label) });
     if (c) notes.push(`${display({ label: s.label }).name} — суха вага, після варіння ${c.replace(/ (готов\S+)$/, '')}.`);
@@ -99,8 +97,9 @@ export default function PlatePage() {
 
       <div className="bottom-bar">
         <div className="bottom-bar__inner gap-3">
-          <div className={noRebuild ? undefined : 'ez-pair'}>
-            {noRebuild ? null : isToday ? (
+          {/* Сьогоднішню тарілку можна перезібрати й тоді, коли вона в улюблених (рішення Олександри 25.11). */}
+          <div className="ez-pair">
+            {isToday ? (
               <Link href={`/build/${plate.meal}`} className="ez-btn ez-btn--soft">
                 <span style={{ color: 'var(--burgundy)', display: 'flex' }}><Icon name="redo" size={18} /></span>
                 Перезібрати
@@ -112,9 +111,9 @@ export default function PlatePage() {
                 Повторити сьогодні
               </button>
             )}
-            <button className={`ez-btn ez-btn--soft${noRebuild ? ' ez-btn--block' : ''}`} aria-pressed={plate.favorite} onClick={() => { updatePlate(plate.id, { favorite: !plate.favorite }); flash(plate.favorite ? 'Прибрано з улюблених' : 'Додано в улюблені'); }}>
+            <button className="ez-btn ez-btn--soft" aria-pressed={plate.favorite} onClick={() => { updatePlate(plate.id, { favorite: !plate.favorite }); flash(plate.favorite ? 'Прибрано з улюблених' : 'Додано в улюблені'); }}>
               <span style={{ color: 'var(--burgundy)', display: 'flex' }}><Icon name="heart" size={18} filled={plate.favorite} /></span>
-              {plate.favorite ? 'Прибрати з улюблених' : 'В улюблені'}
+              {plate.favorite ? 'В улюблених' : 'В улюблені'}
             </button>
           </div>
           <Link href="/" className="ez-btn ez-btn--primary ez-btn--block">На головну</Link>
