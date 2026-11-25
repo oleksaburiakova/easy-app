@@ -74,15 +74,6 @@ button { font-family: inherit; }
 .fav-pick { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--line); font: inherit; text-align: left; cursor: pointer; }
 .fav-pick__img { width: 52px; height: 52px; border-radius: var(--radius-sm); object-fit: cover; flex: none; font-size: 20px; }
 
-/* Колаж тарілки з фото обраних продуктів. */
-.collage { position: absolute; inset: 0; display: grid; gap: 2px; background: var(--white); grid-template-rows: minmax(0, 1fr); }
-.ez-hero .collage img { width: 100%; height: 100%; min-height: 0; object-fit: cover; display: block; }
-.collage--2 { grid-template-columns: 1fr 1fr; }
-.collage--3 { grid-template-columns: 3fr 2fr; grid-template-rows: repeat(2, minmax(0, 1fr)); }
-.collage--3 img:first-child { grid-row: 1 / 3; }
-.collage--4 { grid-template-columns: 3fr 2fr 2fr; grid-template-rows: repeat(2, minmax(0, 1fr)); }
-.collage--4 img:first-child { grid-row: 1 / 3; }
-.collage--4 img:nth-child(4) { grid-column: 2 / 4; }
 
 /* Інгредієнти тарілки — більші фото. */
 .plate-list .ez-irow__thumb { width: 52px; height: 52px; }
@@ -143,7 +134,7 @@ button { font-family: inherit; }
 
 /* ---------- Тарілка-схема (PlateArt): ½ овочі, ¼ білок, ¼ гарнір ---------- */
 .plate-art { position: relative; display: inline-block; width: var(--pa); height: var(--pa); flex: none; }
-.plate-art__plate { position: absolute; left: 0; top: 0; width: 86%; height: 86%; border-radius: 50%; background: var(--white);
+.plate-art__plate { position: absolute; left: 0; top: 0; width: 82%; height: 82%; border-radius: 50%; background: var(--white);
   padding: 6%; box-shadow: 0 6px 18px rgba(28, 20, 22, .14), inset 0 0 0 1px var(--line); }
 .plate-art__food { position: relative; display: block; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: var(--blush-100); }
 .plate-art__sector { position: absolute; overflow: hidden; background: var(--blush-200); }
@@ -158,9 +149,13 @@ button { font-family: inherit; }
 .plate-art__line--v { left: calc(50% - 1px); top: 0; width: 2px; height: 100%; }
 .plate-art__line--h { left: 50%; top: calc(50% - 1px); width: 50%; height: 2px; }
 .plate-art__line--hl { left: 0; top: calc(50% - 1px); width: 50%; height: 2px; }
-.plate-art__side { position: absolute; width: 30%; height: 30%; border-radius: 50%; overflow: hidden; background: var(--white);
+.plate-art__side { position: absolute; width: 27%; height: 27%; border-radius: 50%; overflow: hidden; background: var(--white);
   border: 2px solid var(--white); box-shadow: 0 3px 10px rgba(28, 20, 22, .16); }
 .plate-art__side img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.45); display: block; }
 .plate-art__side--0 { right: 0; bottom: 0; }
-.plate-art__side--1 { right: 0; top: 34%; }
-.plate-art__side--2 { left: 34%; bottom: 0; }
+.plate-art__side--1 { right: 0; top: 36%; }
+.plate-art__side--2 { left: 36%; bottom: 0; }
+.plate-thumb { display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--blush-50); }
+.plate-hero { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-4) var(--space-2);
+  background: radial-gradient(circle at 50% 42%, var(--white) 0, var(--blush-50) 70%); }
+.plate-hero__title { margin: 0; font-size: 24px; line-height: 30px; font-weight: 700; color: var(--ink); text-align: center; text-wrap: balance; }

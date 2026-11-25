@@ -241,28 +241,11 @@ export const nonePhoto = (label: string): string | null => {
   return slug && AVAILABLE.has(slug) ? `/products/${slug}.webp` : null;
 };
 
-/** Фото для колажу тарілки: усі обрані продукти з фото, без повторів, до 4. */
-export function plateCollage(meal: string, selections: { stepKey: string; label: string }[]): string[] {
-  const main = platePhoto(meal, selections);
-  const all = selections.map(selectionPhoto).filter((x): x is string => !!x);
-  return [...new Set([main, ...all].filter((x): x is string => !!x))].slice(0, 4);
-}
 
 /** Фото тарілки в шапці конструктора: public/images/hero-<meal>.webp (тарілка праворуч, ліворуч місце під заголовок). */
 export const buildHero = (meal: string): string | null =>
   ['breakfast', 'lunch', 'dinner'].includes(meal) ? `/images/hero-${meal}.webp` : null;
 
-/** Головне фото тарілки: сніданок — основа, обід і вечеря — білок, потім гарнір. */
-export function platePhoto(meal: string, selections: { stepKey: string; label: string }[]): string | null {
-  const order = meal === 'breakfast' ? ['base', 'protein', 'cheese'] : ['protein', 'side', 'veg'];
-  for (const key of order) {
-    const s = selections.find((x) => x.stepKey === key);
-    const src = s && selectionPhoto(s);
-    if (src) return src;
-  }
-  for (const s of selections) { const src = selectionPhoto(s); if (src) return src; }
-  return null;
-}
 
 /* ---------- Тарілка-схема (метод тарілки Олени): ½ овочі, ¼ білок, ¼ гарнір / основа ---------- */
 

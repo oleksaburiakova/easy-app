@@ -3,8 +3,8 @@ import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Icon } from '@/components/Icon';
-import { buildHero, nonePhoto, platePhoto, productPhoto } from '@/lib/photos';
-import { Photo } from '@/components/Photo';
+import { buildHero, nonePhoto, productPhoto } from '@/lib/photos';
+import { PlateThumb } from '@/components/PlateArt';
 import { Tip } from '@/components/Tip';
 import { Sheet } from '@/components/Sheet';
 import { useRequireProfile } from '@/components/Guard';
@@ -176,7 +176,7 @@ export default function Build() {
           <div className="bf-favs__row">
             {favs.map((f) => (
               <button key={f.id} className="bf-fav" onClick={() => repeat(f)} aria-label={`Повторити: ${plateTitle(f.meal, f.selections)}`}>
-                <Photo className="bf-fav__img" src={platePhoto(f.meal, f.selections)} letter={plateTitle(f.meal, f.selections).charAt(0)} />
+                <PlateThumb className="bf-fav__img" size={88} meal={f.meal} selections={f.selections} />
                 <span className="bf-fav__name">{plateTitle(f.meal, f.selections)}</span>
                 <span className="bf-fav__go"><Icon name="redo" size={14} /> Повторити</span>
               </button>

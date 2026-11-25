@@ -1,7 +1,8 @@
 'use client';
 import { AwardWatcher } from '@/components/Awards';
 import { Photo } from '@/components/Photo';
-import { GREENS_PHOTO, OIL_PHOTO, plateCollage, selectionPhoto } from '@/lib/photos';
+import { GREENS_PHOTO, OIL_PHOTO, selectionPhoto } from '@/lib/photos';
+import { PlateArt } from '@/components/PlateArt';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -25,7 +26,6 @@ export default function PlatePage() {
   const title = plateTitle(plate.meal, plate.selections);
   const notes: string[] = [];
   const isToday = plate.date === todayISO();
-  const collage = plateCollage(plate.meal, plate.selections);
   for (const s of plate.selections) {
     const c = cookedHint({ label: s.label, ...parseAmount(s.label) });
     if (c) notes.push(`${display({ label: s.label }).name} — суха вага, після варіння ${c.replace(/ (готов\S+)$/, '')}.`);
@@ -49,16 +49,10 @@ export default function PlatePage() {
         <Link className="ez-nav__back" href="/"><Icon name="back" size={18} /> Головна</Link>
         <span className="ez-caption">{mealTitle(plate.meal)} · {LEVEL_LABEL[plate.level]}</span>
       </nav>
-      <div className="ez-hero">
-        {collage.length ? (
-          <div className={`collage collage--${collage.length}`} aria-hidden="true">
-            {collage.map((src) => <img key={src} src={src} alt="" />)}
-          </div>
-        ) : (
-          <Photo className="ph--hero" src={null} letter={title.charAt(0)} style={{ width: '100%', height: '100%', display: 'flex' }} />
-        )}
-        <div className="ez-hero__shade" aria-hidden="true" />
-        <h1 className="ez-hero__title">{title}</h1>
+      {/* Тарілка-схема за методом Олени: ½ овочі, ¼ білок, ¼ гарнір; сир, фрукти, десерт — поруч. */}
+      <div className="plate-hero">
+        <PlateArt meal={plate.meal} selections={plate.selections} size={248} />
+        <h1 className="plate-hero__title">{title}</h1>
       </div>
 
       <div className="ez-stack">
