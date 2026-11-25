@@ -77,6 +77,10 @@ const RULES: [RegExp, string][] = [
   // овочі
   [/набір для борщу/i, 'nabir-borshch'],
   [/набір для супу/i, 'nabir-sup'],
+  // ферментовані — вище за звичайні капусту й огірки (фото 25.11)
+  [/квашен[аі]\s*капуст/i, 'kvashena-kapusta'],
+  [/кімчі/i, 'kimchi'],
+  [/квашен[іи]\s*огір/i, 'kvasheni-ohirky'],
   [/мікс салат/i, 'ovochi-salat'],
   [/мікс|суміш/i, 'ovochi-sumishi'],
   [/стручков|спаржев/i, 'ovochi-sparzha'],
@@ -114,6 +118,9 @@ const RULES: [RegExp, string][] = [
 
 /** Які фото вже лежать у public/products (оновлювати разом із файлами). */
 const AVAILABLE = new Set<string>([
+  'kimchi',
+  'kvashena-kapusta',
+  'kvasheni-ohirky',
   'apelsyn',
   'brokoli',
   'bulgur',
