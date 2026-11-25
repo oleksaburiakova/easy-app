@@ -308,7 +308,7 @@ export const VEG_LISTS: Record<MealKey, [string, string[]][]> = {
     [FERMENT_GROUP, VEG_FERMENTED],
   ],
   lunch: [...VEG_MAIN, [FERMENT_GROUP, VEG_FERMENTED]],
-  // Вечеря — ті самі блоки, що й обід, без ферментованих: у списку Олени (25.11) вони лише до сніданку й обіду.
+  // Вечеря — ті самі блоки, що й обід, без ферментованих (погоджено 25.11: на вечерю не додаємо).
   dinner: VEG_MAIN,
 };
 
