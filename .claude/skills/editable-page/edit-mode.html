@@ -1,0 +1,95 @@
+<div class="edbar" id="edbar" hidden>
+  <p class="edhint" id="edhint" hidden>Натисніть на будь-який текст і змініть його. Новий рядок — Enter. Додати чи прибрати пункт — попросіть Claude.</p>
+  <span class="edstatus" id="edstatus" role="status"></span>
+  <button type="button" id="edcancel" class="edbtn ghost" hidden>Скасувати</button>
+  <button type="button" id="edsave" class="edbtn" hidden>Зберегти</button>
+  <button type="button" id="edstart" class="edbtn">Редагувати</button>
+</div>
+<script type="application/json" id="edits">{"at":0,"t":{}}</script>
+<script>
+{
+  const BLOCK = 'div,p,h1,h2,h3,h4,ul,ol,li,table';
+  const SEL = 'h1,h2,h3,h4,p,li,td,th,.key .n,.key .t,.fact .n,.fact .t,.when,.need,.d b,.d span';
+  const els = [...document.querySelectorAll(SEL)].filter(el => !el.closest('.phones,.nav,.edbar') && !el.querySelector(BLOCK));
+  const ALLOWED = new Set(['B', 'STRONG', 'I', 'EM', 'SMALL', 'BR']);
+  const clean = html => {
+    const t = document.createElement('template');
+    t.innerHTML = html;
+    const walk = n => {
+      for (const c of [...n.childNodes]) {
+        if (c.nodeType === 1) {
+          walk(c);
+          if (!ALLOWED.has(c.tagName)) c.replaceWith(...c.childNodes);
+          else for (const a of [...c.attributes]) c.removeAttribute(a.name);
+        } else if (c.nodeType !== 3) c.remove();
+      }
+    };
+    walk(t.content);
+    return t.innerHTML.replace(/(<br>)+$/, '').trim();
+  };
+  const orig = els.map(el => clean(el.innerHTML));
+  let state = { at: 0, t: {} };
+  const apply = data => {
+    if (!data || typeof data !== 'object' || !data.t || (data.at || 0) < state.at) return;
+    state = { at: data.at || 0, t: data.t };
+    els.forEach((el, i) => { el.innerHTML = clean(i in state.t ? String(state.t[i]) : orig[i]); });
+  };
+  try { apply(JSON.parse(document.getElementById('edits').textContent)); } catch (e) { }
+  fetch('edits.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(apply).catch(() => { });
+
+  const bar = document.getElementById('edbar'), start = document.getElementById('edstart'), save = document.getElementById('edsave'),
+    cancel = document.getElementById('edcancel'), hint = document.getElementById('edhint'), status = document.getElementById('edstatus');
+  let art = null, editing = false;
+  const say = t => { status.textContent = t; };
+  const mode = on => {
+    editing = on;
+    document.body.classList.toggle('editing', on);
+    els.forEach(el => { if (on) el.setAttribute('contenteditable', 'true'); else el.removeAttribute('contenteditable'); });
+    start.hidden = on; save.hidden = !on; cancel.hidden = !on; hint.hidden = !on;
+    save.disabled = false;
+  };
+  const readOnly = () => { mode(false); start.hidden = true; say('Редагувати може лише власниця сторінки.'); };
+  els.forEach(el => {
+    el.addEventListener('keydown', e => { if (editing && e.key === 'Enter') { e.preventDefault(); document.execCommand('insertLineBreak'); } });
+    el.addEventListener('paste', e => { if (!editing) return; e.preventDefault(); document.execCommand('insertText', false, e.clipboardData.getData('text/plain')); });
+  });
+  start.addEventListener('click', () => { say(''); mode(true); });
+  cancel.addEventListener('click', () => { apply({ at: state.at, t: state.t }); mode(false); say('Зміни скасовано.'); });
+  save.addEventListener('click', async () => {
+    const t = {};
+    els.forEach((el, i) => { const h = clean(el.innerHTML); if (h !== orig[i]) t[i] = h; });
+    const next = { at: Date.now(), t };
+    const json = JSON.stringify(next).replace(/</g, '\\u003c');
+    save.disabled = true; say('Зберігаю…');
+    const fail = e => {
+      const c = e && e.code;
+      if (c === 'not_writer' || c === 'not_granted' || c === 'consent_required' || c === 'not_declared') readOnly();
+      else if (c === 'conflict') say('Сторінку щойно оновили — відкривається свіжа версія.');
+      else if (c === 'rate_limited') { save.disabled = false; say('Забагато збережень поспіль. Спробуйте за хвилину.'); }
+      else { save.disabled = false; say('Не вдалося зберегти. Спробуйте ще раз.'); }
+    };
+    try {
+      await art.publish({ 'edits.json': { content: json, contentType: 'application/json' } });
+      state = next; mode(false); say('Збережено.');
+    } catch (e) {
+      if (e && (e.code === 'capability_disabled' || e.code === 'capability_removed')) {
+        try {
+          const src = await (await fetch('index.html', { cache: 'no-store' })).text();
+          const re = /<script type="application\/json" id="edits">[\s\S]*?<\/script>/;
+          if (!re.test(src)) throw { code: 'upstream_error' };
+          await art.publish(src.replace(re, () => '<script type="application/json" id="edits">' + json + '</scr' + 'ipt>'));
+          say('Збережено.');
+        } catch (e2) { fail(e2); }
+      } else fail(e);
+    }
+  });
+  (async () => {
+    if (!window.claude || !window.claude.use) return;
+    try {
+      const [a, u] = await Promise.all([window.claude.use('artifact'), window.claude.use('user')]);
+      const can = u ? await u.canEdit() : false;
+      if (a && can) { art = a; bar.hidden = false; }
+    } catch (e) { }
+  })();
+}
+</script>
