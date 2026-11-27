@@ -36,12 +36,16 @@ export function PlateArt({ meal, selections, size = 120 }: { meal: string; selec
  */
 export function PlateBento({ meal, selections, size = 120, wide }: { meal: string; selections: { stepKey: string; label: string }[]; size?: number; wide?: boolean }) {
   const p = plateParts(meal, selections);
-  const cell = (src: string | null, cls: string) => <span className={`bento__cell ${cls}`}>{src ? <img src={src} alt="" loading="lazy" /> : null}</span>;
+  const cell = (src: string | null, cls: string, style?: React.CSSProperties) => <span className={`bento__cell ${cls}`} style={style}>{src ? <img src={src} alt="" loading="lazy" /> : null}</span>;
+  // Порожніх відділень не малюємо: сніданок-галета чи панкейки — без овочів і білка, тож основа займає весь ланч-бокс (27.11).
+  const hasVeg = p.veg.length > 0, hasP = !!p.protein, hasC = !!p.carb || (!hasVeg && !hasP);
+  const span = (other: boolean): React.CSSProperties | undefined =>
+    !hasVeg ? (other ? { gridRow: '1 / 3' } : { gridColumn: '1 / 3', gridRow: '1 / 3' }) : other ? undefined : { gridRow: '1 / 3' };
   return (
     <span className={`bento${wide ? ' bento--wide' : ''}`} style={{ ['--pa' as string]: `${size}px` }} aria-hidden="true">
-      {p.veg.length > 1 ? <span className="bento__veg">{cell(p.veg[0], '')}{cell(p.veg[1], '')}</span> : cell(p.veg[0] ?? null, 'bento__veg')}
-      {cell(p.protein, 'bento__protein')}
-      {cell(p.carb, 'bento__carb')}
+      {hasVeg && (p.veg.length > 1 ? <span className="bento__veg">{cell(p.veg[0], '')}{cell(p.veg[1], '')}</span> : cell(p.veg[0], 'bento__veg'))}
+      {hasP && cell(p.protein, 'bento__protein', { ...(!hasVeg && { gridColumn: '1' }), ...span(hasC) })}
+      {hasC && cell(p.carb, 'bento__carb', { ...(!hasVeg && hasP && { gridColumn: '2' }), ...span(hasP) })}
       {p.extras.length > 0 && <span className="bento__extras">{p.extras.map((src) => cell(src, ''))}</span>}
     </span>
   );
