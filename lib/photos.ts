@@ -45,6 +45,7 @@ const RULES: [RegExp, string][] = [
   [/дорадо/i, 'dorado'],
   [/сібас/i, 'sibas'],
   [/кревет/i, 'krevetky'],
+  [/морськ\S* коктейл/i, 'morskyi-kokteil'],
   [/мідії/i, 'midii'],
   // м'ясо
   [/шинка/i, 'shynka'],
@@ -184,6 +185,7 @@ const AVAILABLE = new Set<string>([
   'ovochi-sparzha',
   'ovochi-sumishi',
   'pankeiky',
+  'morskyi-kokteil',
   'pechyvo',
   'zefir',
   'pastyla',
