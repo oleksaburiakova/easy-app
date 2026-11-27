@@ -1,11 +1,13 @@
-// Чек-лист docs/BACKLOG.md → одна HTML-сторінка для закріпленого артефакту на claude.ai.
-// Запуск: node scripts/backlog-page.mjs <вихідний.html>
+// Чек-лист (backlog.md) → одна HTML-сторінка для закріпленого артефакту на claude.ai.
+// Чек-лист у репозиторії не зберігаємо (27.11): джерело — файл backlog.md у самому артефакті.
+// Запуск: node scripts/backlog-page.mjs <вихідний.html> <backlog.md>
 // Прогрес рахується з галочок `- [x]` / `- [ ]` по кожному розділу «## …» і загалом.
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const out = process.argv[2];
-if (!out) { console.error('Usage: node scripts/backlog-page.mjs <out.html>'); process.exit(1); }
-const md = readFileSync(new URL('../docs/BACKLOG.md', import.meta.url), 'utf8');
+const src = process.argv[3];
+if (!out || !src) { console.error('Usage: node scripts/backlog-page.mjs <out.html> <backlog.md>'); process.exit(1); }
+const md = readFileSync(src, 'utf8');
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const inline = (s) => esc(s)
@@ -124,7 +126,7 @@ body.open-only .task.done{display:none}
 
 <nav aria-label="Разделы">${nav.replace(/<a /g, '<a class="glass" ')}</nav>
 ${sectionHtml.replace(/class="card"/g, 'class="card glass"')}
-<p class="foot">Источник — docs/BACKLOG.md в репозитории easy-app. Галочки ставит Claude после каждой выполненной задачи.</p>
+<p class="foot">Источник — файл backlog.md в этом артефакте. Галочки ставит Claude после каждой выполненной задачи.</p>
 </main>
 <script>
 document.querySelectorAll('.filter button').forEach(function(b){b.addEventListener('click',function(){

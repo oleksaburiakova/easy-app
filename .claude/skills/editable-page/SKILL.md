@@ -42,7 +42,3 @@ description: Будь-яка HTML-сторінка (артефакт) для О�
 ```
 
 Змінні `--bg, --line, --soft, --olive, --wine, --blush` — з палітри сторінки; якщо їх немає, підставити кольори Easy.
-
-## Приклад
-
-Комерційна пропозиція для Олени: https://claude.ai/artifact/CZAKmPRJAVoNRxyJyDCiM8 (slug `5d92125d-3ca6-4cfb-afd0-523f1016d80b`).
