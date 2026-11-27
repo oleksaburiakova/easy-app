@@ -29,6 +29,11 @@ export default function Build() {
   const [skipWarn, setSkipWarn] = useState<string | null>(null);
   /** «Інша солодощ»: що обрали й калорійність на 100 г — порахуємо грами на 50–80 ккал. */
   const [sweet, setSweet] = useState({ name: '', kcal: '' });
+  // Своя солодощ — спливаюче вікно: що обрали й калорійність → скільки грамів (Олена, 27.11).
+  const [sweetOpen, setSweetOpen] = useState(false);
+  const [sweetDraft, setSweetDraft] = useState({ name: '', kcal: '' });
+  const [sweetPrev, setSweetPrev] = useState<TreeOption | undefined>();
+  const draftPortion = sweetGrams(Number(sweetDraft.kcal));
   const sweetPortion = sweetGrams(Number(sweet.kcal));
 
   const node = profile && ['breakfast', 'lunch', 'dinner'].includes(meal) ? levelNode(meal, profile.level) : null;
@@ -73,11 +78,14 @@ export default function Build() {
   const total = meal === 'breakfast' && steps.length < 4 ? 6 : steps.length;
   const multiCfg = step ? MULTI_STEPS[step.key] : undefined;
   const multiSel = step && multiCfg ? multi[step.key] ?? [] : [];
-  const picked = step ? (multiCfg ? (multiSel.length ? { label: multiSel.join(', ') } : undefined) : picks[step.key]) : undefined;
+  const rawPicked = step ? (multiCfg ? (multiSel.length ? { label: multiSel.join(', ') } : undefined) : picks[step.key]) : undefined;
+  // «Інша солодощ» без вписаної назви — ще не вибір.
+  const picked = rawPicked?.label === OTHER_SWEET && !sweet.name.trim() ? undefined : rawPicked;
   const isLast = idx === steps.length - 1 && steps.length >= 3;
 
   const choose = (opt: TreeOption) => {
     setNoneOpen(false);
+    if (opt.label === OTHER_SWEET) { setSweetDraft(sweet); setSweetPrev(picks[step.key]?.label === OTHER_SWEET ? undefined : picks[step.key]); setSweetOpen(true); }
     // Пропуск кроку з попередженням (добір білка) — порада спливаючим вікном.
     if (SKIP_WARNINGS[step.key] && opt.label === SKIP_OPTIONS[step.key] && picks[step.key]?.label !== opt.label) setSkipWarn(step.key);
     setPicks((p) => {
@@ -225,7 +233,9 @@ export default function Build() {
               const d = step.key === 'eggs' || none ? { name: o.label.charAt(0).toUpperCase() + o.label.slice(1), portion: '' } : display(o);
               const portion = none || multiCfg ? '' : d.portion;
               const cooked = cookedHint(o);
-              const note = optionNote(o);
+              const note = o.label === OTHER_SWEET && sweet.name.trim() && picked?.label === OTHER_SWEET
+                ? [sweet.name.trim(), sweetPortion && `≈ ${sweetPortion}`].filter(Boolean).join(' · ')
+                : optionNote(o);
               const sel = multiCfg ? multiSel.includes(o.label) : picked?.label === o.label;
               const full = !!multiCfg && !sel && multiSel.length >= multiCfg.max;
               return (
@@ -252,22 +262,6 @@ export default function Build() {
       ))}
 
       <div className="ez-stack" style={{ paddingTop: 0 }}>
-        {picked?.label === OTHER_SWEET && (
-          <>
-            <Tip hint={{ text: EXTRA_HINTS[OTHER_SWEET] }} className="pop-in" />
-            <div className="ez-list pop-in" style={{ padding: 16, display: 'grid', gap: 12 }}>
-              <label className="ez-field"><span className="ez-label">Що обрали</span>
-                <input className="ez-input" maxLength={40} placeholder="Напр. зефір, пастила, печиво" value={sweet.name} onChange={(e) => setSweet((v) => ({ ...v, name: e.target.value }))} />
-              </label>
-              <label className="ez-field"><span className="ez-label">Ккал на 100 г (з упаковки)</span>
-                <input className="ez-input" inputMode="numeric" placeholder="Напр. 320" value={sweet.kcal} onChange={(e) => setSweet((v) => ({ ...v, kcal: e.target.value.replace(/\D/g, '').slice(0, 3) }))} />
-              </label>
-              {sweetPortion
-                ? <p className="ez-headline" style={{ margin: 0 }}>Візьміть ≈ {sweetPortion}</p>
-                : sweet.kcal && <p className="ez-footnote" style={{ margin: 0 }}>Перевірте число: калорійність на 100 г — зазвичай від 50 до 900 ккал.</p>}
-            </div>
-          </>
-        )}
         {step && step.key !== 'eggs' && (
           <button className="ez-card ez-card--none" onClick={() => setNoneOpen(true)} aria-haspopup="dialog">
             <span className="ez-card__name">Нічого з цього немає вдома</span>
@@ -291,6 +285,25 @@ export default function Build() {
             <Tip hint={w} />
             <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setSkipWarn(null)}>Зрозуміло</button>
             <button className="ez-btn ez-btn--back ez-btn--block" onClick={() => { setPicks((p) => { const n = { ...p }; delete n[skipWarn]; return n; }); setSkipWarn(null); }}>Все ж додати білок</button>
+          </Sheet>
+        );
+      })()}
+
+      {sweetOpen && (() => {
+        const close = () => { setSweetOpen(false); if (!sweet.name.trim()) setPicks((p) => { const n = { ...p }; if (sweetPrev) n[SWEET_STEP] = sweetPrev; else delete n[SWEET_STEP]; return n; }); };
+        return (
+          <Sheet title="Інша солодощ" onClose={close}>
+            <Tip hint={{ text: EXTRA_HINTS[OTHER_SWEET] }} />
+            <label className="ez-field"><span className="ez-label">Що обрали</span>
+              <input className="ez-input" maxLength={40} placeholder="Напр. халва, мармелад, вафлі" value={sweetDraft.name} onChange={(e) => setSweetDraft((v) => ({ ...v, name: e.target.value }))} />
+            </label>
+            <label className="ez-field"><span className="ez-label">Ккал на 100 г (з упаковки)</span>
+              <input className="ez-input" inputMode="numeric" placeholder="Напр. 320" value={sweetDraft.kcal} onChange={(e) => setSweetDraft((v) => ({ ...v, kcal: e.target.value.replace(/\D/g, '').slice(0, 3) }))} />
+            </label>
+            {draftPortion
+              ? <p className="ez-headline" style={{ margin: 0 }}>З'їжте ≈ {draftPortion}</p>
+              : sweetDraft.kcal && <p className="ez-footnote" style={{ margin: 0 }}>Перевірте число: калорійність на 100 г — зазвичай від 50 до 900 ккал.</p>}
+            <button className="ez-btn ez-btn--primary ez-btn--block" disabled={!sweetDraft.name.trim() || !draftPortion} onClick={() => { setSweet(sweetDraft); setSweetOpen(false); }}>Зберегти</button>
           </Sheet>
         );
       })()}
