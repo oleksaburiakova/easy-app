@@ -155,7 +155,6 @@ button { font-family: inherit; }
 .plate-art__side--0 { right: 0; bottom: 0; }
 .plate-art__side--1 { right: 0; top: 36%; }
 .plate-art__side--2 { left: 36%; bottom: 0; }
-.plate-thumb { display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--blush-50); }
 .plate-hero { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-4) var(--space-2);
   background: radial-gradient(circle at 50% 42%, var(--white) 0, var(--blush-50) 70%); }
 .plate-hero__title { margin: 0; font-size: 24px; line-height: 30px; font-weight: 700; color: var(--ink); text-align: center; text-wrap: balance; }

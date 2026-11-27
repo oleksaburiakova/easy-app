@@ -45,6 +45,7 @@ const RULES: [RegExp, string][] = [
   [/дорадо/i, 'dorado'],
   [/сібас/i, 'sibas'],
   [/кревет/i, 'krevetky'],
+  [/морськ\S* коктейл/i, 'morskyi-kokteil'],
   [/мідії/i, 'midii'],
   // м'ясо
   [/шинка/i, 'shynka'],
@@ -74,9 +75,18 @@ const RULES: [RegExp, string][] = [
   [/йогурт/i, 'yogurt'],
   [/шоколад/i, 'shokolad'],
   [/інша солодощ/i, 'insha-solodoshch'],
+  [/печив/i, 'pechyvo'],
+  [/зефір/i, 'zefir'],
+  [/пастил/i, 'pastyla'],
+  [/курага/i, 'kuraha'],
+  [/фінік/i, 'finiky'],
   // овочі
   [/набір для борщу/i, 'nabir-borshch'],
   [/набір для супу/i, 'nabir-sup'],
+  // ферментовані — вище за звичайні капусту й огірки (фото 25.11)
+  [/квашен[аі]\s*капуст/i, 'kvashena-kapusta'],
+  [/кімчі/i, 'kimchi'],
+  [/квашен[іи]\s*огір/i, 'kvasheni-ohirky'],
   [/мікс салат/i, 'ovochi-salat'],
   [/мікс|суміш/i, 'ovochi-sumishi'],
   [/стручков|спаржев/i, 'ovochi-sparzha'],
@@ -114,6 +124,9 @@ const RULES: [RegExp, string][] = [
 
 /** Які фото вже лежать у public/products (оновлювати разом із файлами). */
 const AVAILABLE = new Set<string>([
+  'kimchi',
+  'kvashena-kapusta',
+  'kvasheni-ohirky',
   'apelsyn',
   'brokoli',
   'bulgur',
@@ -172,6 +185,12 @@ const AVAILABLE = new Set<string>([
   'ovochi-sparzha',
   'ovochi-sumishi',
   'pankeiky',
+  'morskyi-kokteil',
+  'pechyvo',
+  'zefir',
+  'pastyla',
+  'kuraha',
+  'finiky',
   'parmezan',
   'pechinka',
   'perets',
@@ -234,8 +253,8 @@ export function selectionPhoto(s: { stepKey: string; label: string }): string | 
   return productPhoto(name) ?? (s.stepKey === 'chocolate' ? productPhoto('інша солодощ') : null);
 }
 
-/** Варіант «без …» (без яєць, без шоколаду): фото продукту, яке картка показує приглушеним і перекресленим. */
-const NONE_PHOTO: Record<string, string> = { 'без яєць': 'yaitsia', 'без шоколаду': 'shokolad', 'не додавати': 'protein-yogurt' };
+/** Варіант «без …» (без яєць, без десерту): фото продукту, яке картка показує приглушеним і перекресленим. */
+const NONE_PHOTO: Record<string, string> = { 'без яєць': 'yaitsia', 'без десерту': 'shokolad', 'не додавати': 'protein-yogurt' };
 export const nonePhoto = (label: string): string | null => {
   const slug = NONE_PHOTO[label.toLowerCase()];
   return slug && AVAILABLE.has(slug) ? `/products/${slug}.webp` : null;

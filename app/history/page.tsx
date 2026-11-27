@@ -65,7 +65,7 @@ export default function History() {
             );
             // Історія — лише перегляд: зібрати можна тільки сьогоднішній прийом їжі.
             return p || isToday
-              ? <Link key={m.key} href={p ? `/plate/${p.id}` : `/build/${m.key}`} className="ez-hrow" style={{ paddingLeft: 0 }}>{inner}</Link>
+              ? <Link key={m.key} href={p ? `/plate/${p.id}?from=history` : `/build/${m.key}`} className="ez-hrow" style={{ paddingLeft: 0 }}>{inner}</Link>
               : <div key={m.key} className="ez-hrow ez-hrow--empty" style={{ paddingLeft: 0 }}>{inner}</div>;
           })}
 

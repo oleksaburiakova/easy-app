@@ -105,7 +105,7 @@ export default function Onboarding() {
         <div className="sheet-backdrop" role="presentation" onClick={() => setMinInfo(false)}>
           <div className="sheet pop-in" role="dialog" aria-modal="true" aria-labelledby="min-title" onClick={(e) => e.stopPropagation()}>
             <h2 id="min-title" className="ez-title" style={{ margin: 0 }}>Порції розрахуємо як для базової активності</h2>
-            <p className="ez-subhead" style={{ margin: 0 }}>Без руху харчування саме по собі працює гірше. Обов’язково перегляньте урок 3.2 «Чому не обов’язково жити в спортзалі» в розділі «Навчання»: у ньому — як поступово дійти до базового рівня.</p>
+            <p className="ez-subhead" style={{ margin: 0 }}>Без руху харчування саме по собі працює гірше. Обов’язково перегляньте урок 3.2 «Рух без спортзалу: скільки достатньо» в розділі «Навчання»: у ньому — як поступово дійти до базового рівня.</p>
             <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setMinInfo(false)}>Зрозуміло</button>
           </div>
         </div>

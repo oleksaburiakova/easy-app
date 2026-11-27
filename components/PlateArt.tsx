@@ -30,11 +30,6 @@ export function PlateArt({ meal, selections, size = 120 }: { meal: string; selec
   );
 }
 
-/** Тарілка-схема в рамці превʼю (головна, історія, улюблені): рамка тримає розмір, тарілка — по центру. */
-export function PlateThumb({ className, size, meal, selections }: { className: string; size: number; meal: string; selections: { stepKey: string; label: string }[] }) {
-  return <span className={`${className} plate-thumb`}><PlateArt meal={meal} selections={selections} size={size} /></span>;
-}
-
 /**
  * Ланч-бокс — банер угорі сторінки тарілки (рішення Олександри 25.11): відділення овочів ліворуч, білок і гарнір посередині,
  * добавки (сир, фрукт, десерт) — колонкою праворуч. `wide` — на всю ширину, висота `size`.
