@@ -401,8 +401,9 @@ function lunchCheese(opts: TreeOption[]): TreeOption[] {
   });
 }
 
+/** Те саме — на кроці «Доповнення» панкейків, де на дошці гауда (Олександра, 27.11): усі заміни гауди. */
 export function cheeseOptions(step: TreeStep, meal?: MealKey): TreeOption[] {
-  if (step.key !== 'cheese') return step.options;
+  if (step.key !== 'cheese' && step.key !== 'addon') return step.options;
   const options = meal === 'lunch' ? lunchCheese(step.options) : step.options;
   const gauda = options.find((o) => /гауда/i.test(o.label));
   const g = Number(gauda?.label.match(/гауда\s*(\d+)/i)?.[1]);
