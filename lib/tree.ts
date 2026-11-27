@@ -261,7 +261,7 @@ export const oilChoices = (ml: number) => [`олія ${ml} мл`, `вершко�
 /* ---------- Кроки, які можна пропустити ---------- */
 
 /** Крок → варіант «без»: додається останнім у сітку, у тарілку не потрапляє. */
-export const SKIP_OPTIONS: Record<string, string> = { chocolate: 'без шоколаду', protein_snack: 'не додавати' };
+export const SKIP_OPTIONS: Record<string, string> = { chocolate: 'без десерту', protein_snack: 'не додавати' };
 /** Попередження, коли пропускають білковий перекус (рішення 24.11): можна, але білок треба добрати. */
 /** Попередження, якщо крок пропускають: спливаюче вікно (рішення 24.11). */
 export const SKIP_WARNINGS: Record<string, { title: string; text: string; lesson: string }> = {
@@ -340,8 +340,21 @@ export function multiPortion(step: TreeStep): string {
   return lo === hi ? `${lo} г` : `${lo}–${hi} г`;
 }
 
-/** Додаткові варіанти до кроків (не з дошки): своя солодощ замість шоколаду. */
-export const EXTRA_OPTIONS: Record<string, TreeOption[]> = { chocolate: [{ label: 'інша солодощ' }] };
+/**
+ * Додаткові варіанти до кроків (не з дошки). Десерт: альтернативи шоколаду на 55–60 ккал (Олена, 27.11)
+ * і своя солодощ з розрахунком за калорійністю.
+ */
+export const EXTRA_OPTIONS: Record<string, TreeOption[]> = {
+  chocolate: [
+    { label: 'панкейк 1 шт' },
+    { label: 'печиво 2–3 шт або 10–15 г' },
+    { label: 'зефір 20 г' },
+    { label: 'пастила 20 г' },
+    { label: 'курага 25 г' },
+    { label: 'фініки 20 г' },
+    { label: 'інша солодощ' },
+  ],
+};
 export const OTHER_SWEET = 'інша солодощ';
 
 /** Скільки грамів своєї солодощі — на 50–80 ккал за калорійністю на 100 г з упаковки. */
