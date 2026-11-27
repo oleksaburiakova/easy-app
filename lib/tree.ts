@@ -169,7 +169,8 @@ export function cookedHint(opt: TreeOption): string | null {
 export interface DishBase { dish: string; title: string; note: string }
 const SOUP: DishBase = { dish: 'Суп', title: 'Основа для супу', note: 'Додайте овочі — вийде борщ чи суп-пюре, хліб — до супу' };
 const DISH_BASES: [RegExp, DishBase][] = [
-  [/\(\s*плов\s*\)/i, { dish: 'Плов', title: 'Основа для плову', note: 'Без нуту теж можна: оберіть просто рис' }],
+  // На обіді 2000 на дошці «рис 60г + нут варений 70» — без позначки «(плов)», але це та сама основа для плову (27.11).
+  [/\(\s*плов\s*\)|^\s*рис[^+]*\+\s*нут/i, { dish: 'Плов', title: 'Основа для плову', note: 'Без нуту теж можна: оберіть просто рис' }],
   [/\(\s*шаурма\s*\)/i, { dish: 'Шаурма', title: 'Основа для шаурми', note: 'Додайте білок і овочі — і загорніть у лаваш' }],
   [/\(\s*суп/i, SOUP],
   // «Картопля + квасоля» — основа для борщу з квасолею або рагу, «картопля + нут» — для рагу (Олександра, 27.11). Без підказки.
@@ -184,7 +185,7 @@ export const dishBase = (label: string): DishBase | null => DISH_BASES.find(([re
 export const optionGroup = (opt: TreeOption): string | null => (dishBase(opt.label) ? DISH_GROUP : opt.group ?? null);
 
 /** Порядок в «Основах для страв»: плов, шаурма, суп (картопля + хліб), борщ з квасолею або рагу (+ квасоля), рагу (+ нут) — 27.11. */
-const DISH_ORDER = [/плов/i, /шаурм/i, /хліб/i, /квасол/i, /нут/i];
+const DISH_ORDER = [/плов|^\s*рис[^+]*\+\s*нут/i, /шаурм/i, /хліб/i, /квасол/i, /нут/i];
 export const dishRank = (label: string) => { const i = DISH_ORDER.findIndex((re) => re.test(label)); return i < 0 ? DISH_ORDER.length : i; };
 
 /**
