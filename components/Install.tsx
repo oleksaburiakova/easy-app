@@ -61,7 +61,7 @@ export function InstallSheet({ onClose }: { onClose: () => void }) {
   const { canPrompt, prompt, justInstalled } = useInstallPrompt();
   return (
     <Sheet title="Встановити Easy" onClose={onClose}>
-      <p className="ez-subhead" style={{ margin: 0 }}>Так Easy відкривається як звичайний застосунок — на весь екран, з іконкою. І так зможуть приходити нагадування.</p>
+      <p className="ez-subhead m-0">Так Easy відкривається як звичайний застосунок — на весь екран, з іконкою. І так зможуть приходити нагадування.</p>
       {justInstalled ? (
         <p className="trk-sheet__rec">Готово! Easy з'явиться на головному екрані.</p>
       ) : canPrompt ? (

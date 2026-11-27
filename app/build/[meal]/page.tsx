@@ -176,7 +176,7 @@ export default function Build() {
   const showFavs = idx === 0 && favs.length > 0;
 
   return (
-    <main className="app-main fade-in" style={{ paddingBottom: 120 }}>
+    <main className="app-main fade-in pb-actions">
       <header className={`build-hero${hero ? ' build-hero--photo' : ''}`}>
         {hero && <img className="build-hero__img" src={hero} alt="" />}
         <nav className="ez-nav" aria-label="Навігація">
@@ -209,7 +209,7 @@ export default function Build() {
       )}
 
       <div className="ez-stepcard">
-        <span className="ez-caption" style={{ color: 'var(--secondary)' }}>Крок {idx + 1} з {total}</span>
+        <span className="ez-caption c-secondary">Крок {idx + 1} з {total}</span>
         <span className="ez-headline">{stepTitle}{step && multiCfg ? ` · ${multiPortion(step)}` : ''}</span>
         {step && multiCfg && (
           <span className="ez-caption">
@@ -220,7 +220,7 @@ export default function Build() {
         {step?.key === 'protein' && meal !== 'breakfast' && <span className="ez-caption">Вага м'яса й риби — в сирому вигляді</span>}
         <ol className="ez-steps" aria-label={`Кроки: ${mealTitle(meal)}`}>
           {Array.from({ length: total }).map((_, i) => (
-            <li key={i} style={{ display: 'contents' }}>
+            <li key={i} className="contents">
               {i > 0 && <span className="ez-steps__line" aria-hidden="true" />}
               {i < idx ? (
                 // Пройдений крок — можна повернутися на нього одним натиском (рішення 24.11).
@@ -241,7 +241,7 @@ export default function Build() {
 
       {groups.map(([g, opts]) => (
         <section key={`${step.key}-${g ?? 'all'}`}>
-          {g && GROUP_TITLES[g] && <h2 className="ez-headline" style={{ padding: '16px 12px 0', fontSize: 15 }}>{GROUP_TITLES[g]}</h2>}
+          {g && GROUP_TITLES[g] && <h2 className="ez-headline group-title">{GROUP_TITLES[g]}</h2>}
           <div className="ez-grid">
             {opts.map((o) => {
               const none = isNoneOption(o.label);
@@ -276,7 +276,7 @@ export default function Build() {
         </section>
       ))}
 
-      <div className="ez-stack" style={{ paddingTop: 0 }}>
+      <div className="ez-stack flush-top">
         {step && step.key !== 'eggs' && (
           <button className="ez-card ez-card--none" onClick={() => setNoneOpen(true)} aria-haspopup="dialog">
             <span className="ez-card__name">Нічого з цього немає вдома</span>
@@ -298,10 +298,10 @@ export default function Build() {
         if (!r) return null;
         return (
           <Sheet title={r.title} onClose={() => setRecipeAsk(null)}>
-            <p className="ez-subhead" style={{ margin: 0 }}>Перевірте, чи все є вдома:</p>
+            <p className="ez-subhead m-0">Перевірте, чи все є вдома:</p>
             <ul className="recipe-list">{r.ingredients.map((x) => <li key={x}>{x}</li>)}</ul>
-            {r.note && <p className="ez-footnote" style={{ margin: 0 }}>{r.note}</p>}
-            <p className="ez-footnote" style={{ margin: 0 }}>Рецепт приготування буде на тарілці.</p>
+            {r.note && <p className="ez-footnote m-0">{r.note}</p>}
+            <p className="ez-footnote m-0">Рецепт приготування буде на тарілці.</p>
             <button className="ez-btn ez-btn--primary ez-btn--block" onClick={confirmRecipe}>Усе є — продовжити</button>
             <button className="ez-btn ez-btn--back ez-btn--block" onClick={() => setRecipeAsk(null)}>Чогось немає — оберу інше</button>
           </Sheet>
@@ -331,8 +331,8 @@ export default function Build() {
               <input className="ez-input" inputMode="numeric" placeholder="Напр. 320" value={sweetDraft.kcal} onChange={(e) => setSweetDraft((v) => ({ ...v, kcal: e.target.value.replace(/\D/g, '').slice(0, 3) }))} />
             </label>
             {draftPortion
-              ? <p className="ez-headline" style={{ margin: 0 }}>З'їжте ≈ {draftPortion}</p>
-              : sweetDraft.kcal && <p className="ez-footnote" style={{ margin: 0 }}>Перевірте число: калорійність на 100 г — зазвичай від 50 до 900 ккал.</p>}
+              ? <p className="ez-headline m-0">З'їжте ≈ {draftPortion}</p>
+              : sweetDraft.kcal && <p className="ez-footnote m-0">Перевірте число: калорійність на 100 г — зазвичай від 50 до 900 ккал.</p>}
             <button className="ez-btn ez-btn--primary ez-btn--block" disabled={!sweetDraft.name.trim() || !draftPortion} onClick={() => { setSweet(sweetDraft); setSweetOpen(false); }}>Зберегти</button>
           </Sheet>
         );

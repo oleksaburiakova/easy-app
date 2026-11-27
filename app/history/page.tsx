@@ -33,7 +33,7 @@ export default function History() {
   return (
     <>
       <main className="app-main fade-in">
-        <header className="ez-header" style={{ paddingTop: 20 }}>
+        <header className="ez-header page-head">
           <h1 className="ez-large-title">Історія</h1>
           <p className="ez-subhead">Маленькі кроки — великі результати.</p>
         </header>
@@ -48,16 +48,16 @@ export default function History() {
             );
           })}
         </div>
-        <div className="ez-stack" style={{ paddingTop: 0 }}>
+        <div className="ez-stack flush-top">
           {MEALS.map((m) => {
             const p = ofDay.filter((x) => x.meal === m.key).slice(-1)[0];
             const isToday = day === todayISO();
             const inner = (
               <>
-                <Photo className="ez-hrow__img" src={p ? platePhoto(p.meal, p.selections) : null} letter={p ? plateTitle(p.meal, p.selections).charAt(0) : <Icon name={m.icon} size={36} variant="fill" />} style={{ fontSize: 26 }} />
+                <Photo className="ez-hrow__img hrow-letter" src={p ? platePhoto(p.meal, p.selections) : null} letter={p ? plateTitle(p.meal, p.selections).charAt(0) : <Icon name={m.icon} size={36} variant="fill" />} />
                 <span className="ez-hrow__body">
-                  <span className="ez-headline" style={{ fontSize: 16 }}>{m.title}</span>
-                  <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{p ? plateTitle(p.meal, p.selections) : isToday ? 'Зібрати тарілку' : day < todayISO() ? 'Не за конструктором' : '—'}</span>
+                  <span className="ez-headline ez-headline--sm">{m.title}</span>
+                  <span className="ez-caption c-secondary">{p ? plateTitle(p.meal, p.selections) : isToday ? 'Зібрати тарілку' : day < todayISO() ? 'Не за конструктором' : '—'}</span>
                 </span>
                 {!p && isToday && <span className="ez-chip ez-chip--add"><Icon name="plus" size={14} /> Зібрати</span>}
                 {(p || isToday) && <span className="ez-meal__chev"><Icon name="chev" size={18} /></span>}
@@ -65,8 +65,8 @@ export default function History() {
             );
             // Історія — лише перегляд: зібрати можна тільки сьогоднішній прийом їжі.
             return p || isToday
-              ? <Link key={m.key} href={p ? `/plate/${p.id}?from=history` : `/build/${m.key}`} className="ez-hrow" style={{ paddingLeft: 0 }}>{inner}</Link>
-              : <div key={m.key} className="ez-hrow ez-hrow--empty" style={{ paddingLeft: 0 }}>{inner}</div>;
+              ? <Link key={m.key} href={p ? `/plate/${p.id}?from=history` : `/build/${m.key}`} className="ez-hrow flush-left">{inner}</Link>
+              : <div key={m.key} className="ez-hrow ez-hrow--empty flush-left">{inner}</div>;
           })}
 
           {profile && <DayTracker day={tracker.days[day]} goals={goalsFor(tracker, profile.sex, profile.activity)} isToday={day === todayISO()} />}
@@ -74,9 +74,9 @@ export default function History() {
           {fav && favMealFree && (
             <section className="ez-repeat">
               <div className="ez-repeat__body">
-                <h2 className="ez-headline" style={{ fontSize: 18, lineHeight: '24px' }}>Улюблена страва ще раз?</h2>
-                <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{plateTitle(fav.meal, fav.selections)}</span>
-                <button className="ez-btn ez-btn--primary ez-btn--sm" style={{ marginTop: 12 }} onClick={() => addPlate({ date: todayISO(), meal: fav.meal, level: fav.level, selections: fav.selections, status: 'eaten', favorite: false })}>
+                <h2 className="ez-headline ez-headline--md">Улюблена страва ще раз?</h2>
+                <span className="ez-caption c-secondary">{plateTitle(fav.meal, fav.selections)}</span>
+                <button className="ez-btn ez-btn--primary ez-btn--sm mt-3" onClick={() => addPlate({ date: todayISO(), meal: fav.meal, level: fav.level, selections: fav.selections, status: 'eaten', favorite: false })}>
                   Так, повторити
                 </button>
               </div>
@@ -102,10 +102,10 @@ function DayTracker({ day, goals, isToday }: { day?: import('@/lib/tracker').Tra
     <section className="ez-list hs-trk" aria-label="Трекер дня">
       <div className="hs-trk__head">
         <p className="ez-list__title">Трекер</p>
-        {isToday && <Link className="link" href="/tracker" style={{ fontSize: 14 }}>Відмітити ›</Link>}
+        {isToday && <Link className="link link--sm" href="/tracker">Відмітити ›</Link>}
       </div>
       {!has ? (
-        <p className="ez-list__note" style={{ paddingTop: 0 }}>{isToday ? 'Сьогодні ще нічого не відмічено.' : 'Цього дня нічого не відмічено.'}</p>
+        <p className="ez-list__note flush-top">{isToday ? 'Сьогодні ще нічого не відмічено.' : 'Цього дня нічого не відмічено.'}</p>
       ) : (
         <>
           <div className="hs-trk__tiles">

@@ -26,17 +26,17 @@ export default function Learn() {
   return (
     <>
       <main className="app-main fade-in">
-        <header className="ez-header" style={{ paddingTop: 20 }}>
+        <header className="ez-header page-head">
           <h1 className="ez-large-title">Навчання</h1>
           <p className="ez-subhead">Конструктор допомагає скласти тарілку, а уроки — зрозуміти, чому вона збалансована.</p>
         </header>
         {LESSON_BLOCKS.map((b) => (
           <section key={b}>
-            <h2 className="ez-headline" style={{ padding: '12px 12px 0' }}>{b}</h2>
+            <h2 className="ez-headline section-title">{b}</h2>
             <div className="ez-stack">
               {LESSONS.filter((l) => l.block === b).map((l) => (
                 <div key={l.id} id={`l-${l.id}`} className="lesson-card">
-                  <button className="lesson-row" style={{ border: 0, textAlign: 'left', cursor: 'pointer', width: '100%' }} onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>
+                  <button className="lesson-row lesson-row--btn" onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>
                     {open !== l.id ? (
                       // Без обкладинки у Vimeo — маскот на рожевому тлі, щоб ряд виглядав так само.
                       <span className={`lesson-thumb${lessonThumb(l) ? '' : ' lesson-thumb--empty'}`}>
@@ -48,8 +48,8 @@ export default function Learn() {
                     )}
                     <span className="lesson-row__body">
                       <span className="ez-caption">{[l.id === 'intro' ? 'Вступ' : l.id === 'bonus' ? 'Бонус' : `Урок ${l.id}`, durationLabel(l.sec)].filter(Boolean).join(' · ')}</span>
-                      <span className="ez-headline" style={{ fontSize: 15 }}>{l.title}</span>
-                      <span className="ez-caption" style={{ color: 'var(--secondary)' }}>{l.about}</span>
+                      <span className="ez-headline ez-headline--xs">{l.title}</span>
+                      <span className="ez-caption c-secondary">{l.about}</span>
                     </span>
                   </button>
                   {open === l.id && (
@@ -64,7 +64,7 @@ export default function Learn() {
             </div>
           </section>
         ))}
-        <h2 id="guides" className="ez-headline" style={{ padding: '12px 12px 0' }}>Гайди</h2>
+        <h2 id="guides" className="ez-headline section-title">Гайди</h2>
         {/* Гайди — компактним рядком обкладинок, що гортається вбік: головне в «Навчанні» — відео. */}
         <div className="guide-strip">
           {GUIDES.map((g) => (

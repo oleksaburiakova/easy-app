@@ -44,7 +44,7 @@ export default function GuideView() {
   };
 
   return (
-    <main className="app-main guide-view" style={{ paddingBottom: 40 }}>
+    <main className="app-main guide-view pb-guide">
       <nav className="guide-view__bar" aria-label="Навігація">
         <button className="ez-nav__back" onClick={() => (history.length > 1 ? router.back() : router.push('/learn'))}><Icon name="back" size={18} /> Назад</button>
         <span className="guide-view__title">{g.title}</span>

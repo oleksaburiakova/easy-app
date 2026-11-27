@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import '@/styles/tokens.css';
 import '@/styles/components.css';
-import '@/styles/app.css';
+// Шари стилів: токени → компоненти дизайн-системи → «рідке скло» → стилі застосунку (останні, 27.11).
 import '@/styles/glass.css';
+import '@/styles/app.css';
 import { InstallCapture } from '@/components/Install';
 
 export const metadata: Metadata = {

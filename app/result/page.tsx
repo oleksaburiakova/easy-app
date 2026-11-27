@@ -8,9 +8,9 @@ export default function Result() {
   const { profile, ready } = useRequireProfile();
   if (!ready || !profile) return null;
   return (
-    <main className="app-main fade-in" style={{ paddingBottom: 120 }}>
-      <header className="ez-header" style={{ paddingTop: 28 }}>
-        <span className="ez-footnote" style={{ color: 'var(--olive-ink)' }}>Ваша норма</span>
+    <main className="app-main fade-in pb-actions">
+      <header className="ez-header page-head--tall">
+        <span className="ez-footnote c-olive">Ваша норма</span>
         <span className="result-big">{LEVEL_LABEL[profile.level]}</span>
         <p className="ez-subhead">Калорійність для поступового схуднення — з урахуванням зросту й активності.</p>
       </header>

@@ -40,14 +40,14 @@ export default function Home() {
   return (
     <>
       <main className="app-main fade-in">
-        <header className="ez-header" style={{ paddingTop: 20 }}>
+        <header className="ez-header page-head">
           <h1 className="ez-large-title">{greeting(now.getHours(), profile.name)}</h1>
           <p className="ez-subhead">Новий день — нова збалансована тарілка.</p>
           <span className="ez-caption">{now.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' })}</span>
         </header>
 
-        <div className="ez-pad" style={{ paddingTop: 0 }}>
-          <Link href="/profile" className="ez-plan" aria-label="План на день" style={{ textDecoration: 'none' }}>
+        <div className="ez-pad flush-top">
+          <Link href="/profile" className="ez-plan no-underline" aria-label="План на день">
             <div className="ez-ring">
               <svg width="112" height="112" viewBox="0 0 112 112" aria-hidden="true">
                 <circle className="ez-ring__track" cx="56" cy="56" r="48" />
@@ -59,15 +59,15 @@ export default function Home() {
               </div>
             </div>
             <div className="ez-plan__body">
-              <span className="ez-caption" style={{ color: 'var(--secondary)' }}>План</span>
-              <span className="ez-title" style={{ fontSize: 22, lineHeight: '28px' }}>{LEVEL_LABEL[profile.level]}</span>
+              <span className="ez-caption c-secondary">План</span>
+              <span className="ez-title plan-level">{LEVEL_LABEL[profile.level]}</span>
               <span className="ez-caption">{eaten} з 3 прийомів</span>
             </div>
           </Link>
         </div>
 
         {!firstSeen && plates.length === 0 ? (
-          <div className="ez-stack" style={{ paddingTop: 0 }}>
+          <div className="ez-stack flush-top">
             {!firstSeen && plates.length === 0 && (
               <section className="home-card" aria-label="З чого почати">
                 <span className="home-card__icon"><Icon name="leaf" size={22} variant="fill" /></span>
@@ -79,32 +79,32 @@ export default function Home() {
                     <Link className="ez-btn ez-btn--soft ez-btn--sm" href="/learn#l-intro">Перший урок</Link>
                   </div>
                 </div>
-                <button className="home-card__close" onClick={dismissFirst} aria-label="Сховати"><Icon name="plus" size={16} style={{ transform: 'rotate(45deg)' }} /></button>
+                <button className="home-card__close" onClick={dismissFirst} aria-label="Сховати"><Icon name="plus" size={16} className="icon-x" /></button>
               </section>
             )}
           </div>
         ) : null}
 
-        <div className="ez-stack" style={{ paddingTop: 0 }}>
+        <div className="ez-stack flush-top">
           {MEALS.map((m) => {
             const p = todays.filter((x) => x.meal === m.key).slice(-1)[0];
             if (p) {
               return (
-                <Link key={m.key} href={`/plate/${p.id}`} className="ez-meal ez-meal--photo" style={{ textDecoration: 'none' }}>
+                <Link key={m.key} href={`/plate/${p.id}`} className="ez-meal ez-meal--photo no-underline">
                   <Photo className="ez-meal__photo" src={platePhoto(p.meal, p.selections)} letter={plateTitle(p.meal, p.selections).charAt(0)} />
                   <span className="ez-meal__body">
                     <span className="ez-meal__tag"><span className="ez-meal__tagicon"><Icon name={m.icon} size={16} variant="fill" /></span>{m.title}</span>
-                    <span className="ez-headline" style={{ marginTop: 6 }}>{plateTitle(p.meal, p.selections)}</span>
+                    <span className="ez-headline mt-6">{plateTitle(p.meal, p.selections)}</span>
                   </span>
                   <span className="ez-meal__chev"><Icon name="chev" size={18} /></span>
                 </Link>
               );
             }
             return (
-              <Link key={m.key} href={`/build/${m.key}`} className="ez-meal" style={{ textDecoration: 'none' }}>
+              <Link key={m.key} href={`/build/${m.key}`} className="ez-meal no-underline">
                 <span className="ez-meal__icon"><Icon name={m.icon} size={25} variant="fill" /></span>
                 <span className="ez-meal__body">
-                  <span className="ez-headline" style={{ fontSize: 16 }}>{m.title}</span>
+                  <span className="ez-headline ez-headline--sm">{m.title}</span>
                   <span className="ez-subhead">Зібрати тарілку</span>
                 </span>
                 <span className="ez-meal__chev"><Icon name="chev" size={18} /></span>

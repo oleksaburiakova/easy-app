@@ -44,11 +44,11 @@ export default function Profile() {
   return (
     <>
       <main className="app-main fade-in">
-        <header className="ez-header" style={{ paddingTop: 20 }}>
+        <header className="ez-header page-head">
           <h1 className="ez-large-title">Профіль</h1>
         </header>
 
-        <div className="ez-stack" style={{ paddingTop: 0 }}>
+        <div className="ez-stack flush-top">
           <section className="pf-hero" aria-label="Мій профіль">
             <button className={`pf-hero__avatar${profile.photo ? ' pf-hero__avatar--photo' : ''}`} onClick={() => setSheet('photo')} aria-label="Змінити фото профілю">
               <img src={profile.photo ?? '/mascot/easy-bot-avatar.webp'} alt="" width={76} height={76} />
@@ -71,7 +71,7 @@ export default function Profile() {
           <section className="ez-list" aria-label="Мої досягнення">
             <div className="hs-trk__head">
               <p className="ez-list__title">Мої досягнення</p>
-              <Link className="link" href="/achievements" style={{ fontSize: 14 }}>{earned.size} з {awardList.length} ›</Link>
+              <Link className="link link--sm" href="/achievements">{earned.size} з {awardList.length} ›</Link>
             </div>
             <div className="pf-awards">
               {(earned.size ? awardList.filter((a) => earned.has(a.id)) : awardList.slice(0, 4)).slice(0, 8).map((a) => (
@@ -81,7 +81,7 @@ export default function Profile() {
                 </Link>
               ))}
             </div>
-            {!earned.size && <p className="ez-list__note" style={{ paddingTop: 0 }}>Перші нагороди — за першу тарілку й перший урок.</p>}
+            {!earned.size && <p className="ez-list__note flush-top">Перші нагороди — за першу тарілку й перший урок.</p>}
           </section>
 
           <section className="ez-list" aria-label="Мій план">
@@ -94,7 +94,7 @@ export default function Profile() {
             />
             <Row icon="clock" title="Режим дня" value={`${profile.wake} – ${profile.sleep}`} onClick={() => setSheet('schedule')} />
             <Row icon="sliders" title="Цілі трекера" value={`${fmt(g.steps)} · ${fmt(g.water)} мл`} href="/tracker" />
-            <Link href="/onboarding" className="ez-btn ez-btn--primary ez-btn--block" style={{ margin: '12px 0 4px' }}>Перерахувати калорійність</Link>
+            <Link href="/onboarding" className="ez-btn ez-btn--primary ez-btn--block btn-gap">Перерахувати калорійність</Link>
             <p className="ez-list__note">Змінюйте калорійність, лише якщо активність стабільно змінилась 3–4 тижні.</p>
           </section>
 
@@ -132,8 +132,8 @@ export default function Profile() {
       }} />
       {sheet === 'photo' && (
         <Sheet title="Фото профілю" onClose={() => setSheet(null)}>
-          <p className="ez-subhead" style={{ margin: 0 }}>Фото зберігається лише на цьому пристрої.</p>
-          {photoErr && <p className="ez-hint" style={{ color: 'var(--error)', margin: 0 }}>{photoErr}</p>}
+          <p className="ez-subhead m-0">Фото зберігається лише на цьому пристрої.</p>
+          {photoErr && <p className="ez-hint hint-error m-0">{photoErr}</p>}
           <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => fileRef.current?.click()}>{profile.photo ? 'Обрати інше фото' : 'Обрати своє фото'}</button>
           {profile.photo && <button className="ez-btn ez-btn--back ez-btn--block" onClick={() => { saveProfile({ ...profile, photo: undefined }); setSheet(null); }}>Повернути маскота</button>}
         </Sheet>
@@ -163,7 +163,7 @@ function ScheduleSheet({ wake, sleep, onSave, onClose }: { wake: string; sleep: 
   const [s, setS] = useState(sleep);
   return (
     <Sheet title="Режим дня" onClose={onClose}>
-      <p className="ez-subhead" style={{ margin: 0 }}>Від нього залежать нагадування: сніданок — через 1–1,5 години після підйому, вечеря — за 2–3 години до сну.</p>
+      <p className="ez-subhead m-0">Від нього залежать нагадування: сніданок — через 1–1,5 години після підйому, вечеря — за 2–3 години до сну.</p>
       <div className="seg">
         <label className="ez-field"><span className="ez-label">Прокидаюся о</span><input className="ez-input" type="time" value={w} onChange={(e) => setW(e.target.value)} /></label>
         <label className="ez-field"><span className="ez-label">Лягаю спати о</span><input className="ez-input" type="time" value={s} onChange={(e) => setS(e.target.value)} /></label>

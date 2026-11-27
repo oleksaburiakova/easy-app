@@ -1,14 +1,14 @@
 /* Каркас застосунку: мобільна колонка по центру, нижнє меню, анімації. */
 * { box-sizing: border-box; }
-html { background: var(--cream); }
+
 body { min-height: 100dvh; }
 button { font-family: inherit; }
-.app { max-width: 480px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; background: var(--surface); position: relative; }
+.app { max-width: 480px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; position: relative; }
 .app-main { flex: 1; padding-bottom: 112px; }
 .app-main--plain { padding-bottom: 24px; }
 .tabbar-wrap { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; pointer-events: none; }
-.tabbar-wrap .ez-tabs { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 456px; margin: 0 auto 12px; pointer-events: auto; box-shadow: 0 0 0 1px var(--line); }
-.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: linear-gradient(to top, var(--cream) 70%, rgba(255,255,255,0)); padding: 24px 12px 16px; }
+.tabbar-wrap .ez-tabs { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 456px; pointer-events: auto; }
+.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; padding-top: 24px; padding-left: 12px; padding-right: 12px; }
 .bottom-bar__inner { max-width: 456px; margin: 0 auto; }
 .screen-pad { padding: 0 var(--space-3); }
 .gap-3 { display: flex; flex-direction: column; gap: var(--space-3); }
@@ -26,16 +26,16 @@ button { font-family: inherit; }
 .welcome-hero img { width: 220px; height: auto; }
 .chip-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .seg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
-.pill-choice { height: 48px; border-radius: var(--radius-pill); border: 1.5px solid transparent; background: var(--card); font-weight: 600; font-size: 15px; color: var(--ink); cursor: pointer; }
-.pill-choice[aria-pressed="true"] { background: var(--blush-50); border-color: var(--accent); color: var(--burgundy); }
+.pill-choice { height: 48px; border-radius: var(--radius-pill); border: 1.5px solid transparent; font-weight: 600; font-size: 15px; color: var(--ink); cursor: pointer; }
+.pill-choice[aria-pressed="true"] { border-color: var(--accent); color: var(--burgundy); }
 .result-big { font-size: 40px; line-height: 46px; font-weight: 800; letter-spacing: -0.02em; color: var(--burgundy); }
 .empty { padding: var(--space-6) var(--space-4); text-align: center; color: var(--secondary); }
 .empty img { width: 140px; margin: 0 auto var(--space-3); display: block; }
-.lesson-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); background: var(--card); color: var(--ink); text-decoration: none; }
+.lesson-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); background: var(--card); color: var(--ink); text-decoration: none; }
 .lesson-row__num { width: 40px; height: 40px; border-radius: var(--radius-pill); background: var(--blush-100); color: var(--burgundy); display: flex; align-items: center; justify-content: center; font-weight: 700; flex: none; }
 .lesson-row__body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-.toast { position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%); background: var(--ink); color: var(--white); padding: 10px 18px; border-radius: var(--radius-pill); font-size: 14px; z-index: 50; }
-.lesson-card { border-radius: var(--radius-md); background: var(--card); overflow: hidden; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); color: var(--white); padding: 10px 18px; border-radius: var(--radius-pill); font-size: 14px; z-index: 50; }
+.lesson-card { overflow: hidden; }
 .lesson-card .lesson-row { background: transparent; }
 .lesson-player { display: grid; gap: var(--space-3); padding: 0 var(--space-3) var(--space-4); }
 .video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius-sm); overflow: hidden; background: var(--ink); }
@@ -84,25 +84,24 @@ button { font-family: inherit; }
 /* Уроки: обкладинка з Vimeo. */
 .lesson-thumb { position: relative; width: 128px; aspect-ratio: 16 / 9; border-radius: var(--radius-sm); overflow: hidden; flex: none; background: var(--blush-100); }
 .lesson-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.lesson-thumb__play { position: absolute; inset: 0; margin: auto; width: 28px; height: 28px; border-radius: var(--radius-pill); background: rgba(255, 255, 255, .9); color: var(--burgundy); display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(28, 20, 22, .25); }
+.lesson-thumb__play { position: absolute; inset: 0; margin: auto; width: 28px; height: 28px; border-radius: var(--radius-pill); color: var(--burgundy); display: flex; align-items: center; justify-content: center; }
 .lesson-thumb--empty { background: var(--blush-200); }
 .lesson-thumb--empty img { object-fit: contain; padding: 6px; }
 .lesson-card { scroll-margin-top: 12px; }
 
 /* Нижній аркуш (пояснення в анкеті). */
-.sheet-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(28, 20, 22, .4); display: flex; align-items: flex-end; justify-content: center; }
-.sheet { width: 100%; max-width: 480px; background: var(--surface); border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--space-5) var(--space-4) var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+.sheet-backdrop { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; }
+.sheet { max-width: 480px; padding-left: var(--space-4); padding-right: var(--space-4); padding-bottom: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
 
 /* Гайди: компактний горизонтальний ряд обкладинок (верх першої сторінки PDF) — менше уваги, ніж відео. */
-.guide-strip { display: flex; gap: var(--space-3); overflow-x: auto; padding: var(--space-2) var(--space-3) var(--space-4); scroll-snap-type: x mandatory; scroll-padding-inline: var(--space-3); scrollbar-width: none; }
+.guide-strip { display: flex; gap: var(--space-3); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--space-3); scrollbar-width: none; }
 .guide-strip::-webkit-scrollbar { display: none; }
-.guide-card { flex: none; width: 96px; display: flex; flex-direction: column; gap: 6px; color: var(--secondary); text-decoration: none; scroll-snap-align: start; }
-.guide-card__cover { display: block; aspect-ratio: 3 / 4; border-radius: var(--radius-sm); overflow: hidden; background: var(--burgundy); transition: transform .15s ease; }
+.guide-card { flex: none; display: flex; flex-direction: column; color: var(--secondary); text-decoration: none; scroll-snap-align: start; }
+.guide-card__cover { display: block; aspect-ratio: 3 / 4; overflow: hidden; background: var(--burgundy); transition: transform .15s ease; }
 .guide-card__cover img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
-.guide-card:active .guide-card__cover { transform: scale(.97); }
-@media (hover: hover) { .guide-card:hover .guide-card__cover { transform: translateY(-2px); } }
+
 @media (prefers-reduced-motion: reduce) { .guide-card__cover { transition: none; } }
-.guide-card__meta { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+
 
 /* Логотип-напис Easy (components/Wordmark.tsx) — шрифти гайдів Олени. */
 :root { --font-display: "Cormorant Garamond", Georgia, serif; --font-script: "Great Vibes", cursive; }
@@ -180,3 +179,49 @@ button { font-family: inherit; }
 .recipe-steps { margin: 0 0 var(--space-3); padding-left: 20px; display: grid; gap: var(--space-2); font-size: 15px; line-height: 22px; color: var(--ink); }
 .recipe__head { margin: var(--space-3) 0 var(--space-1); font-size: 13px; font-weight: 600; color: var(--olive-ink); }
 .recipe .recipe-list { margin-bottom: var(--space-1); }
+
+/* ---------- Колишні інлайн-стилі — класами (27.11). Динамічні значення (ширина смуг, розміри, змінні) лишаються в style ---------- */
+/* Відступи сторінок */
+.page-head { padding-top: var(--space-5); }
+.page-head--tall { padding-top: 28px; }
+.pb-actions { padding-bottom: 120px; }   /* сторінка з нижньою панеллю кнопок */
+.pb-welcome { padding-bottom: 150px; }
+.pb-plate { padding-bottom: 170px; }     /* тарілка: два ряди кнопок унизу */
+.pb-guide { padding-bottom: 40px; }
+.flush-top { padding-top: 0; }
+.tight-top { padding-top: var(--space-1); }
+.flush-left { padding-left: 0; }
+.section-title { padding: var(--space-3) var(--space-3) 0; }
+.group-title { padding: var(--space-4) var(--space-3) 0; font-size: 15px; }
+/* Текст */
+.m-0 { margin: 0; }
+.mt-3 { margin-top: var(--space-3); }
+.mt-6 { margin-top: 6px; }
+.mb-6 { margin: 0 0 6px; }
+.label-sub { margin: var(--space-1) 0 0; }
+.legend-gap { margin-bottom: var(--space-2); }
+.c-secondary { color: var(--secondary); }
+.c-olive { color: var(--olive-ink); }
+.hint-error { color: var(--error); }
+.fw-600 { font-weight: 600; }
+.eyebrow { letter-spacing: .08em; text-transform: uppercase; color: var(--olive-ink); }
+.ez-headline--xs { font-size: 15px; }
+.ez-headline--sm { font-size: 16px; }
+.ez-headline--md { font-size: 18px; line-height: 24px; }
+.plan-level { font-size: 22px; line-height: 28px; }
+.link--sm { font-size: 14px; }
+.no-underline { text-decoration: none; }
+/* Розкладка */
+.contents { display: contents; }
+.stack-col { display: flex; flex-direction: column; }
+.self-start { align-self: flex-start; }
+.btn-inline { margin-top: var(--space-2); align-self: flex-start; }
+.btn-gap { margin: var(--space-3) 0 var(--space-1); }
+.btn-gap-sm { margin: var(--space-2) 0 var(--space-1); }
+.btn-icon { color: var(--burgundy); display: flex; }
+.icon-x { transform: rotate(45deg); }
+.fieldset-plain { border: 0; padding: 0; margin: 0; }
+.lesson-row--btn { border: 0; text-align: left; cursor: pointer; width: 100%; }
+/* Літера замість фото */
+.plate-thumb { font-size: 18px; }
+.hrow-letter { font-size: 26px; }

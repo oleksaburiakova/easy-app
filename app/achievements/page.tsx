@@ -23,7 +23,7 @@ export default function Achievements() {
           <h1 className="ez-large-title">Мої досягнення</h1>
           <p className="ez-subhead">{got} з {list.length} · хвалимо за звичку, а не за ідеальність.</p>
         </header>
-        <div className="ez-stack" style={{ paddingTop: 0 }}>
+        <div className="ez-stack flush-top">
           {GROUPS.map((g) => {
             const items = list.filter((a) => a.group === g);
             if (!items.length) return null;

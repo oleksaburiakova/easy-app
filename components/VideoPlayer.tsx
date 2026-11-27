@@ -44,7 +44,7 @@ export function VideoPlayer({ src, title }: { src: string; title: string }) {
       <div className="video-frame" ref={box}>
         <iframe ref={frame} src={src} title={title} allow="autoplay; fullscreen; picture-in-picture" allowFullScreen loading="lazy" />
       </div>
-      <button type="button" className="ez-btn ez-btn--soft ez-btn--sm" onClick={fullscreen} style={{ alignSelf: 'flex-start' }}>
+      <button type="button" className="ez-btn ez-btn--soft ez-btn--sm self-start" onClick={fullscreen}>
         <Icon name="expand" size={16} /> На весь екран
       </button>
     </div>

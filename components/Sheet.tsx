@@ -26,7 +26,7 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
   return (
     <div className="sheet-backdrop" role="presentation" onClick={onClose} style={kb ? { paddingBottom: kb, ['--kb' as string]: `${kb}px` } : undefined}>
       <div className="sheet pop-in" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
-        <h2 className="ez-title" style={{ margin: 0 }}>{title}</h2>
+        <h2 className="ez-title m-0">{title}</h2>
         {children}
       </div>
     </div>

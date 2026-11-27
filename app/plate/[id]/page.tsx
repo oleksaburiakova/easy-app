@@ -42,7 +42,7 @@ export default function PlatePage() {
   const noGreens = plate.selections.some((x) => /галет/i.test(x.label));
   const greens = noGreens ? null : (
     <div className="ez-irow" key="greens">
-      <Photo className="ez-irow__thumb" src={GREENS_PHOTO} letter="З" style={{ fontSize: 18 }} />
+      <Photo className="ez-irow__thumb plate-thumb" src={GREENS_PHOTO} letter="З" />
       <span className="ez-irow__name">Зелень</span>
       <span className="ez-irow__grams">10 г</span>
     </div>
@@ -55,7 +55,7 @@ export default function PlatePage() {
   const flash = (t: string) => { setToast(t); setTimeout(() => setToast(''), 1800); };
 
   return (
-    <main className="app-main fade-in" style={{ paddingBottom: 170 }}>
+    <main className="app-main fade-in pb-plate">
       <nav className="ez-nav" aria-label="Навігація">
         <Link className="ez-nav__back" href={back.href}><Icon name="back" size={18} /> {back.nav}</Link>
         <span className="ez-caption">{mealTitle(plate.meal)} · {LEVEL_LABEL[plate.level]}</span>
@@ -79,20 +79,20 @@ export default function PlatePage() {
               ? { name: 'Яйця', portion: s.label.replace(/^яйц[яе]\s*/, '') + (s.label === 'яйце 1' ? ' шт' : '') }
               : dish ? { name: `${dish.title}: ${tidy(rest.replace(/\(.*\)/, ''))}`, portion: '' } : display({ label: rest, composite });
             return (
-              <div key={s.stepKey} style={{ display: 'contents' }}>
+              <div key={s.stepKey} className="contents">
                 <div className="ez-irow">
-                  <Photo className="ez-irow__thumb" src={selectionPhoto(s)} letter={d.name.charAt(0)} style={{ fontSize: 18 }} />
-                  <span className="ez-irow__name" style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span className="ez-footnote" style={{ fontWeight: 600 }}>{s.stepTitle}</span>
+                  <Photo className="ez-irow__thumb plate-thumb" src={selectionPhoto(s)} letter={d.name.charAt(0)} />
+                  <span className="ez-irow__name stack-col">
+                    <span className="ez-footnote fw-600">{s.stepTitle}</span>
                     {s.stepKey === 'veg' ? tidy(s.label.replace(/^картинка:\s*\(?/, '').replace(/\)$/, '')) : d.name}
                   </span>
                   <span className="ez-irow__grams">{s.portion ?? d.portion}</span>
                 </div>
                 {oilMl && (
                   <div className="ez-irow">
-                    <Photo className="ez-irow__thumb" src={OIL_PHOTO} letter="Ж" style={{ fontSize: 18 }} />
-                    <span className="ez-irow__name" style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span className="ez-footnote" style={{ fontWeight: 600 }}>Жир · на вибір одне</span>
+                    <Photo className="ez-irow__thumb plate-thumb" src={OIL_PHOTO} letter="Ж" />
+                    <span className="ez-irow__name stack-col">
+                      <span className="ez-footnote fw-600">Жир · на вибір одне</span>
                       {oilChoices(oilMl).join(' або ')}
                     </span>
                   </div>
@@ -122,18 +122,18 @@ export default function PlatePage() {
           <div className="ez-pair">
             {isToday ? (
               <Link href={`/build/${plate.meal}`} className="ez-btn ez-btn--soft">
-                <span style={{ color: 'var(--burgundy)', display: 'flex' }}><Icon name="redo" size={18} /></span>
+                <span className="btn-icon"><Icon name="redo" size={18} /></span>
                 Перезібрати
               </Link>
             ) : (
               // Тарілка з минулого дня: історію не редагуємо, але страву можна повторити сьогодні.
               <button className="ez-btn ez-btn--soft" onClick={() => { const p = addPlate({ date: todayISO(), meal: plate.meal, level: plate.level, selections: withoutSweet(plate.selections, sweetPaused(plates, plate.meal)), status: 'eaten', favorite: false }); router.push(`/plate/${p.id}`); }}>
-                <span style={{ color: 'var(--burgundy)', display: 'flex' }}><Icon name="redo" size={18} /></span>
+                <span className="btn-icon"><Icon name="redo" size={18} /></span>
                 Повторити сьогодні
               </button>
             )}
             <button className="ez-btn ez-btn--soft" aria-pressed={plate.favorite} onClick={() => { updatePlate(plate.id, { favorite: !plate.favorite }); flash(plate.favorite ? 'Прибрано з улюблених' : 'Додано в улюблені'); }}>
-              <span style={{ color: 'var(--burgundy)', display: 'flex' }}><Icon name="heart" size={18} filled={plate.favorite} /></span>
+              <span className="btn-icon"><Icon name="heart" size={18} filled={plate.favorite} /></span>
               {plate.favorite ? 'В улюблених' : 'В улюблені'}
             </button>
           </div>

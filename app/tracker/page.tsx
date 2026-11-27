@@ -45,7 +45,7 @@ export default function Tracker() {
   return (
     <>
       <main className="app-main fade-in">
-        <header className="ez-header trk-head" style={{ paddingTop: 20 }}>
+        <header className="ez-header trk-head page-head">
           <div>
             <h1 className="ez-large-title">Трекер</h1>
             <p className="ez-subhead">{isToday ? `Сьогодні, ${dateLabel}` : dateLabel}</p>
@@ -67,7 +67,7 @@ export default function Tracker() {
         )}
 
         {hint && (
-          <div className="ez-pad" style={{ paddingTop: 0 }}>
+          <div className="ez-pad flush-top">
             <aside className="ez-notice" role="note">
               <p className="ez-notice__title">{hint.kind === 'down' ? 'Руху стало менше' : hint.kind === 'reached-base' ? 'Ви дійшли до базової активності' : 'Активність стабільно зросла'}</p>
               <p>
@@ -75,7 +75,7 @@ export default function Tracker() {
                 {hint.kind === 'reached-base' && `Уже 3 тижні в середньому ${fmt(hint.avg)} кроків — це базовий рівень. Оновіть активність в анкеті.`}
                 {hint.kind === 'down' && `Останні 3 тижні в середньому ${fmt(hint.avg)} кроків. Спробуйте повернути рух — або перерахуйте калорійність.`}
               </p>
-              <Link className="ez-btn ez-btn--primary ez-btn--sm" href="/onboarding" style={{ marginTop: 8, alignSelf: 'flex-start' }}>Перерахувати калорійність</Link>
+              <Link className="ez-btn ez-btn--primary ez-btn--sm btn-inline" href="/onboarding">Перерахувати калорійність</Link>
             </aside>
           </div>
         )}
@@ -104,7 +104,7 @@ export default function Tracker() {
           })}
         </ol>
 
-        <div className="ez-stack" style={{ paddingTop: 4 }}>
+        <div className="ez-stack tight-top">
           <Habit
             icon="drop" title="Вода" value={`${fmt(d.water ?? 0)} / ${fmt(g.water)} мл`} progress={(d.water ?? 0) / g.water}
             note={`${waterDays} з 7 днів цього тижня`} onOpen={() => setSheet('water')}
@@ -194,7 +194,7 @@ function StepsSheet({ range, value, goal, onSave, onClose }: { range: readonly [
   const n = Number(v) || 0;
   return (
     <Sheet title="Кроки" onClose={onClose}>
-      <p className="ez-subhead" style={{ margin: 0 }}>Подивіться кількість у застосунку «Здоров'я» на iPhone або Google Fit — і впишіть сюди.</p>
+      <p className="ez-subhead m-0">Подивіться кількість у застосунку «Здоров'я» на iPhone або Google Fit — і впишіть сюди.</p>
       <p className="trk-sheet__rec">Ваша мета — <b>{fmt(goal)}</b> · рекомендовано {fmt(range[0])}–{fmt(range[1])} кроків на день</p>
       <input className="ez-input" inputMode="numeric" autoFocus placeholder="Напр. 7500" value={v} onChange={(e) => setV(e.target.value.replace(/\D/g, '').slice(0, 6))} aria-label="Кількість кроків" />
       <div className="trk-quick">
@@ -212,7 +212,7 @@ function GoalsSheet({ goals, rec, range, onSave, onReset, onClose }: { goals: Tr
   const num = (x: string, min: number, fb: number) => Math.max(min, Number(x) || fb);
   return (
     <Sheet title="Мої цілі" onClose={onClose}>
-      <p className="ez-subhead" style={{ margin: 0 }}>За замовчуванням — з вашої анкети. Можна змінити.</p>
+      <p className="ez-subhead m-0">За замовчуванням — з вашої анкети. Можна змінити.</p>
       <label className="ez-field"><span className="ez-label">Вода на день, мл</span><input className="ez-input" inputMode="numeric" value={w} onChange={(e) => setW(e.target.value.replace(/\D/g, '').slice(0, 4))} /></label>
       <label className="ez-field"><span className="ez-label">Кроки на день</span><input className="ez-input" inputMode="numeric" value={s} onChange={(e) => setS(e.target.value.replace(/\D/g, '').slice(0, 5))} /></label>
       <label className="ez-field"><span className="ez-label">Тренування на тиждень</span><input className="ez-input" inputMode="numeric" value={t} onChange={(e) => setT(e.target.value.replace(/\D/g, '').slice(0, 1))} /></label>
@@ -240,8 +240,8 @@ function WorkoutSheet({ day, isToday, onSave, onRemove, onClose }: { day: Tracke
       {type === 'other' && (
         <input className="ez-input" autoFocus placeholder="Напр. теніс, бокс, стретчинг" maxLength={40} value={other} onChange={(e) => setOther(e.target.value)} aria-label="Вид тренування" />
       )}
-      <p className="ez-hint" style={{ margin: 0 }}>Прогулянки рахуються в кроках.</p>
-      <p className="ez-label" style={{ margin: '4px 0 0' }}>Тривалість (за бажанням)</p>
+      <p className="ez-hint m-0">Прогулянки рахуються в кроках.</p>
+      <p className="ez-label label-sub">Тривалість (за бажанням)</p>
       <div className="trk-chips trk-chips--row" role="radiogroup" aria-label="Тривалість">
         {WORKOUT_MINUTES.map((m) => (
           <button key={m} role="radio" aria-checked={min === m} className="trk-chip" onClick={() => setMin(min === m ? undefined : m)}>{m === 90 ? '90+ хв' : `${m} хв`}</button>
@@ -276,10 +276,10 @@ function FeelScales({ day, onSave }: { day: TrackerDay; onSave: (v: Pick<Tracker
           <div className="trk-scale__ends"><span>{s.low}</span><span>{s.high}</span></div>
         </div>
       ))}
-      <button className="ez-btn ez-btn--primary ez-btn--block" style={{ margin: '8px 0 4px' }} disabled={!changed} onClick={() => { onSave(draft); setFlash(true); setTimeout(() => setFlash(false), 1600); }}>
+      <button className="ez-btn ez-btn--primary ez-btn--block btn-gap-sm" disabled={!changed} onClick={() => { onSave(draft); setFlash(true); setTimeout(() => setFlash(false), 1600); }}>
         {flash ? 'Збережено ✓' : changed ? 'Зберегти' : hasAny ? 'Збережено' : 'Зберегти'}
       </button>
-      {hasAny && !changed && <p className="ez-hint center" style={{ margin: '0 0 6px' }}>Можна змінити будь-коли за день.</p>}
+      {hasAny && !changed && <p className="ez-hint center mb-6">Можна змінити будь-коли за день.</p>}
     </>
   );
 }

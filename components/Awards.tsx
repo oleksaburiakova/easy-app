@@ -47,7 +47,7 @@ export function AwardWatcher() {
       </div>
       <p className="award-new__title">{a.title}</p>
       <p className="award-new__praise">{a.praise}</p>
-      {fresh.length > 1 && <p className="ez-hint center" style={{ margin: 0 }}>І ще {fresh.length - 1} — у «Моїх досягненнях».</p>}
+      {fresh.length > 1 && <p className="ez-hint center m-0">І ще {fresh.length - 1} — у «Моїх досягненнях».</p>}
       <div className="ez-pair">
         <Link className="ez-btn ez-btn--soft" href="/achievements" onClick={close}>Усі нагороди</Link>
         <button className="ez-btn ez-btn--primary" onClick={close}>Дякую!</button>

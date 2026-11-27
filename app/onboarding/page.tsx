@@ -31,7 +31,7 @@ export default function Onboarding() {
   };
 
   return (
-    <main className="app-main fade-in" style={{ paddingBottom: 120 }}>
+    <main className="app-main fade-in pb-actions">
       <nav className="ez-nav" aria-label="Навігація">
         <a className="ez-nav__back" href={profile ? '/profile' : '/welcome'}><Icon name="back" size={18} /> Назад</a>
       </nav>
@@ -46,8 +46,8 @@ export default function Onboarding() {
           <input className="ez-input" id="name" autoComplete="given-name" autoCapitalize="words" maxLength={30} placeholder="Ваше ім'я" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
 
-        <fieldset className="ez-field" style={{ border: 0, padding: 0, margin: 0 }}>
-          <legend className="ez-label" style={{ marginBottom: 8 }}>Стать</legend>
+        <fieldset className="ez-field fieldset-plain">
+          <legend className="ez-label legend-gap">Стать</legend>
           <div className="seg">
             <button type="button" className="pill-choice" aria-pressed={sex === 'female'} onClick={() => setSex('female')}>Жінка</button>
             <button type="button" className="pill-choice" aria-pressed={sex === 'male'} onClick={() => setSex('male')}>Чоловік</button>
@@ -70,8 +70,8 @@ export default function Onboarding() {
           <p className="ez-hint">{tried && hErr ? hErr : 'Вагу не питаємо — калорійність рахується від зросту й активності.'}</p>
         </div>
 
-        <fieldset className="ez-field" style={{ border: 0, padding: 0, margin: 0 }}>
-          <legend className="ez-label" style={{ marginBottom: 8 }}>Активність</legend>
+        <fieldset className="ez-field fieldset-plain">
+          <legend className="ez-label legend-gap">Активність</legend>
           <div className="ez-choices">
             <label className="ez-choice">
               <input type="radio" name="act" checked={activity === 'min'} onChange={() => { setActivity('min'); setMinInfo(true); }} />
@@ -104,8 +104,8 @@ export default function Onboarding() {
       {minInfo && (
         <div className="sheet-backdrop" role="presentation" onClick={() => setMinInfo(false)}>
           <div className="sheet pop-in" role="dialog" aria-modal="true" aria-labelledby="min-title" onClick={(e) => e.stopPropagation()}>
-            <h2 id="min-title" className="ez-title" style={{ margin: 0 }}>Порції розрахуємо як для базової активності</h2>
-            <p className="ez-subhead" style={{ margin: 0 }}>Без руху харчування саме по собі працює гірше. Обов’язково перегляньте урок 3.2 «Рух без спортзалу: скільки достатньо» в розділі «Навчання»: у ньому — як поступово дійти до базового рівня.</p>
+            <h2 id="min-title" className="ez-title m-0">Порції розрахуємо як для базової активності</h2>
+            <p className="ez-subhead m-0">Без руху харчування саме по собі працює гірше. Обов’язково перегляньте урок 3.2 «Рух без спортзалу: скільки достатньо» в розділі «Навчання»: у ньому — як поступово дійти до базового рівня.</p>
             <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setMinInfo(false)}>Зрозуміло</button>
           </div>
         </div>

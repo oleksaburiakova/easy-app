@@ -34,7 +34,7 @@ export function useStartFlow() {
     return (
       <Sheet title="Дозвольте сповіщення" onClose={doneNotify}>
         <div className="flow-hero" aria-hidden="true"><span className="flow-bell"><Icon name="clock" size={40} variant="fill" /></span></div>
-        <p className="ez-subhead" style={{ margin: 0, textAlign: 'center' }}>Нагадаємо, коли час снідати, обідати й вечеряти — у вашому режимі дня. Не частіше 1–2 разів на день, вимкнути можна будь-коли.</p>
+        <p className="ez-subhead m-0 center">Нагадаємо, коли час снідати, обідати й вечеряти — у вашому режимі дня. Не частіше 1–2 разів на день, вимкнути можна будь-коли.</p>
         <button className="ez-btn ez-btn--primary ez-btn--block" onClick={allow}>Дозволити</button>
         <button className="ez-btn ez-btn--back ez-btn--block" onClick={doneNotify}>Не зараз</button>
       </Sheet>
@@ -51,7 +51,7 @@ export function InstallFirstSheet({ onContinue, onClose }: { onContinue: () => v
   return (
     <Sheet title="Додайте Easy на головний екран" onClose={onClose}>
       <div className="flow-hero" aria-hidden="true"><img src="/icons/icon-192.png" alt="" width={84} height={84} /></div>
-      <p className="ez-subhead" style={{ margin: 0, textAlign: 'center' }}>Easy відкриватиметься як звичайний застосунок — з іконкою, на весь екран. І зможуть приходити нагадування.</p>
+      <p className="ez-subhead m-0 center">Easy відкриватиметься як звичайний застосунок — з іконкою, на весь екран. І зможуть приходити нагадування.</p>
       {canPrompt ? (
         <button className="ez-btn ez-btn--primary ez-btn--block" onClick={async () => { await prompt(); onContinue(); }}>Встановити й почати</button>
       ) : (
