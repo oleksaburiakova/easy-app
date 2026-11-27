@@ -13,6 +13,7 @@ import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, OTHER_SWEET, sweetGrams, GROU
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
 import { plateTitle, sweetPaused, withoutSweet, SWEET_STEP, SWEET_PAUSE_NOTE } from '@/lib/plate';
+import { recipeFor } from '@/lib/recipes';
 
 type Picks = Record<string, TreeOption>;
 
@@ -27,6 +28,8 @@ export default function Build() {
   const [idx, setIdx] = useState(0);
   const [noneOpen, setNoneOpen] = useState(false);
   const [skipWarn, setSkipWarn] = useState<string | null>(null);
+  /** Сніданок-страва за рецептом (млинці, панкейки, галета): спершу — чи всі продукти є вдома (Олександра, 27.11). */
+  const [recipeAsk, setRecipeAsk] = useState<TreeOption | null>(null);
   /** «Інша солодощ»: що обрали й калорійність на 100 г — порахуємо грами на 50–80 ккал. */
   const [sweet, setSweet] = useState({ name: '', kcal: '' });
   // Своя солодощ — спливаюче вікно: що обрали й калорійність → скільки грамів (Олена, 27.11).
@@ -85,6 +88,18 @@ export default function Build() {
 
   const choose = (opt: TreeOption) => {
     setNoneOpen(false);
+    if (step.key === 'base' && recipeFor(opt.label) && picks.base?.label !== opt.label) { setRecipeAsk(opt); return; }
+    pick(opt);
+  };
+  /** Підтвердили, що продукти для рецепта є: обираємо основу й переходимо до наступного кроку. */
+  const confirmRecipe = () => {
+    if (!recipeAsk) return;
+    pick(recipeAsk);
+    setRecipeAsk(null);
+    setIdx(1);
+    window.scrollTo({ top: 0 });
+  };
+  const pick = (opt: TreeOption) => {
     if (opt.label === OTHER_SWEET) { setSweetDraft(sweet); setSweetPrev(picks[step.key]?.label === OTHER_SWEET ? undefined : picks[step.key]); setSweetOpen(true); }
     // Пропуск кроку з попередженням (добір білка) — порада спливаючим вікном.
     if (SKIP_WARNINGS[step.key] && opt.label === SKIP_OPTIONS[step.key] && picks[step.key]?.label !== opt.label) setSkipWarn(step.key);
@@ -277,6 +292,21 @@ export default function Build() {
           <button className="ez-btn ez-btn--primary ez-btn--block" onClick={() => setNoneOpen(false)}>Зрозуміло</button>
         </Sheet>
       )}
+
+      {recipeAsk && (() => {
+        const r = recipeFor(recipeAsk.label);
+        if (!r) return null;
+        return (
+          <Sheet title={r.title} onClose={() => setRecipeAsk(null)}>
+            <p className="ez-subhead" style={{ margin: 0 }}>Перевірте, чи все є вдома:</p>
+            <ul className="recipe-list">{r.ingredients.map((x) => <li key={x}>{x}</li>)}</ul>
+            {r.note && <p className="ez-footnote" style={{ margin: 0 }}>{r.note}</p>}
+            <p className="ez-footnote" style={{ margin: 0 }}>Рецепт приготування буде на тарілці.</p>
+            <button className="ez-btn ez-btn--primary ez-btn--block" onClick={confirmRecipe}>Усе є — продовжити</button>
+            <button className="ez-btn ez-btn--back ez-btn--block" onClick={() => setRecipeAsk(null)}>Чогось немає — оберу інше</button>
+          </Sheet>
+        );
+      })()}
 
       {skipWarn && SKIP_WARNINGS[skipWarn] && (() => {
         const w = SKIP_WARNINGS[skipWarn];

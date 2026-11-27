@@ -2,6 +2,7 @@
 import { AwardWatcher } from '@/components/Awards';
 import { Photo } from '@/components/Photo';
 import { GREENS_PHOTO, OIL_PHOTO, selectionPhoto } from '@/lib/photos';
+import { recipeFor } from '@/lib/recipes';
 import { PlateBento } from '@/components/PlateArt';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -46,6 +47,10 @@ export default function PlatePage() {
       <span className="ez-irow__grams">10 г</span>
     </div>
   );
+
+  // Сніданок-страва (млинці, панкейки, галета) — рецепт Олени після інгредієнтів (27.11).
+  const baseSel = plate.selections.find((x) => x.stepKey === 'base');
+  const recipe = baseSel ? recipeFor(baseSel.label) : null;
 
   const flash = (t: string) => { setToast(t); setTimeout(() => setToast(''), 1800); };
 
@@ -99,6 +104,16 @@ export default function PlatePage() {
           {!hasVeg && greens}
           {notes.map((n) => <p className="ez-list__note" key={n}>{n}</p>)}
         </section>
+        {recipe && (
+          <section className="ez-list recipe" aria-label={`Рецепт: ${recipe.title}`}>
+            <p className="ez-list__title">Рецепт · {recipe.title}</p>
+            <p className="recipe__head">Інгредієнти</p>
+            <ul className="recipe-list">{recipe.ingredients.map((x) => <li key={x}>{x}</li>)}</ul>
+            <p className="recipe__head">Спосіб приготування</p>
+            <ol className="recipe-steps">{recipe.steps.map((x) => <li key={x}>{x}</li>)}</ol>
+            {recipe.note && <p className="ez-list__note">{recipe.note}</p>}
+          </section>
+        )}
       </div>
 
       <div className="bottom-bar">
