@@ -37,9 +37,10 @@ export default function PlatePage() {
   }
   if (plate.meal !== 'breakfast' && plate.selections.some((x) => x.stepKey === 'protein')) notes.push("М'ясо й рибу важимо в сирому вигляді.");
   // Зелень — окремим рядком інгредієнтів (10 г до кожного прийому їжі): після овочів, а без них — у кінці.
-  // Сніданок-галета — готова страва за рецептом, зелень окремим рядком не додаємо (Олександра, 27.11).
+  // Сніданок-галета й панкейки — готові страви за рецептом, зелень окремим рядком не додаємо (Олександра, 27.11 і 28.11).
+  // Лише основа сніданку: «панкейк 1 шт» на десерті зелень не прибирає.
   const hasVeg = plate.selections.some((x) => x.stepKey === 'veg');
-  const noGreens = plate.selections.some((x) => /галет/i.test(x.label));
+  const noGreens = plate.selections.some((x) => x.stepKey === 'base' && /^\s*(галета|панкейки)/i.test(x.label));
   const greens = noGreens ? null : (
     <div className="ez-irow" key="greens">
       <Photo className="ez-irow__thumb plate-thumb" src={GREENS_PHOTO} letter="З" />
