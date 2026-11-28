@@ -127,6 +127,15 @@ describe('сніданки-страви за рецептом Олени', () =>
       for (const b of recipeBases) expect(recipeFor(b.label)?.ingredients.length, `${lv} ${b.label}`).toBeGreaterThan(0);
     }
   });
+  it('слова «рецепт» біля порції немає; «вся порція» й «1,5 порції» — окремо від назви', () => {
+    for (const lv of LEVELS) for (const b of (levelNode('breakfast', lv).bases ?? []).filter((x) => x.kind === 'pancake_type')) {
+      const d = display(b);
+      expect(`${d.name} ${d.portion}`, `${lv} ${b.label}`).not.toMatch(/рецепт/i);
+      expect(d.name, `${lv} ${b.label}`).toMatch(/^(Панкейки|Млинці|Галета)$/);
+      expect(d.portion, `${lv} ${b.label}`).not.toBe('');
+    }
+    expect(display({ label: 'млинці (рецепт) 1.5 порції' }).portion).toBe('1,5 порції');
+  });
   it('звичайні основи — без рецепта', () => {
     expect(recipeFor('гречка 40г')).toBeNull();
   });
