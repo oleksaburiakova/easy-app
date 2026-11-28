@@ -13,7 +13,8 @@ import { EGG_BRANCHES, EXTRA_HINTS, EXTRA_OPTIONS, OTHER_SWEET, sweetGrams, GROU
 import { LEVEL_LABEL } from '@/lib/calories';
 import { stepHint } from '@/lib/hints';
 import { plateTitle, sweetPaused, withoutSweet, SWEET_STEP, SWEET_PAUSE_NOTE } from '@/lib/plate';
-import { recipeFor, recipePortion } from '@/lib/recipes';
+import { recipeFor } from '@/lib/recipes';
+import { PortionBox } from '@/components/PortionBox';
 
 type Picks = Record<string, TreeOption>;
 
@@ -298,11 +299,11 @@ export default function Build() {
         if (!r) return null;
         return (
           <Sheet title={r.title} onClose={() => setRecipeAsk(null)}>
-            {recipePortion(recipeAsk.label) && <p className="recipe__portion">{recipePortion(recipeAsk.label)?.note}</p>}
+            <PortionBox label={recipeAsk.label} />
             <p className="ez-subhead m-0">Перевірте, чи все є вдома:</p>
             <ul className="recipe-list">{r.ingredients.map((x) => <li key={x}>{x}</li>)}</ul>
             {r.note && <p className="ez-footnote m-0">{r.note}</p>}
-            <p className="ez-footnote m-0">Рецепт приготування буде на тарілці.</p>
+            <p className="recipe-later"><Icon name="book" size={18} /> Рецепт приготування буде на тарілці.</p>
             <button className="ez-btn ez-btn--primary ez-btn--block" onClick={confirmRecipe}>Усе є — продовжити</button>
             <button className="ez-btn ez-btn--back ez-btn--block" onClick={() => setRecipeAsk(null)}>Чогось немає — оберу інше</button>
           </Sheet>

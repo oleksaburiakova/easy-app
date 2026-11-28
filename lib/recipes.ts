@@ -77,18 +77,17 @@ export const recipeFor = (label: string): Recipe | null => RECIPES.find(([re]) =
  * (на дошці «1,5 порції»); галету зважуємо в готовому вигляді.
  * `card` — підпис порції на картці й у списку тарілки, `note` — рядок «Ваша порція» в аркуші й у рецепті на тарілці.
  */
-export function recipePortion(label: string): { card: string; note: string } | null {
-  if (/^\s*панкейки/i.test(label)) return { card: '1 порція', note: 'Ваша порція — усі панкейки, що вийдуть.' };
+export function recipePortion(label: string): { card: string; note: string; value: string; hint?: string } | null {
+  if (/^\s*панкейки/i.test(label)) return { card: '1 порція', value: 'усі панкейки, що вийдуть', note: 'Ваша порція — усі панкейки, що вийдуть.' };
   if (/^\s*млинці/i.test(label)) {
     const half = /1[.,]5\s*порці/i.test(label);
     return half
-      ? { card: '1,5 порції', note: 'Ваша порція — половина всіх млинців.' }
-      : { card: '1 порція', note: 'Ваша порція — третина всіх млинців.' };
+      ? { card: '1,5 порції', value: 'половина всіх млинців', note: 'Ваша порція — половина всіх млинців.' }
+      : { card: '1 порція', value: 'третина всіх млинців', note: 'Ваша порція — третина всіх млинців.' };
   }
   if (/^\s*галета/i.test(label)) {
     const g = label.match(/(\d+)\s*г/)?.[1];
-    return g ? { card: `${g} г готової`, note: `Ваша порція — ${g} г готової галети: зважте вже спечену.` } : null;
+    return g ? { card: `${g} г готової`, value: `${g} г готової галети`, hint: 'Зважте вже спечену.', note: `Ваша порція — ${g} г готової галети: зважте вже спечену.` } : null;
   }
   return null;
 }
-
