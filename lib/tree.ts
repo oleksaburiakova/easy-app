@@ -1,4 +1,5 @@
 import raw from '@/data/easy-tree.json';
+import { recipePortion } from './recipes';
 
 /** Дерево конструктора Олени Гаврилової (data/easy-tree.json). `label` — точний текст з дошки. */
 export type Level = '1600-1650' | '1700-1750' | '1800-1850' | '2000';
@@ -118,6 +119,9 @@ export function tidy(s: string): string {
 
 /** Назва і порція для картки. Складені варіанти («картопля + нут») показуємо цілим текстом. */
 export function display(opt: TreeOption): { name: string; portion: string } {
+  // Сніданки-страви (панкейки, млинці, галета) — порція за калорійністю, як на дошці Miro (28.11).
+  const rp = recipePortion(opt.label);
+  if (rp) return { name: cap(opt.label.trim().split(/\s+/)[0]), portion: rp.card };
   const dish = dishBase(opt.label);
   if (dish) return { name: dish.title, portion: dishBasePortion(opt.label) };
   const label = tidy(opt.label.replace(/^картинка:\s*/, ''));

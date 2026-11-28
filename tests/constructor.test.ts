@@ -3,7 +3,7 @@ import {
   cheeseOptions, cookedHint, dishBase, dishRank, display, expandOptions, levelNode, proteinSnackOptions, sweetGrams,
   type MealKey, type TreeOption, type TreeStep,
 } from '@/lib/tree';
-import { recipeFor } from '@/lib/recipes';
+import { recipeFor, recipePortion } from '@/lib/recipes';
 import { plateTitle, sweetPaused, withoutSweet } from '@/lib/plate';
 import type { Plate, Selection } from '@/lib/store';
 
@@ -135,6 +135,16 @@ describe('сніданки-страви за рецептом Олени', () =>
       expect(d.portion, `${lv} ${b.label}`).not.toBe('');
     }
     expect(display({ label: 'млинці (рецепт) 1.5 порції' }).portion).toBe('1,5 порції');
+  });
+  it('порції як на дошці: панкейки однаково, млинці — третина / половина, галета — вага готової', () => {
+    const por = (lv: (typeof LEVELS)[number], re: RegExp) => display((levelNode('breakfast', lv).bases ?? []).find((b) => re.test(b.label))!).portion;
+    for (const lv of LEVELS) expect(por(lv, /^панкейки/)).toBe('1 порція');
+    expect([por('1600-1650', /^млинці/), por('1700-1750', /^млинці/), por('1800-1850', /^млинці/), por('2000', /^млинці/)]).toEqual(['1 порція', '1 порція', '1,5 порції', '1,5 порції']);
+    expect(recipePortion('млинці 200 г (рецепт)')?.note).toMatch(/третина/);
+    expect(recipePortion('млинці (рецепт) 1.5 порції')?.note).toMatch(/половина/);
+    expect(por('1600-1650', /^галета/)).toBe('300 г готової');
+    expect(por('2000', /^галета/)).toBe('350 г готової');
+    expect(recipePortion('панкейк 1 шт')).toBeNull(); // десерт — не страва за рецептом
   });
   it('звичайні основи — без рецепта', () => {
     expect(recipeFor('гречка 40г')).toBeNull();

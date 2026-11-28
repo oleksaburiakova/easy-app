@@ -225,3 +225,4 @@ button { font-family: inherit; }
 /* Літера замість фото */
 .plate-thumb { font-size: 18px; }
 .hrow-letter { font-size: 26px; }
+.recipe__portion { margin: 0; font-size: 15px; line-height: 21px; font-weight: 600; color: var(--ink); }

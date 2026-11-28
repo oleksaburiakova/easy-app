@@ -2,7 +2,7 @@
 import { AwardWatcher } from '@/components/Awards';
 import { Photo } from '@/components/Photo';
 import { GREENS_PHOTO, OIL_PHOTO, selectionPhoto } from '@/lib/photos';
-import { recipeFor } from '@/lib/recipes';
+import { recipeFor, recipePortion } from '@/lib/recipes';
 import { PlateBento } from '@/components/PlateArt';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -51,6 +51,7 @@ export default function PlatePage() {
   // Сніданок-страва (млинці, панкейки, галета) — рецепт Олени після інгредієнтів (27.11).
   const baseSel = plate.selections.find((x) => x.stepKey === 'base');
   const recipe = baseSel ? recipeFor(baseSel.label) : null;
+  const portion = baseSel ? recipePortion(baseSel.label) : null;
 
   const flash = (t: string) => { setToast(t); setTimeout(() => setToast(''), 1800); };
 
@@ -107,6 +108,7 @@ export default function PlatePage() {
         {recipe && (
           <section className="ez-list recipe" aria-label={`Рецепт: ${recipe.title}`}>
             <p className="ez-list__title">Рецепт · {recipe.title}</p>
+            {portion && <p className="recipe__portion">{portion.note}</p>}
             <p className="recipe__head">Інгредієнти</p>
             <ul className="recipe-list">{recipe.ingredients.map((x) => <li key={x}>{x}</li>)}</ul>
             <p className="recipe__head">Спосіб приготування</p>
